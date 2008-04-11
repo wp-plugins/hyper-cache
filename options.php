@@ -1,4 +1,4 @@
-<?
+<?php
 function hyper_request($name, $default=null) 
 {
 	if (!isset($_REQUEST[$name])) return $default;
@@ -63,7 +63,7 @@ if (isset($_POST['save']))
     }
   
     if (!$options['timeout'] || !is_numeric($options['timeout'])) $options['timeout'] = 60;
-    $buffer = "<?\n";
+    $buffer = "<?php\n";
     $buffer .= '$hyper_cache_enabled = ' . ($options['cache']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '?>';
@@ -101,19 +101,19 @@ td textarea {
 <form method="post">
 
 <h2>Hyper Cache</h2>
-<? if (!defined('WP_CACHE')) { ?>
+<?php if (!defined('WP_CACHE')) { ?>
 <p>The WordPress caching system is not enabled. Pleade add the line:
 <pre>
 define('WP_CACHE', true);
 </pre>
 in your wp-config.php file. Thank you.
 </p>
-<? } ?>
+<?php } ?>
 
 <h3>Configuration</h3>
 <table>
-<? hyper_field_checkbox('cache', 'Cache active?'); ?>
-<? hyper_field_text('timeout', 'Single page cached expire after', '(minutes!)'); ?>
+<?php hyper_field_checkbox('cache', 'Cache active?'); ?>
+<?php hyper_field_text('timeout', 'Single page cached expire after', '(minutes!)'); ?>
 </table>
 <p><input type="submit" name="save" value="Save"></p>
 
