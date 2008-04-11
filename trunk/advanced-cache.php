@@ -41,7 +41,7 @@ if (file_exists($hyper_file))
     {
         header('Content-Type: text/html;charset=UTF-8');
         echo $hyper_data['html'];
-        //echo '<!-- -->';
+        echo '<!-- hyper cache -->';
         flush();
         die();
     }
