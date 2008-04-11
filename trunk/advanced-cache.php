@@ -47,6 +47,12 @@ if (file_exists($hyper_file))
     }
 }
 
+//var_dump($_COOKIE);
+// Now we start the caching, but we remove the cookie which stores the comment for data
+foreach ($_COOKIE as $n=>$v)
+{
+    if (substr($n, 0, 14) == 'comment_author') unset($_COOKIE[$n]);
+}
 ob_start('hyper_cache_callback');
 
 
