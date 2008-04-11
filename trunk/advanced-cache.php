@@ -1,4 +1,4 @@
-<?
+<?php
 @include(dirname(__FILE__) . '/hyper-cache-config.php');
 
 // From the config file
