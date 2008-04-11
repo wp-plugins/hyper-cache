@@ -2,9 +2,9 @@
 Tags: cache,chaching
 Requires at least: 2.1
 Tested up to: 2.5
-Stable tag: 1.0
+Stable tag: 1.0.2
 Donate link: http://www.satollo.com/english/donate
-Contributors: satollo
+Contributors: satollo,momo360modena
 
 Hyper Cache is an extremely aggressive cache for WordPress.
 
@@ -20,6 +20,9 @@ http://www.satollo.com/english/wordpress/hyper-cache
 
 For any problem or question write me: satollo@gmail.com or leave a comment
 in my blog.
+
+Thank you to Amaury Balmer for the internationalization and other
+modifications.
 
 == Installation ==
 
