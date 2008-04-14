@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Hyper Cache\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-13 11:16+0100\n"
-"PO-Revision-Date: 2008-04-14 15:00+0100\n"
+"PO-Revision-Date: 2008-04-14 16:38+0100\n"
 "Last-Translator: Satollo <satollo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:99
 msgid "not_enbled"
-msgstr "the wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!"
+msgstr "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:105
@@ -31,7 +31,7 @@ msgstr "Cache active?"
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:111
 msgid "expire"
-msgstr "Les pages contenues dans le cache expirent apr&egrave;s"
+msgstr "Expire a cached page after"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:111
