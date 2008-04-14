@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Hyper Cache\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-13 11:16+0100\n"
-"PO-Revision-Date: 2008-04-14 16:38+0100\n"
+"PO-Revision-Date: 2008-04-14 16:41+0100\n"
 "Last-Translator: Satollo <satollo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,12 +36,12 @@ msgstr "Expire a cached page after"
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:111
 msgid "minutes"
-msgstr "(minutes!)"
+msgstr "minutes"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:116
 msgid "save"
-msgstr "Enregistrer"
+msgstr "Save"
 
 msgid "clear"
 msgstr "Clear the cache"
