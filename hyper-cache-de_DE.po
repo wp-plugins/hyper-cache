@@ -16,36 +16,36 @@ msgstr ""
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:99
 msgid "not_enabled"
-msgstr "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!"
+msgstr "Das WordPress Cachesystem ist nicht aktiv. Um es zu aktivieren bitte die folgende Zeile Code der Datei wp-config.php hinzuf&uuml;gen. Danke!"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:105
 msgid "configuration"
-msgstr "Configuration"
+msgstr "Konfiguration"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:108
 msgid "active"
-msgstr "Cache active?"
+msgstr "Cache aktiv?"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:111
 msgid "expire"
-msgstr "Expire a cached page after"
+msgstr "Ablauf des Cache nach"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:111
 msgid "minutes"
-msgstr "minutes"
+msgstr "Minuten"
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:116
 msgid "save"
-msgstr "Save"
+msgstr "Speichern"
 
 msgid "clear"
-msgstr "Clear the cache"
+msgstr "Cache l&ouml;schen"
 
 msgid "count"
-msgstr "Cached pages"
+msgstr "Gecachte Seiten"
 

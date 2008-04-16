@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Hyper Cache\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-13 11:16+0100\n"
-"PO-Revision-Date: 2008-04-14 15:00+0100\n"
+"PO-Revision-Date: 2008-04-16 09:24+0100\n"
 "Last-Translator: Satollo <satollo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: D:\SVN\Plugins\Hyper
 #: Cache\trunk/options.php:99
-msgid "not_enbled"
+msgid "not_enabled"
 msgstr "Il sistema di caching di WordPress non &egrave; attivo. Attivarlo inserendo la riga sotto nel file wp-config.php. Grazie!"
 
 #: D:\SVN\Plugins\Hyper
