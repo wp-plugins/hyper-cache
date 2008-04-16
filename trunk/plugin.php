@@ -90,6 +90,7 @@ function hyper_delete_path( $path = '' ) {
 
 function hyper_count() {
     $count = 0;
+    if (!is_dir(ABSPATH . 'wp-content/hyper-cache')) return 0;
 	if ($handle = opendir(ABSPATH . 'wp-content/hyper-cache')) {
 		while ($file = readdir($handle)) {
 			if ($file != '.' && $file != '..') {
