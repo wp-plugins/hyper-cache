@@ -2,7 +2,7 @@
 Tags: cache,chaching
 Requires at least: 2.1
 Tested up to: 2.5
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
@@ -23,6 +23,8 @@ in my blog.
 
 Thank you to Amaury Balmer for the internationalization and other
 modifications.
+
+Thank you to Frank Luef for the german translation.
 
 == Installation ==
 

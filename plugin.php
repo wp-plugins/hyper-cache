@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.0.5
+Version: 1.0.6
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ---
 Changelog
 ---
+Version 1.0.6
+    - German translation by Frank Luef
+    - Fixed some not blocking url when installing without the WP_CACHE defined
+    - Fixed a message key in the .po files
+    
 Version 1.0.5
     - Add italian translation
     - Add the "clear the cache" button
