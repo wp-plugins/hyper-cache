@@ -63,11 +63,6 @@ if (isset($_POST['save'])) {
     $options = hyper_request('options');
     update_option('hyper', $options);
 
-    // Write the configuration file
-    if (!file_exists(ABSPATH . '/wp-content/hyper-cache')) {
-        mkdir(ABSPATH . '/wp-content/hyper-cache', 0766);
-    }
-
     if (!$options['timeout'] || !is_numeric($options['timeout'])) {
     	$options['timeout'] = 60;
     }
@@ -75,17 +70,12 @@ if (isset($_POST['save'])) {
     $buffer = "<?php\n";
     $buffer .= '$hyper_cache_enabled = ' . ($options['cache']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
+    $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
     fclose($file);
 
-    // Write the advanced-cache.php (so we grant it's the correct version)
-    $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
-    $file = fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
-    
-    fwrite($file, $buffer);
-    fclose($file);
 } else {
     $options = get_option('hyper');
     if (!$options['timeout']) {
@@ -114,16 +104,30 @@ if (isset($_POST['save'])) {
         	<tr valign="top">
        			<?php hyper_field_text('timeout', __('expire', 'hyper-cache'), __('minutes', 'hyper-cache'), 'size="5"'); ?>
        		</tr>
-        </table>
-        
-        <table class="form-table">
+			
+        	<tr valign="top">
+       			<?php hyper_field_checkbox('not_expire_on_actions', __('not_expire_on_actions', 'hyper-cache'), __('not_expire_on_actions_desc', 'hyper-cache'), 'size="5"'); ?>
+       		</tr>
+
 			<tr valign="top">
         		<th scope="row"><?php _e('count', 'hyper-cache'); ?></th>
                 <td><?php echo hyper_count(); ?></td>
         	</tr>
         </table>        
         
-        <p>
+		<!--
+        <h3><?php _e('advanced options', 'hyper-cache'); ?></h3>
+        <table class="form-table">
+            <tr valign="top">
+                <?php echo hyper_field_textarea('urls', __('url to reject', 'hyper-cache')); ?>
+            </tr>  
+            <tr valign="top">
+                <?php echo hyper_field_checkbox('get', __('cache get with parameters', 'hyper-cache')); ?>
+            </tr>              
+        </table>
+		-->
+        
+        <p class="submit">
             <input class="button" type="submit" name="save" value="<?php _e('save', 'hyper-cache'); ?>">  
             <input class="button" type="submit" name="clear" value="<?php _e('clear', 'hyper-cache'); ?>">
         </p>      

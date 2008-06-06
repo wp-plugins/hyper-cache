@@ -1,8 +1,8 @@
 === Hyper Cache ===
 Tags: cache,chaching
 Requires at least: 2.1
-Tested up to: 2.5
-Stable tag: 1.0.6
+Tested up to: 2.5.1
+Stable tag: 1.0.7
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
@@ -31,6 +31,8 @@ Thank you to Frank Luef for the german translation.
 1. Put the plugin folder into [wordpress_dir]/wp-content/plugins/
 2. Go into the WordPress admin interface and activate the plugin
 3. Optional: go to the options page and configure the plugin
+
+Before upgrade DEACTIVATE the plugin!
 
 == Frequently Asked Questions ==
 

@@ -21,9 +21,10 @@ foreach ( (array) $_COOKIE as $n => $v ) {
 
 $hyper_uri = stripslashes($_SERVER['REQUEST_URI']);
 
+if (!$hyper_cache_get && strpos($hyper_uri, '?') !== false) return false;
+
 // Do not cache WP pages, even if those calls typically don't go throught this script
-if( strpos($hyper_uri, '?') !== false ||
-	strpos($hyper_uri, '/wp-admin/') !== false ||
+if (strpos($hyper_uri, '/wp-admin/') !== false ||
 	strpos($hyper_uri, '/wp-includes/') !== false ||
 	strpos($hyper_uri, '/wp-content/') !== false ) {
 	return false;
@@ -31,9 +32,11 @@ if( strpos($hyper_uri, '?') !== false ||
 
 
 // Special blocks: the download manager plugin
+/*
 if (strpos($hyper_uri, '/download/') !== false) {
 	return false;
 }
+*/
 
 // Remove the anchor
 $x = strpos($hyper_uri, '#');
@@ -53,7 +56,13 @@ if ( is_file($hyper_file) ) {
     }
     
     if ($hyper_data != null && ($hyper_data['time'] > time()-($hyper_cache_timeout*60)) && $hyper_data['html'] != '') {
-        header('Content-Type: text/html;charset=UTF-8');
+		if ($hyper_data['mime'] == '')
+		{
+			header('Content-Type: text/html;charset=UTF-8');
+		}
+		else {
+			header('Content-Type: ' . $hyper_data['mime']);
+		}
         echo $hyper_data['html'];
         echo '<!-- hyper cache -->';
         flush();
@@ -75,6 +84,11 @@ function hyper_cache_callback($buffer) {
     $data['uri'] = $_SERVER['REQUEST_URI'];
     $data['referer'] = $_SERVER['HTTP_REFERER'];
     $data['time'] = time();
+	if (is_feed()) {
+		$data['mime'] = 'text/xml;charset=UTF-8';
+	} else {
+		$data['mime'] = 'text/html;charset=UTF-8';
+	}	
     $data['html'] = $buffer;
 
     $file = fopen($hyper_file, 'w');
