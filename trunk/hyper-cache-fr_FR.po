@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Hyper Cache\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-13 11:16+0100\n"
-"PO-Revision-Date: 2008-04-16 09:24+0100\n"
+"PO-Revision-Date: 2008-06-06 17:16+0100\n"
 "Last-Translator: Satollo <satollo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -48,4 +48,10 @@ msgstr "Effacer le cache"
 
 msgid "count"
 msgstr "Nombre de pages en cache"
+
+msgid "not_expire_on_actions"
+msgstr "Do not expire on actions"
+
+msgid "not_expire_on_actions_desc"
+msgstr "New comments, new posts, ..., rely only on cache timeout"
 

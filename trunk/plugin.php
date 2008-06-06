@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.0.6
+Version: 1.0.7
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -29,6 +29,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ---
 Changelog
 ---
+Version 1.0.7
+	- Fixed the mime type for feed
+	- Added the "do not expire on actions" option
+	
 Version 1.0.6
     - German translation by Frank Luef
     - Fixed some not blocking url when installing without the WP_CACHE defined
@@ -49,23 +53,37 @@ Version 1.0.4
 
 $hyper_options = get_option('hyper');
 
-/*
+
 add_action('activate_hyper-cache/plugin.php', 'hyper_activate');
 function hyper_activate() {
+    if (!file_exists(ABSPATH . '/wp-content/hyper-cache')) {
+        mkdir(ABSPATH . '/wp-content/hyper-cache', 0766);
+    }
+	hyper_cache_invalidate();
+	
+    // Write the advanced-cache.php (so we grant it's the correct version)
+    $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
+    $file = fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
+    
+    fwrite($file, $buffer);
+    fclose($file);	
 }
-*/
+
 
 add_action('deactivate_hyper-cache/plugin.php', 'hyper_deactivate');
 function hyper_deactivate() {
 	delete_option('hyper');
 
-	unlink(ABSPATH . 'wp-content/advanced-cache.php');
-	unlink(ABSPATH . 'wp-content/hyper-cache-config.php');
+	if (file_exists(ABSPATH . 'wp-content/advanced-cache.php')) unlink(ABSPATH . 'wp-content/advanced-cache.php');
+	if (file_exists(ABSPATH . 'wp-content/hyper-cache-config.php')) unlink(ABSPATH . 'wp-content/hyper-cache-config.php');
 
-	$path = ABSPATH . 'wp-content/' . time();
-	rename(ABSPATH . 'wp-content/hyper-cache', $path);
+	if (is_dir(ABSPATH . 'wp-content/hyper-cache'))
+	{
+		$path = ABSPATH . 'wp-content/' . time();
+		rename(ABSPATH . 'wp-content/hyper-cache', $path);
 
-	hyper_delete_path( $path );
+		hyper_delete_path( $path );
+	}
 }
 
 add_action('admin_head', 'hyper_admin_head');
@@ -73,12 +91,16 @@ function hyper_admin_head() {
 	add_options_page('Hyper Cache', 'Hyper Cache', 'manage_options', 'hyper-cache/options.php');
 }
 
-function hyper_cache_invalidate() {
+function hyper_cache_invalidate() 
+{
+	global $hyper_options;
+	
+	if ($hyper_options['not_expire_on_actions']) return;
+	
 	$path = ABSPATH . 'wp-content/' . time();
 	rename(ABSPATH . 'wp-content/hyper-cache', $path);
-	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
-
 	hyper_delete_path( $path );
+	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
 }
 
 function hyper_delete_path( $path = '' ) {
