@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.0.7
+Version: 1.0.8
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ---
 Changelog
 ---
+Version 1.0.8
+	- fixed the "clear cache" that didn't work when "not exipre on actions" was set
+	
 Version 1.0.7
 	- Fixed the mime type for feed
 	- Added the "do not expire on actions" option
@@ -91,11 +94,11 @@ function hyper_admin_head() {
 	add_options_page('Hyper Cache', 'Hyper Cache', 'manage_options', 'hyper-cache/options.php');
 }
 
-function hyper_cache_invalidate() 
+function hyper_cache_invalidate($force=false) 
 {
 	global $hyper_options;
 	
-	if ($hyper_options['not_expire_on_actions']) return;
+	if (!force && $hyper_options['not_expire_on_actions']) return;
 	
 	$path = ABSPATH . 'wp-content/' . time();
 	rename(ABSPATH . 'wp-content/hyper-cache', $path);

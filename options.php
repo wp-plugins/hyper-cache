@@ -56,7 +56,7 @@ function hyper_field_textarea($name, $label='', $tips='', $attrs='') {
 }
 
 if (isset($_POST['clear'])) {
-    hyper_cache_invalidate();
+    hyper_cache_invalidate(true);
 }
 
 if (isset($_POST['save'])) {
