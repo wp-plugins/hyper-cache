@@ -63,7 +63,8 @@ if (isset($_POST['save'])) {
     $options = hyper_request('options');
     update_option('hyper', $options);
 
-    if (!$options['timeout'] || !is_numeric($options['timeout'])) {
+    if (!$options['timeout'] || !is_numeric($options['timeout'])) 
+    {
     	$options['timeout'] = 60;
     }
     
@@ -76,9 +77,12 @@ if (isset($_POST['save'])) {
     fwrite($file, $buffer);
     fclose($file);
 
-} else {
+} 
+else 
+{
     $options = get_option('hyper');
-    if (!$options['timeout']) {
+    if (!$options['timeout']) 
+    {
     	$options['timeout'] = 60;
     }
 }

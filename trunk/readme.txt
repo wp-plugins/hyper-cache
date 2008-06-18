@@ -2,7 +2,7 @@
 Tags: cache,chaching
 Requires at least: 2.1
 Tested up to: 2.5.1
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
