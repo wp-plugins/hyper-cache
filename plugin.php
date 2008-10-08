@@ -29,6 +29,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ---
 Changelog
 ---
+Version 1.1
+    - fixed behaviour with password protected posts
+    - added a bit of html compression (not gzip)
+    
 Verison 1.0.9 
     - fixed a bug in the "not expire" management
     
