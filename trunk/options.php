@@ -70,6 +70,7 @@ if (isset($_POST['save'])) {
     
     $buffer = "<?php\n";
     $buffer .= '$hyper_cache_enabled = ' . ($options['cache']?'true':'false') . ";\n";
+    $buffer .= '$hyper_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '?>';
@@ -112,6 +113,9 @@ else
         	<tr valign="top">
        			<?php hyper_field_checkbox('not_expire_on_actions', __('not_expire_on_actions', 'hyper-cache'), __('not_expire_on_actions_desc', 'hyper-cache'), 'size="5"'); ?>
        		</tr>
+			<tr valign="top">
+        		<?php hyper_field_checkbox('compress', __('compress_html', 'hyper-cache')); ?>
+        	</tr>
 
 			<tr valign="top">
         		<th scope="row"><?php _e('count', 'hyper-cache'); ?></th>
