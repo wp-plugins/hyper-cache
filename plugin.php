@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.1
+Version: 1.1.1
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ---
 Changelog
 ---
+Version 1.1.1
+    - added an option to invalidate single post pages
+    
 Version 1.1
     - fixed behaviour with password protected posts
     - added a bit of html compression (not gzip)
@@ -113,6 +116,36 @@ function hyper_cache_invalidate($force=false)
 	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
 }
 
+function hyper_cache_invalidate_post($post_id) 
+{
+    hyper_delete_by_post($post_id);
+}
+
+function hyper_cache_invalidate_comment($comment_id, $status=1) 
+{
+    if ($status != 1) return;
+    hyper_delete_by_comment($comment_id);
+    //hyper_cache_invalidate();
+}
+
+function hyper_delete_by_comment($comment_id)
+{
+    $comment = get_comment($comment_id);
+    $post_id = $comment->comment_post_ID;
+    hyper_delete_by_post($post_id);
+}
+
+function hyper_delete_by_post($post_id)
+{
+    $link = get_permalink($post_id);
+    $link = substr($link, strpos($link, '/', 7));
+    $file = md5($link);
+    if (file_exists(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat'))
+    {
+        unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
+    }
+}
+
 function hyper_delete_path( $path = '' ) {
 	if ($handle = opendir($path)) {
 		while ($file = readdir($handle)) {
@@ -140,23 +173,43 @@ function hyper_count() {
 }
 
 
-if ( $hyper_options['cache'] && !$hyper_options['not_expire_on_actions']) 
+if ($hyper_options['cache'] && !$hyper_options['not_expire_on_actions'])
 {
 	// Posts
 	add_action('publish_post', 'hyper_cache_invalidate', 0);
-	add_action('edit_post', 'hyper_cache_invalidate', 0);
+    if ($hyper_options['invalidate_single_posts'])
+    {
+	    add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+    }
+    else
+    {    
+        add_action('edit_post', 'hyper_cache_invalidate', 0);
+    }
 	add_action('delete_post', 'hyper_cache_invalidate', 0);
 	add_action('publish_phone', 'hyper_cache_invalidate', 0);
-	
-	// Coment ID is received
-	add_action('trackback_post', 'hyper_cache_invalidate', 0);
-	add_action('pingback_post', 'hyper_cache_invalidate', 0);
-	add_action('comment_post', 'hyper_cache_invalidate', 0);
-	add_action('edit_comment', 'hyper_cache_invalidate', 0);
-	add_action('wp_set_comment_status', 'hyper_cache_invalidate', 0);
-	
-	// No post_id is available
-	add_action('delete_comment', 'hyper_cache_invalidate', 0);
-	add_action('switch_theme', 'hyper_cache_invalidate', 0);
+    add_action('switch_theme', 'hyper_cache_invalidate', 0);
+    
+
+    // Coment ID is received
+    //add_action('trackback_post', 'hyper_cache_invalidate', 0);
+    //add_action('pingback_post', 'hyper_cache_invalidate', 0);
+    if ($hyper_options['invalidate_single_posts'])
+    {    
+        add_action('comment_post', 'hyper_cache_invalidate_comment', 10, 2);
+        add_action('edit_comment', 'hyper_cache_invalidate_comment', 0);
+        add_action('wp_set_comment_status', 'hyper_cache_invalidate_comment', 0);
+        
+        // No post_id is available
+        add_action('delete_comment', 'hyper_cache_invalidate_comment', 0);
+    }
+    else 
+    {
+        add_action('comment_post', 'hyper_cache_invalidate', 0);
+        add_action('edit_comment', 'hyper_cache_invalidate', 0);
+        add_action('wp_set_comment_status', 'hyper_cache_invalidate', 0);
+        
+        // No post_id is available
+        add_action('delete_comment', 'hyper_cache_invalidate', 0);
+    }
 }
 ?>

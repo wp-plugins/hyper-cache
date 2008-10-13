@@ -62,7 +62,7 @@ if ( is_file($hyper_file) ) {
             header('Content-Type: ' . $hyper_data['mime']);
         }
         echo $hyper_data['html'];
-        echo '<!-- hyper cache -->';
+        echo '<!-- hyper cache: ' . $hyper_cache_name . ' -->';
         flush();
         die();
     }
