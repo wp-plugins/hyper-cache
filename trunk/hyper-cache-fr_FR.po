@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Hyper Cache\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-04-13 11:16+0100\n"
-"PO-Revision-Date: 2008-06-06 17:16+0100\n"
+"PO-Revision-Date: 2008-10-13 22:50+0100\n"
 "Last-Translator: Satollo <satollo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -54,4 +54,13 @@ msgstr "Do not expire on actions"
 
 msgid "not_expire_on_actions_desc"
 msgstr "New comments, new posts, ..., rely only on cache timeout"
+
+msgid "invalidate_single_posts"
+msgstr "Try to invalidate the single posts"
+
+msgid "invalidate_single_posts_desc"
+msgstr "Ivalidate only the web page of the modified posts, not all the blog web pages (only for actions on comments and post edit - posts publish and delete invalidate all the cache)"
+
+msgid "compress_html"
+msgstr "Compress the html cached"
 

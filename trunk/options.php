@@ -111,8 +111,11 @@ else
        		</tr>
 			
         	<tr valign="top">
-       			<?php hyper_field_checkbox('not_expire_on_actions', __('not_expire_on_actions', 'hyper-cache'), __('not_expire_on_actions_desc', 'hyper-cache'), 'size="5"'); ?>
+       			<?php hyper_field_checkbox('not_expire_on_actions', __('not_expire_on_actions', 'hyper-cache'), __('not_expire_on_actions_desc', 'hyper-cache')); ?>
        		</tr>
+        	<tr valign="top">
+       			<?php hyper_field_checkbox('invalidate_single_posts', __('invalidate_single_posts', 'hyper-cache'), __('invalidate_single_posts_desc', 'hyper-cache')); ?>
+       		</tr>            
 			<tr valign="top">
         		<?php hyper_field_checkbox('compress', __('compress_html', 'hyper-cache')); ?>
         	</tr>
