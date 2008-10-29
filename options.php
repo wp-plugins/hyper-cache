@@ -1,7 +1,10 @@
 <?php
-if (function_exists('load_plugin_textdomain')) {
-    load_plugin_textdomain('hyper-cache', 'wp-content/plugins/hyper-cache');
-}
+//if (function_exists('load_plugin_textdomain')) {
+//    load_plugin_textdomain('hyper-cache', 'wp-content/plugins/hyper-cache');
+//}
+
+include('en_US.php');
+if (WPLANG) include(WPLANG . '.php');
 
 function hyper_request( $name, $default=null ) {
     if ( !isset($_POST[$name]) ) {
@@ -73,6 +76,7 @@ if (isset($_POST['save'])) {
     $buffer .= '$hyper_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
@@ -95,33 +99,36 @@ else
         <?php
         if (!defined('WP_CACHE') ) {
             echo '<div class="alert error" style="margin-top:10px;"><p>';
-            _e('not_enabled', 'hyper-cache');
+            echo $hyper_labels['wp_cache_not_enabled'];
             echo "<pre>define('WP_CACHE', true);</pre>";
             echo '</p></div>';
         }
         ?>
 
-        <h3><?php _e('configuration', 'hyper-cache'); ?></h3>
+        <h3><?php echo $hyper_labels['configuration']; ?></h3>
         <table class="form-table">
 			<tr valign="top">
-        		<?php hyper_field_checkbox('cache', __('active', 'hyper-cache')); ?>
+        		<?php hyper_field_checkbox('cache', $hyper_labels['activate']); ?>
         	</tr>
         	<tr valign="top">
-       			<?php hyper_field_text('timeout', __('expire', 'hyper-cache'), __('minutes', 'hyper-cache'), 'size="5"'); ?>
+       			<?php hyper_field_text('timeout', $hyper_labels['expire'], $hyper_labels['minutes'], 'size="5"'); ?>
        		</tr>
 			
         	<tr valign="top">
-       			<?php hyper_field_checkbox('not_expire_on_actions', __('not_expire_on_actions', 'hyper-cache'), __('not_expire_on_actions_desc', 'hyper-cache')); ?>
+       			<?php hyper_field_checkbox('not_expire_on_actions', $hyper_labels['never_expire'], $hyper_labels['never_expire_desc']); ?>
        		</tr>
         	<tr valign="top">
-       			<?php hyper_field_checkbox('invalidate_single_posts', __('invalidate_single_posts', 'hyper-cache'), __('invalidate_single_posts_desc', 'hyper-cache')); ?>
+       			<?php hyper_field_checkbox('invalidate_single_posts', $hyper_labels['invalidate_single_posts'], $hyper_labels['invalidate_single_posts_desc']); ?>
        		</tr>            
 			<tr valign="top">
-        		<?php hyper_field_checkbox('compress', __('compress_html', 'hyper-cache')); ?>
+        		<?php hyper_field_checkbox('compress', $hyper_labels['compress_html'], $hyper_labels['compress_html_desc']); ?>
         	</tr>
+			<tr valign="top">
+        		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip_compression'], $hyper_labels['gzip_compression_desc']); ?>
+        	</tr>            
 
 			<tr valign="top">
-        		<th scope="row"><?php _e('count', 'hyper-cache'); ?></th>
+        		<th scope="row"><?php echo $hyper_labels['count']; ?></th>
                 <td><?php echo hyper_count(); ?></td>
         	</tr>
         </table>        
@@ -139,8 +146,8 @@ else
 		-->
         
         <p class="submit">
-            <input class="button" type="submit" name="save" value="<?php _e('save', 'hyper-cache'); ?>">  
-            <input class="button" type="submit" name="clear" value="<?php _e('clear', 'hyper-cache'); ?>">
+            <input class="button" type="submit" name="save" value="<?php echo $hyper_labels['save']; ?>">  
+            <input class="button" type="submit" name="clear" value="<?php echo $hyper_labels['clear']; ?>">
         </p>      
     </form>
 </div>
