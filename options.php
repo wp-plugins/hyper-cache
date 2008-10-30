@@ -3,8 +3,8 @@
 //    load_plugin_textdomain('hyper-cache', 'wp-content/plugins/hyper-cache');
 //}
 
-include('en_US.php');
-if (WPLANG) include(WPLANG . '.php');
+include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
+if (WPLANG) include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
 
 function hyper_request( $name, $default=null ) {
     if ( !isset($_POST[$name]) ) {
