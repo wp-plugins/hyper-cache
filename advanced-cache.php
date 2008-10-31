@@ -102,7 +102,7 @@ function hyper_cache_callback($buffer)
     $data['uri'] = $_SERVER['REQUEST_URI'];
     $data['referer'] = $_SERVER['HTTP_REFERER'];
     $data['time'] = time();
-    if ($hyper_redirect)
+    if (false && $hyper_redirect)
     {
         $data['location'] = $hyper_redirect;
     }
