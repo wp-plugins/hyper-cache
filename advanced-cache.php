@@ -140,20 +140,23 @@ function hyper_cache_callback($buffer)
         {
             $data['gz'] = gzencode($buffer);
         }
+
+        if (is_404())
+        {
+            if (!file_exists(ABSPATH . 'wp-content/hyper-cache/404.dat'))
+            {
+                $file = fopen(ABSPATH . 'wp-content/hyper-cache/404.dat', 'w');
+                fwrite($file, serialize($data));
+                fclose($file);            
+            }
+            unset($data['html']);
+            unset($data['gz']);
+            $data['status'] = 404;
+        }
+    
     }
     
-    if (is_404())
-    {
-        if (!file_exists(ABSPATH . 'wp-content/hyper-cache/404.dat'))
-        {
-            $file = fopen(ABSPATH . 'wp-content/hyper-cache/404.dat', 'w');
-            fwrite($file, serialize($data));
-            fclose($file);            
-        }
-        unset($data['html']);
-        unset($data['gz']);
-        $data['status'] = 404;
-    }
+
     
     $file = fopen($hyper_file, 'w');
     fwrite($file, serialize($data));
