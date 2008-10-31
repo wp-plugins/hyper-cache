@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.2.2
+Version: 1.2.3
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -114,8 +114,8 @@ function hyper_cache_invalidate($force=false)
 	
 	$path = ABSPATH . 'wp-content/' . time();
 	rename(ABSPATH . 'wp-content/hyper-cache', $path);
-	hyper_delete_path( $path );
 	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
+	hyper_delete_path( $path );
 }
 
 function hyper_cache_invalidate_post($post_id) 

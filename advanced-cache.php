@@ -87,10 +87,12 @@ function hyper_cache_callback($buffer)
 {
     global $hyper_redirect, $hyper_file, $hyper_compress, $post, $hyper_cache_name, $hyper_cache_gzip;
     
-    // Sometine the buffer is empty, eg when wordpress sends back a redirect - no cache is needed (it would e nice to cache
-    // the redirects and stop wordpress to works computing it every time, but there is no way to read the sent header...)
+    // A bug? May be WP call the "canonical_redirect" hook even when no redirect is really issued. If the
+    // uri equals the WP redirect, we ignore it.
+    if ($hyper_redirect == $_SERVER['REQUEST_URI']) $hyper_redirect = null;
+    
     if (!$hyper_redirect && strlen($buffer) == 0) return '';
-
+    
     $data['uri'] = $_SERVER['REQUEST_URI'];
     $data['referer'] = $_SERVER['HTTP_REFERER'];
     $data['time'] = time();
