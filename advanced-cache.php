@@ -50,6 +50,12 @@ if (is_file($hyper_file))
             die();
         }
         
+        if ($hyper_data['status'] == 404)
+        {
+            header("HTTP/1.1 404 Not Found");
+            $hyper_data = unserialize(file_get_contents(ABSPATH . 'wp-content/hyper-cache/404.dat'));
+        }
+        
         header('Content-Type: ' . $hyper_data['mime']);
         
         // Send the cached html
@@ -134,6 +140,19 @@ function hyper_cache_callback($buffer)
         {
             $data['gz'] = gzencode($buffer);
         }
+    }
+    
+    if (is_404())
+    {
+        if (!file_exists(ABSPATH . 'wp-content/hyper-cache/404.dat'))
+        {
+            $file = fopen(ABSPATH . 'wp-content/hyper-cache/404.dat', 'w');
+            fwrite($file, serialize($data));
+            fclose($file);            
+        }
+        unset($data['html']);
+        unset($data['gz']);
+        $data['status'] = 404;
     }
     
     $file = fopen($hyper_file, 'w');

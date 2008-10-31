@@ -1,25 +1,28 @@
 <?php
-//if (function_exists('load_plugin_textdomain')) {
-//    load_plugin_textdomain('hyper-cache', 'wp-content/plugins/hyper-cache');
-//}
 
 include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
 if (WPLANG) include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
 
-function hyper_request( $name, $default=null ) {
-    if ( !isset($_POST[$name]) ) {
+function hyper_request($name, $default=null) 
+{
+    if (!isset($_POST[$name])) 
+    {
     	return $default;
     }
-    if ( get_magic_quotes_gpc() ) {
+    
+    if (get_magic_quotes_gpc()) 
+    {
     	return hyper_stripslashes($_POST[$name]);
     }
-    else {
+    else 
+    {
     	return $_POST[$name];
     }
 }
 
-function hyper_stripslashes($value) {
-    $value = is_array($value) ? array_map('hyper_stripslashes', $value) : stripslashes($value);
+function hyper_stripslashes($value) 
+{
+    $value = is_array($value)?array_map('hyper_stripslashes', $value):stripslashes($value);
     return $value;
 }
 
