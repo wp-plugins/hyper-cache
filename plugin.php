@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress.
-Version: 1.2.1
+Version: 1.2.2
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -219,7 +219,10 @@ $hyper_redirect = null;
 function hyper_redirect_canonical($redirect_url, $requested_url)
 {
     global $hyper_redirect;
-    $hyper_redirect = $redirect_url;
+    if ($redirect_url != $requested_url)
+    {
+        $hyper_redirect = $redirect_url;
+    }
     
     return $redirect_url;
 }
