@@ -17,13 +17,15 @@ foreach ($_COOKIE as $n=>$v)
     }
 }
 
-$hyper_uri = stripslashes($_SERVER['REQUEST_URI']);
+$hyper_uri = $_SERVER['REQUEST_URI'];
 
 // Do not cache WP pages, even if those calls typically don't go throught this script
 if (strpos($hyper_uri, '/wp-admin/') !== false || strpos($hyper_uri, '/wp-includes/') !== false || strpos($hyper_uri, '/wp-content/') !== false ) 
 {
     return false;
 }
+
+//$hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
 
 // The name of the file with html and other data
 $hyper_cache_name = md5($hyper_uri);
@@ -91,57 +93,48 @@ ob_start('hyper_cache_callback');
 // Called whenever the page generation is ended
 function hyper_cache_callback($buffer) 
 {
-    global $hyper_redirect, $hyper_file, $hyper_compress, $post, $hyper_cache_name, $hyper_cache_gzip;
-    
-    // A bug? May be WP call the "canonical_redirect" hook even when no redirect is really issued. If the
-    // uri equals the WP redirect, we ignore it.
-    if ($hyper_redirect == $_SERVER['REQUEST_URI']) $hyper_redirect = null;
-    
-    if (!$hyper_redirect && strlen($buffer) == 0) return '';
-    
-    $data['uri'] = $_SERVER['REQUEST_URI'];
-    $data['referer'] = $_SERVER['HTTP_REFERER'];
-    $data['time'] = time();
+    global $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
+
+    // WP is sending a redirect
     if ($hyper_redirect)
     {
-        $data['location'] = $hyper_redirect;
-    }
-    else 
-    {
-        if (is_feed()) 
+        if ($hyper_cache_redirects)
         {
-            $data['mime'] = 'text/xml;charset=UTF-8';
-        } 
-        else 
-        {
-            $data['mime'] = 'text/html;charset=UTF-8';
-        }
-        
-        // Clean up a it the html, this is a energy saver plugin!
-        if ($hyper_compress)
-        {
-            $buffer = ereg_replace("[ \t]+", ' ', $buffer);
-            $buffer = ereg_replace("[\r\n]", "\n", $buffer);
-            $buffer = ereg_replace(" *\n *", "\n", $buffer);
-            $buffer = ereg_replace("\n+", "\n", $buffer);
-            $buffer = ereg_replace("\" />", "\"/>", $buffer);
-            $buffer = ereg_replace("<tr>\n", "<tr>", $buffer);
-            $buffer = ereg_replace("<td>\n", "<td>", $buffer);
-            $buffer = ereg_replace("<ul>\n", "<ul>", $buffer);
-            $buffer = ereg_replace("</ul>\n", "</ul>", $buffer);
-            $buffer = ereg_replace("<p>\n", "<p>", $buffer);
-            $buffer = ereg_replace("</p>\n", "</p>", $buffer);
-            $buffer = ereg_replace("</li>\n", "</li>", $buffer);
-            $buffer = ereg_replace("</td>\n", "</td>", $buffer);
-        }
-        $buffer .= '<!-- hyper cache: ' . $hyper_cache_name . ' -->';    
-        $data['html'] = $buffer;
-        if ($hyper_cache_gzip && function_exists('gzencode')) 
-        {
-            $data['gz'] = gzencode($buffer);
-        }
+            $data['location'] = $hyper_redirect;  
+            hyper_cache_write($data);
+        }  
+        return $buffer;
     }
     
+    $buffer = trim($buffer);
+    
+    // Can be a trackback or other things without a body. We do not cache them, WP needs to get those calls.
+    if (strlen($buffer) == 0) return '';
+    
+    if (is_feed()) 
+    {
+        $data['mime'] = 'text/xml;charset=UTF-8';
+    } 
+    else 
+    {
+        $data['mime'] = 'text/html;charset=UTF-8';
+    }
+        
+    // Clean up a it the html, this is a energy saver plugin!
+    if ($hyper_cache_compress)
+    {
+        $buffer = hyper_cache_compress($buffer);
+    }
+    
+    $buffer .= '<!-- hyper cache: ' . $hyper_cache_name . ' -->';    
+    
+    $data['html'] = $buffer;
+    
+    if ($hyper_cache_gzip && function_exists('gzencode')) 
+    {
+        $data['gz'] = gzencode($buffer);
+    }
+
     if (is_404())
     {
         if (!file_exists(ABSPATH . 'wp-content/hyper-cache/404.dat'))
@@ -155,9 +148,40 @@ function hyper_cache_callback($buffer)
         $data['status'] = 404;
     }
     
+    hyper_cache_write($data);
+
+    return $buffer;
+}
+
+function hyper_cache_write(&$data)
+{
+    global $hyper_file;
+    
+    $data['uri'] = $_SERVER['REQUEST_URI'];
+    $data['referer'] = $_SERVER['HTTP_REFERER'];
+    $data['time'] = time();   
+    $data['host'] = $_SERVER['HTTP_HOST'];
+    
     $file = fopen($hyper_file, 'w');
     fwrite($file, serialize($data));
-    fclose($file);
+    fclose($file);      
+}
+
+function hyper_cache_compress(&$buffer)
+{
+    $buffer = ereg_replace("[ \t]+", ' ', $buffer);
+    $buffer = ereg_replace("[\r\n]", "\n", $buffer);
+    $buffer = ereg_replace(" *\n *", "\n", $buffer);
+    $buffer = ereg_replace("\n+", "\n", $buffer);
+    $buffer = ereg_replace("\" />", "\"/>", $buffer);
+    $buffer = ereg_replace("<tr>\n", "<tr>", $buffer);
+    $buffer = ereg_replace("<td>\n", "<td>", $buffer);
+    $buffer = ereg_replace("<ul>\n", "<ul>", $buffer);
+    $buffer = ereg_replace("</ul>\n", "</ul>", $buffer);
+    $buffer = ereg_replace("<p>\n", "<p>", $buffer);
+    $buffer = ereg_replace("</p>\n", "</p>", $buffer);
+    $buffer = ereg_replace("</li>\n", "</li>", $buffer);
+    $buffer = ereg_replace("</td>\n", "</td>", $buffer);   
 
     return $buffer;
 }

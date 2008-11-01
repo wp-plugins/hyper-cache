@@ -16,5 +16,7 @@ $hyper_labels['compress_html'] = "Optimize HTML";
 $hyper_labels['compress_html_desc'] = "Try to optimize the HTML removing unuseful spaces. Do not use if you are usgin &lt;pre&gt; tags in the posts";
 $hyper_labels['never_expire'] = "Never expire";
 $hyper_labels['never_expire_desc'] = "Do not expire the cache on actions, check only the cache timeout";
+$hyper_labels['redirects'] = "Cache the WP redirects";
+$hyper_labels['redirects_desc'] = "***DOT NOT USE*** when you have more than one host name, like www.domain.com and domain.com and are leaving WP to manage the redirects.";
 
 ?>

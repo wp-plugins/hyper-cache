@@ -76,10 +76,11 @@ if (isset($_POST['save'])) {
     
     $buffer = "<?php\n";
     $buffer .= '$hyper_cache_enabled = ' . ($options['cache']?'true':'false') . ";\n";
-    $buffer .= '$hyper_compress = ' . ($options['compress']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
@@ -128,7 +129,10 @@ else
         	</tr>
 			<tr valign="top">
         		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip_compression'], $hyper_labels['gzip_compression_desc']); ?>
-        	</tr>            
+        	</tr>    
+			<tr valign="top">
+        		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
+        	</tr>              
 
 			<tr valign="top">
         		<th scope="row"><?php echo $hyper_labels['count']; ?></th>
