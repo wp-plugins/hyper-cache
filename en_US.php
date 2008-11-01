@@ -1,4 +1,4 @@
-<?
+<?php
 
 $hyper_labels['wp_cache_not_enabled'] = "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!";
 $hyper_labels['configuration'] = "Configuration";

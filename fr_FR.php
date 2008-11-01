@@ -1,4 +1,4 @@
-<?
+<?php
 
 $hyper_labels['wp_cache_not_enabled'] = "Le cache de WordPress n'est pas activ&eacute;. Merci d'ajouter la ligne suivante dans votre fichier wp-config.php. Merci !";
 $hyper_labels['configuration'] = "Configuration";
