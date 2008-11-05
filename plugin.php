@@ -69,21 +69,34 @@ Version 1.0.4
 */
 
 $hyper_options = get_option('hyper');
-
+$hyper_invalidated = false;
+$hyper_invalidated_post_id = null;
 
 add_action('activate_hyper-cache/plugin.php', 'hyper_activate');
-function hyper_activate() {
-    if (!file_exists(ABSPATH . '/wp-content/hyper-cache')) {
-        mkdir(ABSPATH . '/wp-content/hyper-cache', 0766);
+function hyper_activate() 
+{
+    if (!file_exists(ABSPATH . 'wp-content/hyper-cache')) 
+    {
+        if (!mkdir(ABSPATH . 'wp-content/hyper-cache', 0766)) return new WP_Error('', 'Cannot create the cache directory');
+        if (!touch(ABSPATH . 'wp-content/hyper-cache/test.dat')) return new WP_Error('', 'Cannot write into the cache directory');
+        $file = time();
+        if (!mkdir(ABSPATH . 'wp-content/' . $file, 0766)) return new WP_Error('', 'Cannot create directories in wp-content');
+        rmdir(ABSPATH . 'wp-content/' . $file);
     }
-	hyper_cache_invalidate();
+	//hyper_cache_invalidate();
 	
     // Write the advanced-cache.php (so we grant it's the correct version)
     $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
     $file = fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
-    
-    fwrite($file, $buffer);
-    fclose($file);	
+    if ($file)
+    {
+        fwrite($file, $buffer);
+        fclose($file);	
+    }
+    else
+    {
+        return new WP_Error('', 'Cannot create advanced-cache.php into wp-content directory');    
+    }
 }
 
 
@@ -107,12 +120,24 @@ function hyper_admin_head() {
 	add_options_page('Hyper Cache', 'Hyper Cache', 'manage_options', 'hyper-cache/options.php');
 }
 
+function hyper_cache_invalidate_publish_post() 
+{
+    hyper_log("Called global invalidate for publish_post");
+    hyper_cache_invalidate();
+}
+
 function hyper_cache_invalidate($force=false) 
 {
-	global $hyper_options;
+	global $hyper_options, $hyper_invalidated;
 	
-	if (!$force && $hyper_options['not_expire_on_actions']) return;
+    hyper_log("Called global invalidate");
+    if ($hyper_invalidated) hyper_log("Already invalidated");
+    if ($hyper_invalidated) return;
+    
+	//if (!$force && $hyper_options['not_expire_on_actions']) return;
+	if (!$force) return;
 	
+    $hyper_invalidated = true;
 	$path = ABSPATH . 'wp-content/' . time();
 	rename(ABSPATH . 'wp-content/hyper-cache', $path);
 	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
@@ -121,11 +146,35 @@ function hyper_cache_invalidate($force=false)
 
 function hyper_cache_invalidate_post($post_id) 
 {
+    hyper_log("Called post invalidate for post id $post_id");
     hyper_delete_by_post($post_id);
+}
+
+function hyper_cache_invalidate_post_status($new, $old, $post) 
+{
+    global $hyper_invalidated;
+    
+    $post_id = $post->ID;
+    hyper_log("Called post status invalidate for post id $post_id from $old to $new");
+
+    // The post is going online or offline
+    if ($new != 'publish' && $old != 'publish') return;
+
+    hyper_log("Start global invalidation");
+    
+    if ($hyper_invalidated) hyper_log("Already invalidated");
+    if ($hyper_invalidated) return;
+        
+    $hyper_invalidated = true;
+	$path = ABSPATH . 'wp-content/' . time();
+	rename(ABSPATH . 'wp-content/hyper-cache', $path);
+	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
+	hyper_delete_path($path);    
 }
 
 function hyper_cache_invalidate_comment($comment_id, $status=1) 
 {
+    hyper_log("Called comment invalidate for comment id $comment_id and status $status");
     if ($status != 1) return;
     hyper_delete_by_comment($comment_id);
     //hyper_cache_invalidate();
@@ -140,13 +189,54 @@ function hyper_delete_by_comment($comment_id)
 
 function hyper_delete_by_post($post_id)
 {
+    global $hyper_invalidated_post_id, $hyper_invalidated;
+    
+    if ($hyper_invalidated) 
+    {
+        hyper_log("Already invalidated");
+        return;
+    }
+    if ($hyper_invalidated_post_id == $post_id) 
+    {
+        hyper_log("Already invalidated post id $post_id");  
+        return;
+    }
+    
+    $post = get_post($post_id);
+    hyper_log("Post status " . $post->post_status);
+    if ($post->post_status != 'publish') 
+    {
+        return;
+    }
+    $hyper_invalidated_post_id = $post_id;
+    
+    
     $link = get_permalink($post_id);
-    $link = substr($link, strpos($link, '/', 7));
+    //$link = substr($link, strpos($link, '/', 7));
+    $link = substr($link, 7);
     $file = md5($link);
+
     if (file_exists(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat'))
     {
         unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
     }
+    if (file_exists(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat'))
+    {
+        unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
+    }
+    if (file_exists(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat'))
+    {
+        unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
+    }
+    
+    // Home invalidation
+    $link = substr(get_option('home'), 7) . '/';
+    $file = md5($link);
+
+    @unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
+        
 }
 
 function hyper_delete_path( $path = '' ) {
@@ -175,27 +265,32 @@ function hyper_count() {
     return $count;
 }
 
-if ($hyper_options['cache'] && !$hyper_options['not_expire_on_actions'])
+// Intercepts the action that can trigger a cache invalidation
+if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
 {
+
+    
+    // We need to invalidate everything for those actions: home page, categories pages, tags pages are affected
+	//add_action('publish_post', 'hyper_cache_invalidate_publish_post', 0);
+	//add_action('publish_phone', 'hyper_cache_invalidate', 0);
+    add_action('switch_theme', 'hyper_cache_invalidate', 0);
+    add_action('delete_post', 'hyper_cache_invalidate', 0);
+    
 	// Posts
-	add_action('publish_post', 'hyper_cache_invalidate', 0);
-    if ($hyper_options['invalidate_single_posts'])
+    if ($hyper_options['expire_type'] == 'post')
     {
-	    add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+        add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+        add_action('transition_post_status', 'hyper_cache_invalidate_post_status', 0, 3);
     }
     else
     {    
         add_action('edit_post', 'hyper_cache_invalidate', 0);
     }
-	add_action('delete_post', 'hyper_cache_invalidate', 0);
-	add_action('publish_phone', 'hyper_cache_invalidate', 0);
-    add_action('switch_theme', 'hyper_cache_invalidate', 0);
-    
 
     // Coment ID is received
     //add_action('trackback_post', 'hyper_cache_invalidate', 0);
     //add_action('pingback_post', 'hyper_cache_invalidate', 0);
-    if ($hyper_options['invalidate_single_posts'])
+    if ($hyper_options['expire_type'] == 'post')
     {    
         add_action('comment_post', 'hyper_cache_invalidate_comment', 10, 2);
         add_action('edit_comment', 'hyper_cache_invalidate_comment', 0);
@@ -224,5 +319,12 @@ function hyper_redirect_canonical($redirect_url, $requested_url)
     $hyper_redirect = $redirect_url;
     
     return $redirect_url;
+}
+
+function hyper_log($text) 
+{
+	$file = fopen(dirname(__FILE__) . '/plugin.log', 'a');
+	fwrite($file, $text . "\n");
+	fclose($file);
 }
 ?>

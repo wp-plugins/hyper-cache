@@ -74,13 +74,22 @@ if (isset($_POST['save'])) {
     	$options['timeout'] = 60;
     }
     
+    if (!$options['clean_interval'] || !is_numeric($options['clean_interval'])) 
+    {
+    	$options['clean_interval'] = 60*24;
+    }    
+    
     $buffer = "<?php\n";
-    $buffer .= '$hyper_cache_enabled = ' . ($options['cache']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_enabled = ' . ($options['enabled']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
+    //$tmp = parse_url(get_option('home'));
+    //$buffer .= '$hyper_cache_host = "' . $tmp['host'] . "\";\n";
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
@@ -112,20 +121,30 @@ else
         <h3><?php echo $hyper_labels['configuration']; ?></h3>
         <table class="form-table">
 			<tr valign="top">
-        		<?php hyper_field_checkbox('cache', $hyper_labels['activate']); ?>
+        		<?php hyper_field_checkbox('enabled', $hyper_labels['activate']); ?>
         	</tr>
         	<tr valign="top">
-       			<?php hyper_field_text('timeout', $hyper_labels['expire'], $hyper_labels['minutes'], 'size="5"'); ?>
-       		</tr>
-			
-        	<tr valign="top">
-       			<?php hyper_field_checkbox('not_expire_on_actions', $hyper_labels['never_expire'], $hyper_labels['never_expire_desc']); ?>
+       			<?php hyper_field_text('timeout', $hyper_labels['timeout'], $hyper_labels['timeout_desc'], 'size="5"'); ?>
        		</tr>
         	<tr valign="top">
-       			<?php hyper_field_checkbox('invalidate_single_posts', $hyper_labels['invalidate_single_posts'], $hyper_labels['invalidate_single_posts_desc']); ?>
-       		</tr>            
+       			<?php hyper_field_text('clean_interval', $hyper_labels['clean_interval'], $hyper_labels['clean_interval_desc'], 'size="5"'); ?>
+       		</tr>
+            
+        	<tr valign="top">
+                <th scope="row"><label>What to expire on actions</label></th>
+                <td>
+                    <select name="options[expire_type]">
+                    <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>>Only the post modified</option>
+                    <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>>All the cache</option>
+                    <option value="none" <?php echo ($options['expire_type'] == 'none')?'selected':''; ?>>None</option>
+                </td>
+       		</tr>
+             
 			<tr valign="top">
         		<?php hyper_field_checkbox('compress', $hyper_labels['compress_html'], $hyper_labels['compress_html_desc']); ?>
+        	</tr>
+			<tr valign="top">
+        		<?php hyper_field_checkbox('mobile', $hyper_labels['mobile']); ?>
         	</tr>
 			<tr valign="top">
         		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip_compression'], $hyper_labels['gzip_compression_desc']); ?>

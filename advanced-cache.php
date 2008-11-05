@@ -10,6 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 // Do not use or cache pages when a wordpress user is logged on
 foreach ($_COOKIE as $n=>$v) 
 {
+    // SHIT!!! This test cookie makes to cache not work!!!
+    if ($n == 'wordpress_test_cookie') continue;
     // wp 2.5 and wp 2.3 have different cookie prefix, skip cache if a post password cookie is present, also
     if (substr($n, 0, 14) == 'wordpressuser_' || substr($n, 0, 10) == 'wordpress_' || substr($n, 0, 12) == 'wp-postpass_') 
     {
@@ -25,54 +27,54 @@ if (strpos($hyper_uri, '/wp-admin/') !== false || strpos($hyper_uri, '/wp-includ
     return false;
 }
 
-//$hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
+$hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
+
 
 // The name of the file with html and other data
 $hyper_cache_name = md5($hyper_uri);
-$hyper_file = ABSPATH . 'wp-content/hyper-cache/' . $hyper_cache_name . '.dat';
+$hyper_file = ABSPATH . 'wp-content/hyper-cache/' . hyper_mobile_type() . $hyper_cache_name . '.dat';
 
 // The file is present?
 if (is_file($hyper_file)) 
 {
-    // Load it and check is it's still valid
-    $hyper_data = unserialize(file_get_contents($hyper_file));
-
-    // Default timeout
-    if ($hyper_cache_timeout == null) 
+    if (!$hyper_cache_timeout || (time() - filectime($hyper_file)) < $hyper_cache_timeout*60)
     {
-        $hyper_cache_timeout = 60;
-    }
+        // Load it and check is it's still valid
+        $hyper_data = unserialize(file_get_contents($hyper_file));
 
-    if ($hyper_data != null && ($hyper_data['time'] > time()-($hyper_cache_timeout*60))) 
-    {
-        if ($hyper_data['location'])
+        // Protect against broken cache files    
+        if ($hyper_data != null)
         {
-            header('Location: ' . $hyper_data['location']);
-            flush;
+
+            if ($hyper_data['location'])
+            {
+                header('Location: ' . $hyper_data['location']);
+                flush;
+                die();
+            }
+            
+            if ($hyper_data['status'] == 404)
+            {
+                header("HTTP/1.1 404 Not Found");
+                $hyper_data = unserialize(file_get_contents(ABSPATH . 'wp-content/hyper-cache/404.dat'));
+            }
+        
+            header('Content-Type: ' . $hyper_data['mime']);
+        
+            // Send the cached html
+            if ($hyper_cache_gzip && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && $hyper_data['gz'])
+            {
+              header('Content-Encoding: gzip');
+              echo $hyper_data['gz'];
+            }
+            else 
+            {
+              echo $hyper_data['html'];
+            }
+            flush();
+            hyper_cache_clean();
             die();
         }
-        
-        if ($hyper_data['status'] == 404)
-        {
-            header("HTTP/1.1 404 Not Found");
-            $hyper_data = unserialize(file_get_contents(ABSPATH . 'wp-content/hyper-cache/404.dat'));
-        }
-        
-        header('Content-Type: ' . $hyper_data['mime']);
-        
-        // Send the cached html
-        if ($hyper_cache_gzip && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && $hyper_data['gz'])
-        {
-          header('Content-Encoding: gzip');
-          echo $hyper_data['gz'];
-        }
-        else 
-        {
-          echo $hyper_data['html'];
-        }
-        
-        flush();
-        die();
     }
 }
 
@@ -161,6 +163,7 @@ function hyper_cache_write(&$data)
     $data['referer'] = $_SERVER['HTTP_REFERER'];
     $data['time'] = time();   
     $data['host'] = $_SERVER['HTTP_HOST'];
+    $data['agent'] = $_SERVER['HTTP_USER_AGENT'];
     
     $file = fopen($hyper_file, 'w');
     fwrite($file, serialize($data));
@@ -185,4 +188,57 @@ function hyper_cache_compress(&$buffer)
 
     return $buffer;
 }
+
+
+function hyper_mobile_type()
+{
+    global $hyper_cache_mobile;
+    
+    if (!$hyper_cache_mobile) return '';
+    
+    $hyper_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+    $hyper_agents = explode(',', "elaine/3.0, iphone, ipod, palm, eudoraweb, blazer, avantgo, windows ce, cellphone, small, mmef20, danger, hiptop, proxinet, newt, palmos, netfront, sharp-tq-gx10, sonyericsson, symbianos, up.browser, up.link, ts21i-10, mot-v, portalmmm, docomo, opera mini, palm, handspring, nokia, kyocera, samsung, motorola, mot, smartphone, blackberry, wap, playstation portable, lg, mmp, opwv, symbian, epoc");
+    foreach ($hyper_agents as $hyper_a) 
+    {
+        if (strpos($hyper_agent, $hyper_a) !== false)
+        {
+            if (strpos($hyper_agent, 'iphone') || strpos($hyper_agent, 'ipod'))
+            {
+                return 'iphone';
+            }
+            else
+            {
+                return 'pda';
+            }
+        }
+    }
+    return '';
+}
+
+function hyper_cache_clean()
+{
+    global $hyper_cache_timeout, $hyper_cache_clean_interval;
+
+    if (!$hyper_cache_clean_interval) return;
+    
+    $time = time();
+    $file = ABSPATH . 'wp-content/hyper-cache/last-clean.dat';
+    if (file_exists($file) && ($time - filectime($file) < $hyper_cache_clean_interval*60)) return;
+    
+    touch(ABSPATH . 'wp-content/hyper-cache/last-clean.dat');
+    
+    $path = ABSPATH . 'wp-content/hyper-cache';
+    if ($handle = opendir($path)) 
+    {
+        while ($file = readdir($handle)) 
+        {
+            if ($file == '.' || $file == '..') continue;
+            
+            $t = filectime($path . '/' . $file);
+            if ($time - $t > $hyper_cache_timeout) unlink($path . '/' . $file);
+        }
+        closedir($handle);    
+    }
+}
+
 ?>

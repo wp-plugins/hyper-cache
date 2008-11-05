@@ -3,7 +3,8 @@
 $hyper_labels['wp_cache_not_enabled'] = "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!";
 $hyper_labels['configuration'] = "Configuration";
 $hyper_labels['activate'] = "Activate the cache?";
-$hyper_labels['expire'] = "Expire a cached page after";
+$hyper_labels['timeout'] = "Expire a cached page after";
+$hyper_labels['timeout_desc'] = "minutes (set to zero to never expire)";
 $hyper_labels['minutes'] = "minutes";
 $hyper_labels['invalidate_single_posts'] = "Invalidate single posts";
 $hyper_labels['invalidate_single_posts_desc'] = "Invalidate only the single cached post when modified (new comment, edited, ...)";
@@ -17,6 +18,9 @@ $hyper_labels['compress_html_desc'] = "Try to optimize the HTML removing unusefu
 $hyper_labels['never_expire'] = "Never expire";
 $hyper_labels['never_expire_desc'] = "Do not expire the cache on actions, check only the cache timeout";
 $hyper_labels['redirects'] = "Cache the WP redirects";
+$hyper_labels['mobile'] = "Detetect and cache for mobile devices";
 $hyper_labels['redirects_desc'] = "***DOT NOT USE*** when you have more than one host name, like www.domain.com and domain.com and are leaving WP to manage the redirects.";
+$hyper_labels['clean_interval'] = "Autoclean every";
+$hyper_labels['clean_interval_desc'] = "minutes (set to zero to disable)";
 
 ?>
