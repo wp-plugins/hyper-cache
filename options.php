@@ -1,7 +1,7 @@
 <?php
 
-include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
-if (WPLANG) include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
+@include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
+if (WPLANG) @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
 
 function hyper_request($name, $default=null) 
 {
@@ -61,11 +61,17 @@ function hyper_field_textarea($name, $label='', $tips='', $attrs='') {
     echo '</td>';
 }
 
-if (isset($_POST['clear'])) {
-    hyper_cache_invalidate(true);
+if (isset($_POST['clear'])) 
+{
+    hyper_cache_invalidate();
 }
 
-if (isset($_POST['save'])) {
+$installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
+            filesize(ABSPATH . 'wp-content/advanced-cache.php') == filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
+
+
+if ($installed && isset($_POST['save'])) 
+{
     $options = hyper_request('options');
     update_option('hyper', $options);
 
@@ -74,9 +80,9 @@ if (isset($_POST['save'])) {
     	$options['timeout'] = 60;
     }
     
-    if (!$options['clean_interval'] || !is_numeric($options['clean_interval'])) 
+    if ($options['clean_interval'] == '' || !is_numeric($options['clean_interval'])) 
     {
-    	$options['clean_interval'] = 60*24;
+    	$options['clean_interval'] = 0;
     }    
     
     $buffer = "<?php\n";
@@ -104,10 +110,20 @@ else
     	$options['timeout'] = 60;
     }
 }
+
 ?>
 <div class="wrap">
     <form method="post">
         <h2>Hyper Cache</h2>
+        
+        <?php
+        if (!$installed)
+        {
+            echo '<div class="alert error" style="margin-top:10px;"><p>';
+            echo $hyper_labels['not_activated'];
+            echo '</p></div>';
+        }
+        ?>
         
         <?php
         if (!defined('WP_CACHE') ) {
