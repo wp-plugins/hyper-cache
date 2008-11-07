@@ -2,7 +2,7 @@
 /*
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
-Description: Hyper Cache is an extremely aggressive cache for WordPress. After an upgrade, DEACTIVATE and REACTIVATE the plugin.
+Description: Hyper Cache is an extremely aggressive cache for WordPress even for mobile blogs. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
 Version: 1.2.6
 Author: Satollo
 Author URI: http://www.satollo.com
@@ -78,7 +78,7 @@ $hyper_invalidated_post_id = null;
 add_action('activate_hyper-cache/plugin.php', 'hyper_activate');
 function hyper_activate() 
 {
-    mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
+    @mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
 
     $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
     $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
@@ -89,11 +89,12 @@ function hyper_activate()
     }
 }
 
+
 add_action('deactivate_hyper-cache/plugin.php', 'hyper_deactivate');
 function hyper_deactivate() 
 {
-	unlink(ABSPATH . 'wp-content/advanced-cache.php');
-	unlink(ABSPATH . 'wp-content/hyper-cache-config.php');
+	@unlink(ABSPATH . 'wp-content/advanced-cache.php');
+	@unlink(ABSPATH . 'wp-content/hyper-cache-config.php');
 
     // We can safely delete the hyper-cache directory, is not more used at this time.
     hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
@@ -124,7 +125,7 @@ function hyper_cache_invalidate()
 	$path = ABSPATH . 'wp-content/' . time();
 	rename(ABSPATH . 'wp-content/hyper-cache', $path);
 	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
-	hyper_delete_path( $path );
+	hyper_delete_path($path);
 }
 
 function hyper_cache_invalidate_post($post_id) 
@@ -206,17 +207,17 @@ function hyper_delete_by_post($post_id)
     $link = substr($link, 7);
     $file = md5($link);
 
-    unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
-    unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
-    unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
     
     // Home invalidation
     $link = substr(get_option('home'), 7) . '/';
     $file = md5($link);
 
-    unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
-    unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
-    unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/pda' . $file . '.dat');
+    @unlink(ABSPATH . 'wp-content/hyper-cache/iphone' . $file . '.dat');
 }
 
 // Completely remove a directory and it's content.
@@ -234,7 +235,7 @@ function hyper_delete_path($path)
 			}
 		}
 		closedir($handle);
-		rmdir($path);
+		@rmdir($path);
 	}
 }
 
@@ -331,4 +332,5 @@ function hyper_log($text)
 	fwrite($file, $text . "\n");
 	fclose($file);
 }
+
 ?>

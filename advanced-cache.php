@@ -7,6 +7,17 @@ if (!$hyper_cache_enabled) return false;
 // Do not cache post request (comments, plugins and so on)
 if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 
+$hyper_uri = $_SERVER['REQUEST_URI'];
+
+// Checks for rejected url
+if ($hyper_cache_reject)
+{
+    foreach($hyper_cache_reject as $uri)
+    {
+        if (substr($hyper_uri, 0, strlen($uri)) == $uri) return;
+    }
+}
+
 // Do not use or cache pages when a wordpress user is logged on
 foreach ($_COOKIE as $n=>$v) 
 {
@@ -18,8 +29,6 @@ foreach ($_COOKIE as $n=>$v)
         return false;
     }
 }
-
-$hyper_uri = $_SERVER['REQUEST_URI'];
 
 // Do not cache WP pages, even if those calls typically don't go throught this script
 if (strpos($hyper_uri, '/wp-admin/') !== false || strpos($hyper_uri, '/wp-includes/') !== false || strpos($hyper_uri, '/wp-content/') !== false ) 

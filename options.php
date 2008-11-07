@@ -1,7 +1,7 @@
 <?php
 
 @include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
-if (WPLANG) @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
+if (WPLANG != '') @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
 
 function hyper_request($name, $default=null) 
 {
@@ -94,8 +94,17 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
-    //$tmp = parse_url(get_option('home'));
-    //$buffer .= '$hyper_cache_host = "' . $tmp['host'] . "\";\n";
+    if (trim($options['reject']) != '')
+    {
+        $buffer .= '$hyper_cache_reject = array(';
+        $reject = explode("\n", $options['reject']);
+        foreach ($reject as $uri)
+        {
+            $buffer .= "'" . addslashes(trim($uri)) . "',";
+        }
+        $buffer = rtrim($buffer, ',');
+        $buffer .= ");\n";
+    }        
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
@@ -147,12 +156,14 @@ else
        		</tr>
             
         	<tr valign="top">
-                <th scope="row"><label>What to expire on actions</label></th>
+                <th scope="row"><label><?php echo $hyper_labels['expire_type']; ?></label></th>
                 <td>
                     <select name="options[expire_type]">
                     <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>>Only the post modified</option>
                     <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>>All the cache</option>
                     <option value="none" <?php echo ($options['expire_type'] == 'none')?'selected':''; ?>>None</option>
+                    </select>
+                    <?php echo $hyper_labels['expire_type_desc']; ?>
                 </td>
        		</tr>
              
@@ -163,7 +174,7 @@ else
         		<?php hyper_field_checkbox('mobile', $hyper_labels['mobile']); ?>
         	</tr>
 			<tr valign="top">
-        		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip_compression'], $hyper_labels['gzip_compression_desc']); ?>
+        		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip'], $hyper_labels['gzip_desc']); ?>
         	</tr>    
 			<tr valign="top">
         		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
@@ -175,17 +186,14 @@ else
         	</tr>
         </table>        
         
-		<!--
-        <h3><?php _e('advanced options', 'hyper-cache'); ?></h3>
+
+        <h3><?php echo $hyper_labels['advanced_options']; ?></h3>
         <table class="form-table">
             <tr valign="top">
-                <?php echo hyper_field_textarea('urls', __('url to reject', 'hyper-cache')); ?>
-            </tr>  
-            <tr valign="top">
-                <?php echo hyper_field_checkbox('get', __('cache get with parameters', 'hyper-cache')); ?>
-            </tr>              
+                <?php echo hyper_field_textarea('reject', $hyper_labels['reject'], $hyper_labels['reject_desc']); ?>
+            </tr>             
         </table>
-		-->
+
         
         <p class="submit">
             <input class="button" type="submit" name="save" value="<?php echo $hyper_labels['save']; ?>">  
