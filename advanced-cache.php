@@ -14,7 +14,7 @@ if ($hyper_cache_reject)
 {
     foreach($hyper_cache_reject as $uri)
     {
-        if (substr($hyper_uri, 0, strlen($uri)) == $uri) return;
+        if (substr($hyper_uri, 0, strlen($uri)) == $uri) return false;
     }
 }
 
@@ -37,7 +37,6 @@ if (strpos($hyper_uri, '/wp-admin/') !== false || strpos($hyper_uri, '/wp-includ
 }
 
 $hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
-
 
 // The name of the file with html and other data
 $hyper_cache_name = md5($hyper_uri);
@@ -244,7 +243,7 @@ function hyper_cache_clean()
             if ($file == '.' || $file == '..') continue;
             
             $t = filectime($path . '/' . $file);
-            if ($time - $t > $hyper_cache_timeout) unlink($path . '/' . $file);
+            if ($time - $t > $hyper_cache_timeout) @unlink($path . '/' . $file);
         }
         closedir($handle);    
     }

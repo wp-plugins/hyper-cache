@@ -61,13 +61,14 @@ function hyper_field_textarea($name, $label='', $tips='', $attrs='') {
     echo '</td>';
 }
 
-if (isset($_POST['clear'])) 
+$installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
+            filesize(ABSPATH . 'wp-content/advanced-cache.php') == filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
+
+
+if ($installed && isset($_POST['clear'])) 
 {
     hyper_cache_invalidate();
 }
-
-$installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
-            filesize(ABSPATH . 'wp-content/advanced-cache.php') == filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
 
 
 if ($installed && isset($_POST['save'])) 
@@ -93,6 +94,8 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
+    //$buffer .= '$hyper_cache_folder = \'' . $options['folder'] . "';\n";
+    $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
     if (trim($options['reject']) != '')
     {
@@ -178,8 +181,12 @@ else
         	</tr>    
 			<tr valign="top">
         		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
-        	</tr>              
-
+        	</tr>  
+            <!--            
+        	<tr valign="top">
+       			<?php hyper_field_text('folder', $hyper_labels['folder'], $hyper_labels['folder_desc'], 'size="5"'); ?>
+       		</tr>
+            -->
 			<tr valign="top">
         		<th scope="row"><?php echo $hyper_labels['count']; ?></th>
                 <td><?php echo hyper_count(); ?></td>

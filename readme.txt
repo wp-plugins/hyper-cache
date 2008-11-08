@@ -1,8 +1,8 @@
 === Hyper Cache ===
 Tags: cache,chaching
 Requires at least: 2.1
-Tested up to: 2.6.2
-Stable tag: 1.2.6
+Tested up to: 2.6.3
+Stable tag: 2.0
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
@@ -10,29 +10,45 @@ Hyper Cache is an extremely aggressive cache for WordPress.
 
 == Description ==
 
-Hyper Cache is a really aggressive cache for WordPress. This cache helps
-in solving the low resources problems of many hosting provider, specially
-when the is big slowness or timeout in the mysql side.
+_Hyper Cache 2.0 has a lot of new features and was widely rewritten. If you
+have problems with it, roll back to version 1.2.6 or 1.1.1 
+(http://wordpress.org/extend/plugins/hyper-cache/download/)._
 
-The cache reduces the database queries to _zero_ serving cached
-page _without activate_ wordpress. The cache can serve _gzip_
-compressed page to lower the bandwith usage and/or optimized html
-pages.
+Hyper Cache is a new cache system for WordPress, specifically written for
+people which have their blogs on *low resources hosting provider* 
+(cpu and mysql).
 
-There are drawbacks to obtain such performances, check the plugin
-page on my site.
+Hyper Cache has the nice feature to be compatible with the plugin "wp-pda"
+which enables a blog to be *accessible from mobile devices* showing the
+contents with a different ad optimized theme.
 
-To install, please read carefully the instructions on:
+Hyper Cache can manage (both) *plain and gzip compressed pages*, reducing the
+bandwidth usage and making the pages load faster.
+
+Hyper Cache can do *cache autoclean* to reduce the disk usage removing the old 
+cached pages at specified intervals of time.
+
+Hyper Cache caches the not found requests, the WordPress redirect requests, 
+the feed requests.
+
+Hyper Cache can be easly translated and the translation tested without compile
+a language file: just copy the en_US.php file and start to translate.
+
+More information on Hyper Cache page (below) or write me to info@satollo.com.
 
 http://www.satollo.com/english/wordpress/hyper-cache
 
-For any problem or question write me: satollo@gmail.com or leave a comment
-in my blog.
+Thanks to:
+- Amaury Balmer for internationalization and other modifications
+- Frank Luef for german translation
+- HypeScience, Martin Steldinger, Giorgio Guglielmino for test and bugs submissions
+- Ishtiaq to ask me about compatibility with wp-pda
+- Gene Steinberg to ask for an autoclean system
+- many others I don't remember
 
-Thank you to Amaury Balmer for the internationalization and other
-modifications.
-
-Thank you to Frank Luef for the german translation.
+To do:
+- make the cache directory configurable because if you are on NFS the plugin can load too much the server (Deepak Gupta)
+- execute the cache page so it's possible to insert php code - has many drawbacks I need to evluate well how to implement this feature (RT Cunningham)
 
 == Installation ==
 
@@ -40,7 +56,7 @@ Thank you to Frank Luef for the german translation.
 2. Go into the WordPress admin interface and activate the plugin
 3. Optional: go to the options page and configure the plugin
 
-Before upgrade DEACTIVATE the plugin!
+Before upgrade DEACTIVATE the plugin and then ACTIVATE and RECONFIGURE!
 
 == Frequently Asked Questions ==
 
