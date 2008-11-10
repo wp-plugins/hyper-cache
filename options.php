@@ -76,7 +76,7 @@ if ($installed && isset($_POST['save']))
     $options = hyper_request('options');
     update_option('hyper', $options);
 
-    if (!$options['timeout'] || !is_numeric($options['timeout'])) 
+    if ($options['timeout'] == '' || !is_numeric($options['timeout'])) 
     {
     	$options['timeout'] = 60;
     }
@@ -103,6 +103,8 @@ if ($installed && isset($_POST['save']))
         $reject = explode("\n", $options['reject']);
         foreach ($reject as $uri)
         {
+            $uri = trim($uri);
+            if ($uri == '') continue;
             $buffer .= "'" . addslashes(trim($uri)) . "',";
         }
         $buffer = rtrim($buffer, ',');
