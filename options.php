@@ -99,6 +99,8 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
     if (trim($options['reject']) != '')
     {
+        $options['reject'] = str_replace(' ', "\n", $options['reject']);
+        $options['reject'] = str_replace("\r", "\n", $options['reject']);
         $buffer .= '$hyper_cache_reject = array(';
         $reject = explode("\n", $options['reject']);
         foreach ($reject as $uri)
@@ -119,10 +121,14 @@ if ($installed && isset($_POST['save']))
 else 
 {
     $options = get_option('hyper');
-    if (!$options['timeout']) 
+    if ($options['timeout'] == '') 
     {
     	$options['timeout'] = 60;
     }
+    if ($options['clean_interval'] == '') 
+    {
+    	$options['clean_interval'] = 1440;
+    }    
 }
 
 ?>
@@ -148,6 +154,8 @@ else
         }
         ?>
 
+        <p>Check the advanced options if you are using the Global Translator Plugin</p>
+        
         <h3><?php echo $hyper_labels['configuration']; ?></h3>
         <table class="form-table">
 			<tr valign="top">
@@ -181,9 +189,7 @@ else
 			<tr valign="top">
         		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip'], $hyper_labels['gzip_desc']); ?>
         	</tr>    
-			<tr valign="top">
-        		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
-        	</tr>  
+
             <!--            
         	<tr valign="top">
        			<?php hyper_field_text('folder', $hyper_labels['folder'], $hyper_labels['folder_desc'], 'size="5"'); ?>
@@ -198,8 +204,30 @@ else
 
         <h3><?php echo $hyper_labels['advanced_options']; ?></h3>
         <table class="form-table">
+			<tr valign="top">
+        		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
+        	</tr>          
             <tr valign="top">
-                <?php echo hyper_field_textarea('reject', $hyper_labels['reject'], $hyper_labels['reject_desc']); ?>
+                <th scope="row"><label><?php echo $hyper_labels['reject']; ?></label></th>
+                <td>
+                    <textarea wrap="off" rows="5" cols="70" name="options[reject]"><?php echo htmlspecialchars($options['reject']); ?></textarea>
+                    <br />
+                    <?php echo $hyper_labels['reject_desc']; ?>
+                    
+                    <?php
+                        $languages = get_option('gltr_preferred_languages');
+                        if (is_array($languages))
+                        {
+                            echo '<br />';
+                            $home = get_option('home');
+                            $x = strpos($home, '/', 8); // skips http://
+                            $base = '';
+                            if ($x !== false) $base = substr($home, $x);
+                            echo 'It seems you have Global Translator installed. The URI prefixes below can be added to avoid double caching of translated pages:<br />';
+                            foreach($languages as $l) echo $base . '/' . $l . '/ ';
+                        }
+                    ?>
+                </td>
             </tr>             
         </table>
 

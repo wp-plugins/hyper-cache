@@ -2,7 +2,7 @@
 Tags: cache,chaching
 Requires at least: 2.1
 Tested up to: 2.6.3
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
@@ -33,6 +33,8 @@ the feed requests.
 
 Hyper Cache can be easly translated and the translation tested without compile
 a language file: just copy the en_US.php file and start to translate.
+
+Global Translator detection.
 
 More information on Hyper Cache page (below) or write me to info@satollo.com.
 
