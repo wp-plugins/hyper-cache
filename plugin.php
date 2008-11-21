@@ -100,8 +100,8 @@ function hyper_deactivate()
     hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
 }
 
-add_action('admin_head', 'hyper_admin_head');
-function hyper_admin_head() 
+add_action('admin_menu', 'hyper_admin_menu');
+function hyper_admin_menu() 
 {
 	add_options_page('Hyper Cache', 'Hyper Cache', 'manage_options', 'hyper-cache/options.php');
 }
@@ -146,8 +146,11 @@ function hyper_cache_invalidate_post_status($new, $old, $post)
 
     //hyper_log("Start global invalidation");
     
-    if ($hyper_invalidated) //hyper_log("Already invalidated");
-    if ($hyper_invalidated) return;
+    if ($hyper_invalidated) 
+    {
+        hyper_log("Already invalidated");
+        return;
+    }
         
     $hyper_invalidated = true;
 	$path = ABSPATH . 'wp-content/' . time();
@@ -276,10 +279,17 @@ if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
     // invalidate all the cache if the status change from publish to "not publish" or
     // from "not publish" to publish. These two cases make a post to appear or disappear
     // anc can affect home, categories, single pages with a posts list, ...
-    if ($hyper_options['expire_type'] == 'post')
+    if ($hyper_options['expire_type'] != 'all')
     {
         add_action('edit_post', 'hyper_cache_invalidate_post', 0);
-        add_action('transition_post_status', 'hyper_cache_invalidate_post_status', 0, 3);
+        if ($hyper_options['expire_type'] == 'post')
+        {        
+            add_action('transition_post_status', 'hyper_cache_invalidate_post_status', 0, 3);
+        }
+        else
+        {
+            add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+        }
     }
     else
     {    
@@ -294,7 +304,7 @@ if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
     // Surely some of those hooks are redundant. When a new comment is added (and
     // approved) the action "edit_post" is fired (llok at the code before). I need
     // to deeply check this code BUT the plugin is protected from redundant invalidations.
-    if ($hyper_options['expire_type'] == 'post')
+    if ($hyper_options['expire_type'] != 'all')
     {    
         add_action('comment_post', 'hyper_cache_invalidate_comment', 10, 2);
         add_action('edit_comment', 'hyper_cache_invalidate_comment', 0);

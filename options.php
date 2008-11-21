@@ -91,10 +91,14 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
     //$buffer .= '$hyper_cache_folder = \'' . $options['folder'] . "';\n";
+    if (function_exists('gzencode')) 
+    { 
+        $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
+        $buffer .= '$hyper_cache_storage = \'' . $options['storage'] . "';\n";
+    }
     $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
     if (trim($options['reject']) != '')
@@ -172,10 +176,12 @@ else
                 <th scope="row"><label><?php echo $hyper_labels['expire_type']; ?></label></th>
                 <td>
                     <select name="options[expire_type]">
-                    <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>>Only the post modified</option>
-                    <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>>All the cache</option>
+                    <option value="post_strictly" <?php echo ($options['expire_type'] == 'post_strictly')?'selected':''; ?>>Single pages strictly</option>
+                    <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>>Single pages</option>
+                    <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>>All</option>
                     <option value="none" <?php echo ($options['expire_type'] == 'none')?'selected':''; ?>>None</option>
-                    </select>
+                    </select><br />
+                    <?php echo $hyper_labels['expire_type_desc']; ?><br />
                     <?php echo $hyper_labels['expire_type_desc']; ?>
                 </td>
        		</tr>
@@ -187,7 +193,16 @@ else
         		<?php hyper_field_checkbox('mobile', $hyper_labels['mobile']); ?>
         	</tr>
 			<tr valign="top">
-        		<?php hyper_field_checkbox('gzip', $hyper_labels['gzip'], $hyper_labels['gzip_desc']); ?>
+                <th scope="row"><label><?php echo $hyper_labels['gzip']; ?></label></th>';
+                <td>
+                <?php if (function_exists('gzencode')) { ?>
+                    <input type="checkbox" name="options[gzip]" value="1" <?php echo $options['gzip']!=null?'checked':''; ?> />
+                    <br />
+                    <?php echo $hyper_labels['gzip_desc']; ?>
+                <?php } else { ?>
+                    There is not "gzencode" function, may be you PHP has not the zlib extension active.
+                <?php } ?>
+                </td>
         	</tr>    
 
             <!--            
@@ -206,7 +221,20 @@ else
         <table class="form-table">
 			<tr valign="top">
         		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
-        	</tr>          
+        	</tr>   
+			<tr valign="top">
+                <th scope="row"><label>Storage</label></th>
+                <td>
+                <?php if (function_exists('gzencode')) { ?>
+                <select name="options[storage]">
+                    <option value="default" <?php echo ($options['storage'] == 'default')?'selected':''; ?>>Default</option>
+                    <option value="minimize" <?php echo ($options['storage'] == 'minimize')?'selected':''; ?>>Minimize the disk space</option>
+                </select>
+                <?php } else { ?>
+                You have not the zlib extension installed, leave the default option!
+                <?php } ?>
+                </td>
+        	</tr>               
             <tr valign="top">
                 <th scope="row"><label><?php echo $hyper_labels['reject']; ?></label></th>
                 <td>

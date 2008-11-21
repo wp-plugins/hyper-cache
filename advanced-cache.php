@@ -70,14 +70,21 @@ if (is_file($hyper_file))
             header('Content-Type: ' . $hyper_data['mime']);
         
             // Send the cached html
-            if ($hyper_cache_gzip && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && $hyper_data['gz'])
+            if ($hyper_cache_gzip && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && strlen($hyper_data['gz']) > 0)
             {
               header('Content-Encoding: gzip');
               echo $hyper_data['gz'];
             }
             else 
             {
-              echo $hyper_data['html'];
+              if (strlen($hyper_data['html']) > 0)
+              {
+                  echo $hyper_data['html'];
+              }
+              else
+              {
+                echo gzdecode($hyper_data['gz']);               
+              }
             }
             flush();
             hyper_cache_clean();
@@ -157,7 +164,7 @@ function hyper_cache_callback($buffer)
         unset($data['gz']);
         $data['status'] = 404;
     }
-    
+        
     hyper_cache_write($data);
 
     return $buffer;
@@ -165,13 +172,18 @@ function hyper_cache_callback($buffer)
 
 function hyper_cache_write(&$data)
 {
-    global $hyper_file;
+    global $hyper_file, $hyper_cache_storage;
     
     $data['uri'] = $_SERVER['REQUEST_URI'];
     $data['referer'] = $_SERVER['HTTP_REFERER'];
     $data['time'] = time();   
     $data['host'] = $_SERVER['HTTP_HOST'];
     $data['agent'] = $_SERVER['HTTP_USER_AGENT'];
+    
+    if ($hyper_cache_storage == 'minimize')
+    {
+        unset($data['html']);
+    }
     
     $file = fopen($hyper_file, 'w');
     fwrite($file, serialize($data));
@@ -228,6 +240,7 @@ function hyper_cache_clean()
     global $hyper_cache_timeout, $hyper_cache_clean_interval;
 
     if (!$hyper_cache_clean_interval) return;
+    if (rand(1, 10) != 5) return;
     
     $time = time();
     $file = ABSPATH . 'wp-content/hyper-cache/last-clean.dat';
@@ -246,6 +259,38 @@ function hyper_cache_clean()
             if ($time - $t > $hyper_cache_timeout) @unlink($path . '/' . $file);
         }
         closedir($handle);    
+    }
+}
+
+if (!function_exists('gzdecode')) 
+{
+	function gzdecode ($data) 
+    {
+	    $flags = ord(substr($data, 3, 1));
+	    $headerlen = 10;
+	    $extralen = 0;
+
+	    $filenamelen = 0;
+	    if ($flags & 4) {
+	        $extralen = unpack('v' ,substr($data, 10, 2));
+
+	        $extralen = $extralen[1];
+	        $headerlen += 2 + $extralen;
+	    }
+	    if ($flags & 8) // Filename
+
+	        $headerlen = strpos($data, chr(0), $headerlen) + 1;
+	    if ($flags & 16) // Comment
+
+	        $headerlen = strpos($data, chr(0), $headerlen) + 1;
+	    if ($flags & 2) // CRC at end of file
+
+	        $headerlen += 2;
+	    $unpacked = gzinflate(substr($data, $headerlen));
+	    if ($unpacked === FALSE)
+
+        $unpacked = $data;
+	    return $unpacked;
     }
 }
 
