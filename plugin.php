@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress even for mobile blogs. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
-Version: 2.0.2
+Version: 2.1
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -122,10 +122,10 @@ function hyper_cache_invalidate()
     }
 	
     $hyper_invalidated = true;
-	$path = ABSPATH . 'wp-content/' . time();
-	rename(ABSPATH . 'wp-content/hyper-cache', $path);
-	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
-	hyper_delete_path($path);
+	//$path = ABSPATH . 'wp-content/' . time();
+	//rename(ABSPATH . 'wp-content/hyper-cache', $path);
+	//mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
+	hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
 }
 
 function hyper_cache_invalidate_post($post_id) 
@@ -153,10 +153,10 @@ function hyper_cache_invalidate_post_status($new, $old, $post)
     }
         
     $hyper_invalidated = true;
-	$path = ABSPATH . 'wp-content/' . time();
-	rename(ABSPATH . 'wp-content/hyper-cache', $path);
-	mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
-	hyper_delete_path($path);    
+	//$path = ABSPATH . 'wp-content/' . time();
+	//rename(ABSPATH . 'wp-content/hyper-cache', $path);
+	//mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
+	hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');    
 }
 
 function hyper_cache_invalidate_comment($comment_id, $status=1) 
@@ -173,7 +173,6 @@ function hyper_delete_by_comment($comment_id)
     $post_id = $comment->comment_post_ID;
     hyper_delete_by_post($post_id);
 }
-
 
 // Delete files in the cache based only on a post id. Only the post cached
 // page is deleted (with its mobile versions) and the home page of the blog.
@@ -228,7 +227,7 @@ function hyper_delete_path($path)
 {
     if ($path == null) return;
     
-	if ($handle = opendir($path)) 
+	if ($handle = @opendir($path)) 
     {
 		while ($file = readdir($handle)) 
         {
@@ -248,7 +247,7 @@ function hyper_count()
 {
     $count = 0;
     //if (!is_dir(ABSPATH . 'wp-content/hyper-cache')) return 0;
-	if ($handle = opendir(ABSPATH . 'wp-content/hyper-cache')) 
+	if ($handle = @opendir(ABSPATH . 'wp-content/hyper-cache')) 
     {
 		while ($file = readdir($handle)) 
         {
@@ -271,7 +270,6 @@ if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
     // tags pages are affected and generally if we use plugin that print out "latest posts"
     // or so we cannot know if a deleted post appears on every page.
     add_action('switch_theme', 'hyper_cache_invalidate', 0);
-    add_action('delete_post', 'hyper_cache_invalidate', 0);
     
 	// When a post is modified and we want to expire only it's page we listen for
     // post edit (called everytime a post is modified, even if a comment is added) and
@@ -282,12 +280,15 @@ if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
     if ($hyper_options['expire_type'] != 'all')
     {
         add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+        add_action('delete_post', 'hyper_cache_invalidate_post', 0);
         if ($hyper_options['expire_type'] == 'post')
         {        
+            // The post and all cache on publishing
             add_action('transition_post_status', 'hyper_cache_invalidate_post_status', 0, 3);
         }
         else
         {
+            // Strictly
             add_action('edit_post', 'hyper_cache_invalidate_post', 0);
         }
     }
@@ -295,6 +296,7 @@ if ($hyper_options['enabled'] && $hyper_options['expire_type'] != 'none')
     {    
         // If a complete invalidation is required, we do it on post edit.
         add_action('edit_post', 'hyper_cache_invalidate', 0);
+        add_action('delete_post', 'hyper_cache_invalidate', 0);
     }
 
     // When a comment is received, and it's status is approved, the reference

@@ -249,7 +249,7 @@ function hyper_cache_clean()
     touch(ABSPATH . 'wp-content/hyper-cache/last-clean.dat');
     
     $path = ABSPATH . 'wp-content/hyper-cache';
-    if ($handle = opendir($path)) 
+    if ($handle = @opendir($path)) 
     {
         while ($file = readdir($handle)) 
         {

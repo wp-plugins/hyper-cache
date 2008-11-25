@@ -2,17 +2,13 @@
 Tags: cache,chaching
 Requires at least: 2.1
 Tested up to: 2.6.3
-Stable tag: 2.0.2
+Stable tag: 2.1
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 
 Hyper Cache is an extremely aggressive cache for WordPress.
 
 == Description ==
-
-_Hyper Cache 2.0 has a lot of new features and was widely rewritten. If you
-have problems with it, roll back to version 1.2.6 or 1.1.1 
-(http://wordpress.org/extend/plugins/hyper-cache/download/)._
 
 Hyper Cache is a new cache system for WordPress, specifically written for
 people which have their blogs on *low resources hosting provider* 

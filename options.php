@@ -74,7 +74,6 @@ if ($installed && isset($_POST['clear']))
 if ($installed && isset($_POST['save'])) 
 {
     $options = hyper_request('options');
-    update_option('hyper', $options);
 
     if ($options['timeout'] == '' || !is_numeric($options['timeout'])) 
     {
@@ -101,17 +100,20 @@ if ($installed && isset($_POST['save']))
     }
     $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
+    
     if (trim($options['reject']) != '')
     {
         $options['reject'] = str_replace(' ', "\n", $options['reject']);
         $options['reject'] = str_replace("\r", "\n", $options['reject']);
         $buffer .= '$hyper_cache_reject = array(';
         $reject = explode("\n", $options['reject']);
+        $options['reject'] = '';
         foreach ($reject as $uri)
         {
             $uri = trim($uri);
             if ($uri == '') continue;
             $buffer .= "'" . addslashes(trim($uri)) . "',";
+            $options['reject'] .= $uri . "\n";
         }
         $buffer = rtrim($buffer, ',');
         $buffer .= ");\n";
@@ -120,7 +122,7 @@ if ($installed && isset($_POST['save']))
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
     fclose($file);
-
+    update_option('hyper', $options);
 } 
 else 
 {
@@ -193,7 +195,7 @@ else
         		<?php hyper_field_checkbox('mobile', $hyper_labels['mobile']); ?>
         	</tr>
 			<tr valign="top">
-                <th scope="row"><label><?php echo $hyper_labels['gzip']; ?></label></th>';
+                <th scope="row"><label><?php echo $hyper_labels['gzip']; ?></label></th>
                 <td>
                 <?php if (function_exists('gzencode')) { ?>
                     <input type="checkbox" name="options[gzip]" value="1" <?php echo $options['gzip']!=null?'checked':''; ?> />
