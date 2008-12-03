@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is an extremely aggressive cache for WordPress even for mobile blogs. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
-Version: 2.1.0
+Version: 2.1.1
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -81,7 +81,7 @@ function hyper_activate()
     @mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
 
     $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
-    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
+    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'wb');
     if ($file)
     {
         fwrite($file, $buffer);
