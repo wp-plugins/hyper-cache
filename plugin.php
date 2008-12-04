@@ -237,7 +237,7 @@ function hyper_delete_path($path)
 			}
 		}
 		closedir($handle);
-		@rmdir($path);
+		//@rmdir($path);
 	}
 }
 
