@@ -92,6 +92,7 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_feed = ' . ($options['feed']?'true':'false') . ";\n";
     //$buffer .= '$hyper_cache_folder = \'' . $options['folder'] . "';\n";
     if (function_exists('gzencode')) 
     { 
@@ -187,7 +188,9 @@ else
                     <?php echo $hyper_labels['expire_type_desc']; ?>
                 </td>
        		</tr>
-             
+			<tr valign="top">
+        		<?php hyper_field_checkbox('feed', 'Cache the feeds?'); ?>
+        	</tr>             
 			<tr valign="top">
         		<?php hyper_field_checkbox('compress', $hyper_labels['compress_html'], $hyper_labels['compress_html_desc']); ?>
         	</tr>

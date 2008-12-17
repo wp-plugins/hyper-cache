@@ -1,8 +1,8 @@
 === Hyper Cache ===
-Tags: cache,chaching
+Tags: cache,chaching,speed,performance,super cache,wp cache
 Requires at least: 2.1
 Tested up to: 2.6.3
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 Donate link: http://www.satollo.com/english/donate
 Contributors: satollo,momo360modena
 

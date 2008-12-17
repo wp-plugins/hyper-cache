@@ -123,6 +123,11 @@ function hyper_cache_callback($buffer)
         return $buffer;
     }
     
+    if (is_feed() && !$hyper_cache_feed) 
+    {
+        return $buffer;
+    }
+    
     $buffer = trim($buffer);
     
     // Can be a trackback or other things without a body. We do not cache them, WP needs to get those calls.
