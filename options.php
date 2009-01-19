@@ -93,6 +93,7 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_feed = ' . ($options['feed']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_home = ' . ($options['home']?'true':'false') . ";\n";
     //$buffer .= '$hyper_cache_folder = \'' . $options['folder'] . "';\n";
     if (function_exists('gzencode')) 
     { 
@@ -113,7 +114,7 @@ if ($installed && isset($_POST['save']))
         {
             $uri = trim($uri);
             if ($uri == '') continue;
-            $buffer .= "'" . addslashes(trim($uri)) . "',";
+            $buffer .= "\"" . addslashes(trim($uri)) . "\",";
             $options['reject'] .= $uri . "\n";
         }
         $buffer = rtrim($buffer, ',');
@@ -184,12 +185,11 @@ else
                     <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>>All</option>
                     <option value="none" <?php echo ($options['expire_type'] == 'none')?'selected':''; ?>>None</option>
                     </select><br />
-                    <?php echo $hyper_labels['expire_type_desc']; ?><br />
                     <?php echo $hyper_labels['expire_type_desc']; ?>
                 </td>
        		</tr>
 			<tr valign="top">
-        		<?php hyper_field_checkbox('feed', 'Cache the feeds?'); ?>
+        		<?php hyper_field_checkbox('feed', $hyper_labels['feed'], $hyper_labels['feed_desc']); ?>
         	</tr>             
 			<tr valign="top">
         		<?php hyper_field_checkbox('compress', $hyper_labels['compress_html'], $hyper_labels['compress_html_desc']); ?>
@@ -224,6 +224,9 @@ else
 
         <h3><?php echo $hyper_labels['advanced_options']; ?></h3>
         <table class="form-table">
+			<tr valign="top">
+        		<?php hyper_field_checkbox('home', $hyper_labels['home'], $hyper_labels['home_desc']); ?>
+        	</tr>   
 			<tr valign="top">
         		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
         	</tr>   

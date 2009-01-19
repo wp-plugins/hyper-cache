@@ -30,6 +30,10 @@ $hyper_labels['advanced_options'] = "Advanced options";
 $hyper_labels['reject'] = "URI to reject";
 $hyper_labels['reject_desc'] = "One per line. When a URI (eg. /video/my-new-performance) starts with one of the listed lines, it won't be cached.";
 
+$hyper_labels['home'] = "Do not cache the home";
+$hyper_labels['home_desc'] = "Enabling this option, the home page and the subsequent pages for older posts will not be cached.";
 
+$hyper_labels['feed'] = "Cache the feed?";
+$hyper_labels['feed_desc'] = "Usually not, so we are sure to feed always an updated feed even if we do a strong cache of the web pages";
 
 ?>

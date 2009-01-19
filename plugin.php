@@ -2,8 +2,8 @@
 /*
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
-Description: Hyper Cache is an extremely aggressive cache for WordPress even for mobile blogs. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
-Version: 2.1.3
+Description: Hyper Cache is a features rich cache system WordPress. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
+Version: 2.2.0
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -30,42 +30,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 Changelog
 ---
 
-Version 1.2.x 
-    - new version with many improvements, maybe not very safe
-    
-Version 1.1.1
-    - added an option to invalidate single post pages
-    
-Version 1.1
-    - fixed behaviour with password protected posts
-    - added a bit of html compression (not gzip)
-    
-Verison 1.0.9 
-    - fixed a bug in the "not expire" management
-    
-Version 1.0.8
-	- fixed the "clear cache" that didn't work when "not exipre on actions" was set
-	
-Version 1.0.7
-	- Fixed the mime type for feed
-	- Added the "do not expire on actions" option
-	
-Version 1.0.6
-    - German translation by Frank Luef
-    - Fixed some not blocking url when installing without the WP_CACHE defined
-    - Fixed a message key in the .po files
-    
-Version 1.0.5
-    - Add italian translation
-    - Add the "clear the cache" button
-    - Add the cache page count
+See the readme.txt.
 
-Version 1.0.4
-    - Thank you to Amaury Balmer for this version
-	- Add french translation
-	- Improve options with WordPress 2.5
-	- Fix bug with WP 2.5 cookies
-	- Minor changes
 */
 
 $hyper_options = get_option('hyper');

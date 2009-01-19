@@ -14,6 +14,10 @@ if ($hyper_cache_reject)
 {
     foreach($hyper_cache_reject as $uri)
     {
+        if (substr($uri, 0, 1) == '"') 
+        {
+            if ($uri == '"' . $hyper_uri . '"') return false;
+        }
         if (substr($hyper_uri, 0, strlen($uri)) == $uri) return false;
     }
 }
@@ -110,7 +114,7 @@ ob_start('hyper_cache_callback');
 // Called whenever the page generation is ended
 function hyper_cache_callback($buffer) 
 {
-    global $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
+    global $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
 
     // WP is sending a redirect
     if ($hyper_redirect)
@@ -120,6 +124,11 @@ function hyper_cache_callback($buffer)
             $data['location'] = $hyper_redirect;  
             hyper_cache_write($data);
         }  
+        return $buffer;
+    }
+    
+    if (is_home() && $hyper_cache_home) 
+    {
         return $buffer;
     }
     
