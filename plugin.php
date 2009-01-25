@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
 Description: Hyper Cache is a features rich cache system WordPress. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
-Version: 2.2.0
+Version: 2.2.1
 Author: Satollo
 Author URI: http://www.satollo.com
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -64,6 +64,14 @@ function hyper_deactivate()
 
     // We can safely delete the hyper-cache directory, is not more used at this time.
     hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
+}
+
+add_filter("plugin_action_links_hyper-cache/plugin.php", 'hyper_plugin_action_links');
+function hyper_plugin_action_links($links) 
+{ 
+	$settings_link = '<a href="options-general.php?page=hyper-cache/options.php">' . __( 'Settings' ) . '</a>'; 
+	array_unshift($links, $settings_link); 
+ 	return $links;
 }
 
 add_action('admin_menu', 'hyper_admin_menu');
@@ -199,7 +207,7 @@ function hyper_delete_path($path)
         {
 			if ($file != '.' && $file != '..') 
             {
-				unlink($path . '/' . $file);
+				@unlink($path . '/' . $file);
 			}
 		}
 		closedir($handle);

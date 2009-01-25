@@ -86,6 +86,7 @@ if ($installed && isset($_POST['save']))
     }    
     
     $buffer = "<?php\n";
+    $buffer .= '$hyper_cache_charset = "' . get_option('blog_charset') . '"' . ";\n";
     $buffer .= '$hyper_cache_enabled = ' . ($options['enabled']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
@@ -161,7 +162,18 @@ else
             echo '</p></div>';
         }
         ?>
+<p>To have more information about Hyper Cache read the <a href="http://www.satollo.com/english/wordpress/hyper-cache">official plugin page</a>
+or write me to info@satollo.com.</p>
 
+<p>Consider a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483">DONATION</a> to support this plugin.</p>
+
+<p>
+My plugins: 
+<a href="http://www.satollo.com/english/wordpress/post-layout">Post Layout</a>, 
+<a href="http://www.satollo.com/english/wordpress/feed-layout">Feed Layout</a>,
+<a href="http://www.satollo.com/english/wordpress/hyper-cache">Hyper Cache</a>.
+</p>
+ 
         <p>Check the advanced options if you are using the Global Translator Plugin</p>
         
         <h3><?php echo $hyper_labels['configuration']; ?></h3>

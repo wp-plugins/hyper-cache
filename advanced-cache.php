@@ -71,6 +71,20 @@ if (is_file($hyper_file))
                 $hyper_data = unserialize(file_get_contents(ABSPATH . 'wp-content/hyper-cache/404.dat'));
             }
         
+            if (array_key_exists("HTTP_IF_MODIFIED_SINCE", $_SERVER))
+            {
+                $if_modified_since = strtotime(preg_replace('/;.*$/', '', $_SERVER["HTTP_IF_MODIFIED_SINCE"]));
+                if ($if_modified_since >= filectime($hyper_file))
+                {
+                    header("HTTP/1.0 304 Not Modified");
+                    flush();
+                    die();
+                }
+            }
+
+
+            header('Last-Modified: ' . date("r", filectime($hyper_file)));
+            
             header('Content-Type: ' . $hyper_data['mime']);
         
             // Send the cached html
@@ -114,7 +128,7 @@ ob_start('hyper_cache_callback');
 // Called whenever the page generation is ended
 function hyper_cache_callback($buffer) 
 {
-    global $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
+    global $hyper_cache_charset, $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
 
     // WP is sending a redirect
     if ($hyper_redirect)
@@ -142,13 +156,15 @@ function hyper_cache_callback($buffer)
     // Can be a trackback or other things without a body. We do not cache them, WP needs to get those calls.
     if (strlen($buffer) == 0) return '';
     
+    if (!$hyper_cache_charset) $hyper_cache_charset = 'UTF-8';
+    
     if (is_feed()) 
     {
-        $data['mime'] = 'text/xml;charset=UTF-8';
+        $data['mime'] = 'text/xml;charset=' . $hyper_cache_charset;
     } 
     else 
     {
-        $data['mime'] = 'text/html;charset=UTF-8';
+        $data['mime'] = 'text/html;charset=' . $hyper_cache_charset;
     }
         
     // Clean up a it the html, this is a energy saver plugin!
@@ -201,7 +217,10 @@ function hyper_cache_write(&$data)
     
     $file = fopen($hyper_file, 'w');
     fwrite($file, serialize($data));
-    fclose($file);      
+    fclose($file);  
+
+    header('Last-Modified: ' . date("r", filectime($hyper_file)));
+
 }
 
 function hyper_cache_compress(&$buffer)

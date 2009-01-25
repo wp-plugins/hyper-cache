@@ -2,7 +2,7 @@
 Tags: cache,chaching,speed,performance,super cache,wp cache
 Requires at least: 2.1
 Tested up to: 2.7
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo,momo360modena
 
@@ -23,11 +23,17 @@ Some features:
 * redirects caching
 * easy to configure
 * Global Translator compatibility
+* Last Modified http header compatibility with 304 responses
 
-more can be read on the [official plugin page](http://www.satollo.com/english/wordpress/hyper-cache).
+More can be read on the [official plugin page](http://www.satollo.com/english/wordpress/hyper-cache) and write me
+if you have issues to info@satollo.com.
 
 **Check out my other plugins**:
-[Post Layout](http://www.satollo.com/english/wordpress/post-layout "Post Layout plugin: the easy way to enrich your posts")
+
+* [Hyper Cache](http://www.satollo.com/english/wordpress/hyper-cache "Hyper Cache WordPress plugin: when performance and flexibilty are not an option")
+* [Post Layout](http://www.satollo.com/english/wordpress/post-layout "Post Layout WordPress plugin: the easy way to enrich your posts")
+* [Feed Layout](http://www.satollo.com/english/wordpress/feed-layout "Feed Layout WordPress plugin: the easy way to enrich your feed contents")
+
 
 Thanks to:
 
@@ -48,32 +54,19 @@ Before upgrade DEACTIVATE the plugin and then ACTIVATE and RECONFIGURE!
 
 == Frequently Asked Questions ==
 
+**How can I submit a bug?**
+
+Write me to info@satollo.com, please, it's the quicker way to have it fixed. You can write to the 
+WordPress forum, too, but I read it rarely.
+
+**Where can I find versions history?**
+
+On this page: [Post Layout versions](http://www.satollo.com/english/wordpress/post-layout/versions).
+
+**Other FAQs?**
+
 I'm collection tips and FAQ on [this page](http://www.satollo.com/english/wordpress/hyper-cache/configuration) 
 so I can update it more easly.
-
-== History ==
-
-The history is not really complete.
-
-Version 2.2.0 
-
-* feed caching control
-* home caching control
-* urls to reject now configurable
-* fixed warning message
-
-Version 1.2.x 
-
-* new version with many improvements, maybe not very safe
-    
-Version 1.1.1
-
-* added an option to invalidate single post pages
-    
-Version 1.1
-
-* fixed behaviour with password protected posts
-* added a bit of html compression (not gzip)
     
 == Screenshots ==
 
