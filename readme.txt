@@ -2,7 +2,7 @@
 Tags: cache,chaching,speed,performance,super cache,wp cache
 Requires at least: 2.1
 Tested up to: 2.7
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo,momo360modena
 
@@ -33,7 +33,7 @@ if you have issues to info@satollo.com.
 * [Hyper Cache](http://www.satollo.com/english/wordpress/hyper-cache "Hyper Cache WordPress plugin: when performance and flexibilty are not an option")
 * [Post Layout](http://www.satollo.com/english/wordpress/post-layout "Post Layout WordPress plugin: the easy way to enrich your posts")
 * [Feed Layout](http://www.satollo.com/english/wordpress/feed-layout "Feed Layout WordPress plugin: the easy way to enrich your feed contents")
-
+* [Dynatags](http://www.satollo.com/english/wordpress/dynatags "Dynatags WordPress plugin: Create your own custom short tag in seconds")
 
 Thanks to:
 

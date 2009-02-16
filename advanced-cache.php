@@ -7,6 +7,9 @@ if (!$hyper_cache_enabled) return false;
 // Do not cache post request (comments, plugins and so on)
 if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 
+// Try to avoid enabling the cache if sessions are managed with request parameters and a session is active
+if (defined(SID) && SID != '') return false;
+
 $hyper_uri = $_SERVER['REQUEST_URI'];
 
 // Checks for rejected url
