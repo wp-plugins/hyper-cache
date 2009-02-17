@@ -253,7 +253,7 @@ function hyper_mobile_type()
     if (!$hyper_cache_mobile) return '';
     
     $hyper_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-    $hyper_agents = explode(',', "elaine/3.0, iphone, ipod, palm, eudoraweb, blazer, avantgo, windows ce, cellphone, small, mmef20, danger, hiptop, proxinet, newt, palmos, netfront, sharp-tq-gx10, sonyericsson, symbianos, up.browser, up.link, ts21i-10, mot-v, portalmmm, docomo, opera mini, palm, handspring, nokia, kyocera, samsung, motorola, mot, smartphone, blackberry, wap, playstation portable, lg, mmp, opwv, symbian, epoc");
+    $hyper_agents = explode(',', "elaine/3.0,iphone,ipod,palm,eudoraweb,blazer,avantgo,windows ce,cellphone,small,mmef20,danger,hiptop,proxinet,newt,palmos,netfront,sharp-tq-gx10,sonyericsson,symbianos,up.browser,up.link,ts21i-10,mot-v,portalmmm,docomo,opera mini,palm,handspring,nokia,kyocera,samsung,motorola,mot,smartphone,blackberry,wap,playstation portable,lg,mmp,opwv,symbian,epoc");
     foreach ($hyper_agents as $hyper_a) 
     {
         if (strpos($hyper_agent, $hyper_a) !== false)
