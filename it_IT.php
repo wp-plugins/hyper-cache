@@ -19,12 +19,12 @@ $hyper_labels['redirects_desc'] = "Potrebbe creare problemi con alcune configura
 $hyper_labels['mobile'] = "Riconosci i dispositivi mobili";
 $hyper_labels['clean_interval'] = "Ottimizza la cache ogni";
 $hyper_labels['clean_interval_desc'] = "minuti (imposta a zero per disabilitare)";
-$hyper_labels['not_activated'] = "Hyper Cache non è installato correttamente: qualche file o qualche cartelle non è stata creata. Controlla se la wp-content è scrivibile e rimuovi il file advanced-cache.php se presente in essa. Disattiva e riattiva il plugin.";
+$hyper_labels['not_activated'] = "Hyper Cache non Ã¨ installato correttamente: qualche file o qualche cartelle non Ã¨ stata creata. Controlla se la wp-content Ã¨ scrivibile e rimuovi il file advanced-cache.php se presente in essa. Disattiva e riattiva il plugin.";
 $hyper_labels['expire_type'] = "Come invalidare la cache";
 //$hyper_labels['expire_type_desc'] = "(nuovi articoli, articoli modificati, commenti, ...)";
 $hyper_labels['advanced_options'] = "Opzioni avanzate";
 $hyper_labels['reject'] = "URI da rifiutare";
-$hyper_labels['reject_desc'] = "Uno per linea. Quando un URI (ad esempio /video/my-new-performance) inizia con uno di quelli scritti non verrà messo in cache.";
+$hyper_labels['reject_desc'] = "Uno per linea. Quando un URI (ad esempio /video/my-new-performance) inizia con uno di quelli scritti non verrÃ  messo in cache.";
 
 ?>
 

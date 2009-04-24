@@ -47,7 +47,7 @@ $hyper_labels['urls_analysis_desc'] .= "Other plugins can use parameters, cachin
 $hyper_labels['urls_analysis_desc'] .= "I cannot give you a final solution... BUT if you have the permalink disabled the cache will work only with this option enabled.";
 
 $hyper_labels['urls_analysis_default'] = "Do NOT cache URLs with parameters";
-$hyper_labels['urls_analysis_full'] = "Cache separately all URLs";
+$hyper_labels['urls_analysis_full'] = "Cache all URLs";
 // To be implemented
 //$hyper_labels['urls_analysis_removeqs'] = "Remove query string and redirect";
 
