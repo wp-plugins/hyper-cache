@@ -36,4 +36,23 @@ $hyper_labels['home_desc'] = "Enabling this option, the home page and the subseq
 $hyper_labels['feed'] = "Cache the feed?";
 $hyper_labels['feed_desc'] = "Usually not, so we are sure to feed always an updated feed even if we do a strong cache of the web pages";
 
+// New from version 2.2.4
+$hyper_labels['urls_analysis'] = "URLs with query string";
+$hyper_labels['urls_analysis_desc'] = "URLs with parameters are URLs like www.satollo.com?param=value.";
+$hyper_labels['urls_analysis_desc'] .= "Hyper Cache creates cache page names using the full URL, with its parameters.";
+$hyper_labels['urls_analysis_desc'] .= "When using permalinks, URLs parameters are ignored by WordPress so calling tha same post URL with fake parameters creates many identical cache entries, with disk space waste.";
+$hyper_labels['urls_analysis_desc'] .= "There is an exception: the 's' parameter is used by WordPress to actite the internal search engine.";
+$hyper_labels['urls_analysis_desc'] .= "So if you disable the URLs with parameter caching, the search results won't be cached.";
+$hyper_labels['urls_analysis_desc'] .= "Other plugins can use parameters, caching of those URLs can rise up problem or be a performance improvement.";
+$hyper_labels['urls_analysis_desc'] .= "I cannot give you a final solution... BUT if you have the permalink disabled the cache will work only with this option enabled.";
+
+$hyper_labels['urls_analysis_default'] = "Do NOT cache URLs with parameters";
+$hyper_labels['urls_analysis_full'] = "Cache separately all URLs";
+// To be implemented
+//$hyper_labels['urls_analysis_removeqs'] = "Remove query string and redirect";
+
+$hyper_labels['storage'] = "Storage";
+$hyper_labels['storage_nogzencode_desc'] = "You have not the zlib extension installed, leave the default option!";
+
+$hyper_labels['gzip_nogzencode_desc'] = "There is not 'gzencode' function, may be you PHP has not the zlib extension active.";
 ?>

@@ -12,6 +12,8 @@ if (defined(SID) && SID != '') return false;
 
 $hyper_uri = $_SERVER['REQUEST_URI'];
 
+if ($hyper_cache_urls == 'default' && strpos($hyper_uri, '?') !== false) return false;
+
 // Checks for rejected url
 if ($hyper_cache_reject)
 {

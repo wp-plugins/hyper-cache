@@ -62,7 +62,7 @@ function hyper_field_textarea($name, $label='', $tips='', $attrs='') {
 }
 
 $installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
-            filesize(ABSPATH . 'wp-content/advanced-cache.php') == filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
+            @filesize(ABSPATH . 'wp-content/advanced-cache.php') == @filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
 
 
 if ($installed && isset($_POST['clear'])) 
@@ -101,6 +101,7 @@ if ($installed && isset($_POST['save']))
         $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
         $buffer .= '$hyper_cache_storage = \'' . $options['storage'] . "';\n";
     }
+    $buffer .= '$hyper_cache_urls = \'' . $options['urls'] . "';\n";
     $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
     $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
     
@@ -217,7 +218,7 @@ My plugins:
                     <br />
                     <?php echo $hyper_labels['gzip_desc']; ?>
                 <?php } else { ?>
-                    There is not "gzencode" function, may be you PHP has not the zlib extension active.
+                    <?php echo $hyper_labels['gzip_nogzencode_desc']; ?>
                 <?php } ?>
                 </td>
         	</tr>    
@@ -243,7 +244,7 @@ My plugins:
         		<?php hyper_field_checkbox('redirects', $hyper_labels['redirects'], $hyper_labels['redirects_desc']); ?>
         	</tr>   
 			<tr valign="top">
-                <th scope="row"><label>Storage</label></th>
+                <th scope="row"><label><?php echo $hyper_labels['storage']; ?></label></th>
                 <td>
                 <?php if (function_exists('gzencode')) { ?>
                 <select name="options[storage]">
@@ -251,10 +252,22 @@ My plugins:
                     <option value="minimize" <?php echo ($options['storage'] == 'minimize')?'selected':''; ?>>Minimize the disk space</option>
                 </select>
                 <?php } else { ?>
-                You have not the zlib extension installed, leave the default option!
+                <?php echo $hyper_labels['storage_nogzencode_desc']; ?>
                 <?php } ?>
                 </td>
-        	</tr>               
+        	</tr>
+			<tr valign="top">
+                <th scope="row"><label><?php echo $hyper_labels['urls_analysis']; ?></label></th>
+                <td>
+                <select name="options[urls]">
+                    <option value="default" <?php echo ($options['urls'] == 'default')?'selected':''; ?>><?php echo $hyper_labels['urls_analysis_default']; ?></option>
+                    <option value="full" <?php echo ($options['urls'] == 'full')?'selected':''; ?>><?php echo $hyper_labels['urls_analysis_full']; ?></option>
+                    <!--
+                    <option value="removeqs" <?php echo ($options['removeqs'] == 'full')?'selected':''; ?>><?php echo $hyper_labels['urls_analysis_removeqs']; ?></option>
+                    -->
+                </select>
+                </td>
+        	</tr>
             <tr valign="top">
                 <th scope="row"><label><?php echo $hyper_labels['reject']; ?></label></th>
                 <td>
