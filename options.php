@@ -1,7 +1,9 @@
 <?php
 
+$options = get_option('hyper');
+
 @include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
-if (WPLANG != '') @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
+if (!$options['_notranslation'] && WPLANG != '') @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
 
 function hyper_request($name, $default=null) 
 {
@@ -122,6 +124,43 @@ if ($installed && isset($_POST['save']))
         $buffer = rtrim($buffer, ',');
         $buffer .= ");\n";
     }
+
+    if (trim($options['reject_agents']) != '')
+    {
+        $options['reject_agents'] = str_replace(' ', "\n", $options['reject_agents']);
+        $options['reject_agents'] = str_replace("\r", "\n", $options['reject_agents']);
+        $buffer .= '$hyper_cache_reject_agents = array(';
+        $reject_agents = explode("\n", $options['reject_agents']);
+        $options['reject_agents'] = '';
+        foreach ($reject_agents as $uri)
+        {
+            $uri = trim($uri);
+            if ($uri == '') continue;
+            $buffer .= "\"" . addslashes(strtolower(trim($uri))) . "\",";
+            $options['reject_agents'] .= $uri . "\n";
+        }
+        $buffer = rtrim($buffer, ',');
+        $buffer .= ");\n";
+    }
+
+    if (trim($options['mobile_agents']) != '')
+    {
+        $options['mobile_agents'] = str_replace(' ', "\n", $options['mobile_agents']);
+        $options['mobile_agents'] = str_replace("\r", "\n", $options['mobile_agents']);
+        $buffer .= '$hyper_cache_mobile_agents = array(';
+        $mobile_agents = explode("\n", $options['mobile_agents']);
+        $options['mobile_agents'] = '';
+        foreach ($mobile_agents as $uri)
+        {
+            $uri = trim($uri);
+            if ($uri == '') continue;
+            $buffer .= "\"" . addslashes(strtolower(trim($uri))) . "\",";
+            $options['mobile_agents'] .= $uri . "\n";
+        }
+        $buffer = rtrim($buffer, ',');
+        $buffer .= ");\n";
+    }
+
     $buffer .= '?>';
     $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
     fwrite($file, $buffer);
@@ -130,7 +169,6 @@ if ($installed && isset($_POST['save']))
 } 
 else 
 {
-    $options = get_option('hyper');
     if ($options['timeout'] == '')
     {
         $options['timeout'] = 60;
@@ -138,6 +176,10 @@ else
     if ($options['clean_interval'] == '')
     {
         $options['clean_interval'] = 1440;
+    }
+    if ($options['mobile_agents'] == '')
+    {
+        $options['mobile_agents'] = "elaine/3.0\niphone\nipod\npalm\neudoraweb\nblazer\navantgo\nwindows ce\ncellphone\nsmall\nmmef20\ndanger\nhiptop\nproxinet\nnewt\npalmos\nnetfront\nsharp-tq-gx10\nsonyericsson\nsymbianos\nup.browser\nup.link\nts21i-10\nmot-v\nportalmmm\ndocomo\nopera mini\npalm\nhandspring\nnokia\nkyocera\nsamsung\nmotorola\nmot\nsmartphone\nblackberry\nwap\nplaystation portable\nlg\nmmp\nopwv\nsymbian\nepoc";
     }
 }
 
@@ -181,6 +223,9 @@ if (!defined('WP_CACHE') ) {
         <h3><?php echo $hyper_labels['configuration']; ?></h3>
         <table class="form-table">
             <tr valign="top">
+                <?php hyper_field_checkbox('_notranslation', $hyper_labels['_notranslation']); ?>
+            </tr>
+            <tr valign="top">
                 <?php hyper_field_checkbox('enabled', $hyper_labels['activate']); ?>
             </tr>
             <tr valign="top">
@@ -210,6 +255,14 @@ if (!defined('WP_CACHE') ) {
             </tr>
             <tr valign="top">
                 <?php hyper_field_checkbox('mobile', $hyper_labels['mobile']); ?>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label><?php echo $hyper_labels['mobile_agents']; ?></label></th>
+                <td>
+                    <textarea wrap="off" rows="5" cols="70" name="options[mobile_agents]"><?php echo htmlspecialchars($options['mobile_agents']); ?></textarea>
+                    <br />
+                    <?php echo $hyper_labels['mobile_agents_desc']; ?>
+                </td>
             </tr>
             <tr valign="top">
                 <th scope="row"><label><?php echo $hyper_labels['gzip']; ?></label></th>
@@ -293,6 +346,15 @@ if (!defined('WP_CACHE') ) {
                     ?>
                 </td>
             </tr>
+            <tr valign="top">
+                <th scope="row"><label><?php echo $hyper_labels['reject_agents']; ?></label></th>
+                <td>
+                    <textarea wrap="off" rows="5" cols="70" name="options[reject_agents]"><?php echo htmlspecialchars($options['reject_agents']); ?></textarea>
+                    <br />
+                    <?php echo $hyper_labels['reject_agents_desc']; ?>
+                </td>
+            </tr>
+
         </table>
 
 

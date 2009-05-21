@@ -55,4 +55,11 @@ $hyper_labels['storage'] = "Storage";
 $hyper_labels['storage_nogzencode_desc'] = "You have not the zlib extension installed, leave the default option!";
 
 $hyper_labels['gzip_nogzencode_desc'] = "There is not 'gzencode' function, may be you PHP has not the zlib extension active.";
+
+// New from version 2.2.5
+$hyper_labels['reject_agents'] = "User agents to reject";
+$hyper_labels['reject_agents_desc'] = "A 'one per line' list of user agents that, when matched, makes to sip the caching process.";
+$hyper_labels['mobile_agents'] = "Mobile user agents";
+$hyper_labels['mobile_agents_desc'] = "A 'one per line' list of user agents to identify mobile devices.";
+$hyper_labels['_notranslation'] = "Do not use translations for this configuration panel";
 ?>
