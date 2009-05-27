@@ -2,8 +2,8 @@
 
 $options = get_option('hyper');
 
-@include(ABSPATH . 'wp-content/plugins/hyper-cache/en_US.php');
-if (!$options['_notranslation'] && WPLANG != '') @include(ABSPATH . 'wp-content/plugins/hyper-cache/' . WPLANG . '.php');
+@include(dirname(__FILE__) . '/languages/en_US.php');
+if (!$options['_notranslation'] && WPLANG != '') @include(dirname(__FILE__) . '/languages/' . WPLANG . '.php');
 
 function hyper_request($name, $default=null) 
 {

@@ -58,7 +58,7 @@ $hyper_labels['gzip_nogzencode_desc'] = "There is not 'gzencode' function, may b
 
 // New from version 2.2.5
 $hyper_labels['reject_agents'] = "User agents to reject";
-$hyper_labels['reject_agents_desc'] = "A 'one per line' list of user agents that, when matched, makes to sip the caching process.";
+$hyper_labels['reject_agents_desc'] = "A 'one per line' list of user agents that, when matched, makes to skip the caching process.";
 $hyper_labels['mobile_agents'] = "Mobile user agents";
 $hyper_labels['mobile_agents_desc'] = "A 'one per line' list of user agents to identify mobile devices.";
 $hyper_labels['_notranslation'] = "Do not use translations for this configuration panel";
