@@ -145,7 +145,7 @@ if ($installed && isset($_POST['save']))
 
     if (trim($options['mobile_agents']) != '')
     {
-        $options['mobile_agents'] = str_replace(' ', "\n", $options['mobile_agents']);
+        $options['mobile_agents'] = str_replace(',', "\n", $options['mobile_agents']);
         $options['mobile_agents'] = str_replace("\r", "\n", $options['mobile_agents']);
         $buffer .= '$hyper_cache_mobile_agents = array(';
         $mobile_agents = explode("\n", $options['mobile_agents']);
