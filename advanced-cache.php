@@ -4,6 +4,9 @@
 // From the config file
 if (!$hyper_cache_enabled) return false;
 
+global $hyper_cache_stop;
+$hyper_cache_stop = false;
+
 // Do not cache post request (comments, plugins and so on)
 if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 
@@ -13,6 +16,7 @@ if (defined(SID) && SID != '') return false;
 $hyper_uri = $_SERVER['REQUEST_URI'];
 
 if ($hyper_cache_urls == 'default' && strpos($hyper_uri, '?') !== false) return false;
+if (strpos($hyper_uri, 'robots.txt') !== false) return false;
 
 // Checks for rejected url
 if ($hyper_cache_reject)
@@ -142,8 +146,10 @@ ob_start('hyper_cache_callback');
 // Called whenever the page generation is ended
 function hyper_cache_callback($buffer) 
 {
-    global $hyper_cache_charset, $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
+    global $hyper_cache_stop, $hyper_cache_charset, $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hyper_file, $hyper_cache_compress, $hyper_cache_name, $hyper_cache_gzip;
 
+    if ($hyper_cache_stop) return $buffer;
+    
     // WP is sending a redirect
     if ($hyper_redirect)
     {
