@@ -62,4 +62,9 @@ $hyper_labels['reject_agents_desc'] = "A 'one per line' list of user agents that
 $hyper_labels['mobile_agents'] = "Mobile user agents";
 $hyper_labels['mobile_agents_desc'] = "A 'one per line' list of user agents to identify mobile devices.";
 $hyper_labels['_notranslation'] = "Do not use translations for this configuration panel";
+
+
+$hyper_labels['cron_key'] = "Cron action key";
+$hyper_labels['cron_key_desc'] = "A complicate to guess key to start actions from cron calls (no single or double quotes, no spaces)";
+
 ?>
