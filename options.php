@@ -144,6 +144,24 @@ if ($installed && isset($_POST['save']))
         $buffer .= ");\n";
     }
 
+    if (trim($options['reject_cookies']) != '')
+    {
+        $options['reject_cookies'] = str_replace(' ', "\n", $options['reject_cookies']);
+        $options['reject_cookies'] = str_replace("\r", "\n", $options['reject_cookies']);
+        $buffer .= '$hyper_cache_reject_cookies = array(';
+        $reject_cookies = explode("\n", $options['reject_cookies']);
+        $options['reject_cookies'] = '';
+        foreach ($reject_cookies as $c)
+        {
+            $c = trim($c);
+            if ($c == '') continue;
+            $buffer .= "\"" . addslashes(strtolower(trim($c))) . "\",";
+            $options['reject_cookies'] .= $c . "\n";
+        }
+        $buffer = rtrim($buffer, ',');
+        $buffer .= ");\n";
+    }
+
     if (trim($options['mobile_agents']) != '')
     {
         $options['mobile_agents'] = str_replace(',', "\n", $options['mobile_agents']);
