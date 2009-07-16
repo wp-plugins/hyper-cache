@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: Hyper Cache
-Plugin URI: http://www.satollo.com/english/wordpress/hyper-cache
+Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a features rich cache system WordPress. After an upgrade, DEACTIVATE, REACTIVATE and RECONFIGURE. ALWAYS!
-Version: 2.2.8
+Version: 2.3.0
 Author: Satollo
-Author URI: http://www.satollo.com
+Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
 ---
-Copyright 2008  Satollo  (email : satollo@gmail.com)
+Copyright 2008  Satollo  (email : info@satollo.net)
 ---
 
 This program is free software; you can redistribute it and/or modify

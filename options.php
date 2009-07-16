@@ -92,6 +92,7 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_enabled = ' . ($options['enabled']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
+    $buffer .= '$hyper_cache_cron_key = \'' . $options['cron_key'] . "';\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
@@ -353,6 +354,25 @@ if (!defined('WP_CACHE') ) {
                     <br />
                     <?php echo $hyper_labels['reject_agents_desc']; ?>
                 </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label>Cookies that bypass Hyper Cache</label></th>
+                <td>
+                    <textarea wrap="off" rows="5" cols="70" name="options[reject_cookies]"><?php echo htmlspecialchars($options['reject_cookies']); ?></textarea>
+                    <br />
+                    One per line insert cookie names that, if present, bypass the cache. The names specifies will
+                    match if there is at least one cookie name <strong>starting</strong> with such name.
+                    <?php if (defined('FBC_APP_KEY_OPTION')) { ?>
+                    <br />
+                    It seems you have <strong>Facebook Connect</strong> plugin installed. Add this cookie name to make it works
+                    with Hyper Cache:<br />
+                    <strong><?php echo get_option(FBC_APP_KEY_OPTION); ?>_user</strong>
+                    <? } ?>
+
+                </td>
+            </tr>
+            <tr valign="top">
+                <?php hyper_field_text('cron_key', $hyper_labels['cron_key'], $hyper_labels['cron_key_desc'], 'size="30"'); ?>
             </tr>
 
         </table>

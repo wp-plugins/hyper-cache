@@ -1,7 +1,7 @@
 === Hyper Cache ===
 Tags: cache,chaching,speed,performance,super cache,wp cache
 Requires at least: 2.1
-Tested up to: 2.7.1
+Tested up to: 2.8.1
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo,momo360modena
@@ -30,10 +30,12 @@ if you have issues to info@satollo.com.
 
 **Check out my other plugins**:
 
-* [Hyper Cache](http://www.satollo.com/english/wordpress/hyper-cache "Hyper Cache WordPress plugin: when performance and flexibilty are not an option")
-* [Post Layout](http://www.satollo.com/english/wordpress/post-layout "Post Layout WordPress plugin: the easy way to enrich your posts")
+* [Post Layout](http://www.satollo.net/plugins/post-layout "Post Layout WordPress plugin: the easy way to enrich your posts")
+* [Comment Notifier](http://www.satollo.net/plugins/comment-notifier "Keep your blog discussions on fire")
 * [Feed Layout](http://www.satollo.com/english/wordpress/feed-layout "Feed Layout WordPress plugin: the easy way to enrich your feed contents")
-* [Dynatags](http://www.satollo.com/english/wordpress/dynatags "Dynatags WordPress plugin: Create your own custom short tag in seconds")
+* [Dynatags](http://www.satollo.net/plugins/dynatags "Dynatags WordPress plugin: Create your own custom short tag in seconds")
+* [Header and Footer](http://www.satollo.net/plugins/header-footer)
+* [Newsletter](http://www.satollo.net/plugins/newsletter)
 
 Thanks to:
 

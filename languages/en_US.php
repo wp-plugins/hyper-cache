@@ -27,6 +27,7 @@ $hyper_labels['expire_type_desc'] .= "<b>single pages strictly</b>: as 'single p
 $hyper_labels['expire_type_desc'] .= "<b>all</b>: all the cached pages (the blog is always up to date)<br />";
 $hyper_labels['expire_type_desc'] .= "Beware: when you use 'single pages strictly', a new post will appear on home page, but not on category and tag pages. If you use the 'last posts' widget/feature on sidebar it won't show updated.";
 $hyper_labels['advanced_options'] = "Advanced options";
+
 $hyper_labels['reject'] = "URI to reject";
 $hyper_labels['reject_desc'] = "One per line. When a URI (eg. /video/my-new-performance) starts with one of the listed lines, it won't be cached.";
 
