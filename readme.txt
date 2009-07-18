@@ -44,6 +44,7 @@ Thanks to:
 * HypeScience, Martin Steldinger, Giorgio Guglielmino for test and bugs submissions
 * Ishtiaq to ask me about compatibility with wp-pda
 * Gene Steinberg to ask for an autoclean system
+* Marcis Gasun (fatcow.com) for Bielorussian translation
 * many others I don't remember
 
 == Installation ==

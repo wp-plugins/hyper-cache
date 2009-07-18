@@ -226,6 +226,7 @@ if (!defined('WP_CACHE') ) {
 ?>
         <p>To have more information about Hyper Cache read the <a href="http://www.satollo.com/english/wordpress/hyper-cache">official plugin page</a>
         or write me to info@satollo.com.</p>
+        
 
         <p>Consider a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483">DONATION</a> to support this plugin or
         if it <strong>saved you a lot of money</strong> avoiding expensive hosting providers to sustain your blog traffic...</p>
