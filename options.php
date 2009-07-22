@@ -386,7 +386,7 @@ if (!defined('WP_CACHE') ) {
                     It seems you have <strong>Facebook Connect</strong> plugin installed. Add this cookie name to make it works
                     with Hyper Cache:<br />
                     <strong><?php echo get_option(FBC_APP_KEY_OPTION); ?>_user</strong>
-                    <? } ?>
+                    <?php } ?>
 
                 </td>
             </tr>
