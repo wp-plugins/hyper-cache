@@ -267,6 +267,7 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         valid forever.', 'hyper-cache'); ?>
         <?php _e('If a cached page is older than specified value (expired) it is no more used and
         will be regenerated on next request of it.', 'hyper-cache'); ?>
+        <?php _e('720 minutes is half a day, 1440 is a full day and so on.', 'hyper-cache'); ?>
     </td>
 </tr>
 
