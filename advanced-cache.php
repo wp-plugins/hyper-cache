@@ -352,7 +352,7 @@ function hyper_cache_clean()
 {
     global $hyper_cache_timeout, $hyper_cache_clean_interval;
 
-    if (!$hyper_cache_clean_interval) return;
+    if (!$hyper_cache_clean_interval || !$hyper_cache_timeout) return;
     if (rand(1, 10) != 5) return;
 
     hyper_cache_log('start cleaning');

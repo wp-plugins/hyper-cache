@@ -11,7 +11,7 @@ if (!$options['notranslation'])
 $installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
 @filesize(ABSPATH . 'wp-content/advanced-cache.php') == @filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
 
-if ($installed && isset($_POST['clear'])) 
+if ($installed && isset($_POST['clean']))
 {
     hyper_cache_invalidate();
 }
@@ -22,7 +22,6 @@ if ($installed && isset($_POST['save']))
     if (!check_admin_referer()) die('No hacking please');
     
     $options = stripslashes_deep($_POST['options']);
-
 
     if (!is_numeric($options['timeout'])) $options['timeout'] = 60;
     $options['timeout'] = (int)$options['timeout'];
@@ -194,7 +193,19 @@ else
 <form method="post">
 <?php wp_nonce_field(); ?>
 
-<h3><?php _e('Statistics'); ?></h3>
+<h3><?php _e('Cache status', 'hyper-cache'); ?></h3>
+<table class="form-table">
+<tr valign="top">
+    <th><?php _e('Cached page count', 'hyper-cache'); ?></th>
+    <td><?php echo hyper_count(); ?></td>
+</tr>
+</table>
+<p class="submit">
+    <input class="button" type="submit" name="clean" value="<?php _e('Clean the cache', 'hyper-cache'); ?>">
+</p>
+
+
+<h3><?php _e('Statistics', 'hyper-cache'); ?></h3>
 
 <table class="form-table">
 <tr valign="top">
@@ -219,7 +230,7 @@ $hit_gzip = @filesize(ABSPATH . 'wp-content/hyper-cache-gzip.txt');
 $hit_plain = @filesize(ABSPATH . 'wp-content/hyper-cache-plain.txt');
 $hit_wp = @filesize(ABSPATH . 'wp-content/hyper-cache-wp.txt');
 $hit_commenter = @filesize(ABSPATH . 'wp-content/hyper-cache-commenter.txt');
-$total = (float)($hit_304 + $hit_404 + $hit_gzip + $hit_plain + $hit_wp);
+$total = (float)($hit_304 + $hit_404 + $hit_gzip + $hit_plain + $hit_wp + 1);
 ?>
 
 <p>
@@ -274,8 +285,10 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         (<?php _e('minutes', 'hyper-cache'); ?>)
         <br />
         <?php _e('Frequency of the autoclean process which removes to expired cached pages to free
-        disk space. Set lower or equals of timeout above. If set to zero the autoclean process never
+        disk space.', 'hyper-cache'); ?>
+        <?php _e('Set lower or equals of timeout above. If set to zero the autoclean process never
         runs.', 'hyper-cache'); ?>
+        <?php _e('If timeout is set to zero, autoclean never runs, so this value has no meaning', 'hyper-cache'); ?>
     </td>
 </tr>
 
@@ -388,13 +401,6 @@ explicitely not cacheable.', 'hyper-cache'); ?>
     <input class="button" type="submit" name="save" value="<?php _e('Update'); ?>">
 </p>
 <?php } ?>
-
-<table class="form-table">
-<tr valign="top">
-    <th><?php _e('Cached page count', 'hyper-cache'); ?></th>
-    <td><?php echo hyper_count(); ?></td>
-</tr>
-</table>
 
 
 <h3><?php _e('Advanced options', 'hyper-cache'); ?></h3>
