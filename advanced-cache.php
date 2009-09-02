@@ -15,7 +15,8 @@ if (defined(SID) && SID != '') return false;
 
 $hyper_uri = $_SERVER['REQUEST_URI'];
 
-if ($hyper_cache_urls == 'default' && strpos($hyper_uri, '?') !== false) return false;
+if (!$hyper_cache_cache_qs && strpos($hyper_uri, '?') !== false) return false;
+
 if (strpos($hyper_uri, 'robots.txt') !== false) return false;
 
 // Checks for rejected url
@@ -40,12 +41,16 @@ if (count($hyper_cache_reject_agents) > 0)
     }
 }
 
-
-
-
 // Do not use or cache pages when a wordpress user is logged on
 foreach ($_COOKIE as $n=>$v) 
 {
+    // If it's required to bypass the cache when the visitor is a commentor, stop.
+    if ($hyper_cache_comment && substr($n, 0, 15) == 'comment_author_') 
+    {
+        hyper_cache_stats('commenter');
+        return false;
+    }
+
     // SHIT!!! This test cookie makes to cache not work!!!
     if ($n == 'wordpress_test_cookie') continue;
     // wp 2.5 and wp 2.3 have different cookie prefix, skip cache if a post password cookie is present, also
@@ -75,6 +80,8 @@ if (strpos($hyper_uri, '/wp-admin/') !== false || strpos($hyper_uri, '/wp-includ
 
 $hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
 
+hyper_cache_log('URI: ' . $hyper_uri);
+
 // The name of the file with html and other data
 $hyper_cache_name = md5($hyper_uri);
 $hyper_file = ABSPATH . 'wp-content/hyper-cache/' . hyper_mobile_type() . $hyper_cache_name . '.dat';
@@ -82,28 +89,51 @@ $hyper_file = ABSPATH . 'wp-content/hyper-cache/' . hyper_mobile_type() . $hyper
 // The file is present?
 if (is_file($hyper_file)) 
 {
+    hyper_cache_log('cached page file found: ' . $hyper_cache_name);
+
     if (!$hyper_cache_timeout || (time() - filectime($hyper_file)) < $hyper_cache_timeout*60)
     {
+        hyper_cache_log('cached page still valid');
+        
         // Load it and check is it's still valid
         $hyper_data = unserialize(file_get_contents($hyper_file));
 
-        // Protect against broken cache files
+        // Protect against broken cache files and start to check redirects and
+        // 404.
         if ($hyper_data != null)
         {
 
             if ($hyper_data['location'])
             {
+                hyper_cache_log('was a redirect to ' . $hyper_data['location']);
                 header('Location: ' . $hyper_data['location']);
                 flush;
                 die();
             }
 
+            // If the URI was a 404 try to load the (unique) 404 cache page, if exists,
+            // otherwise delete the cached page because it is no more valid.
             if ($hyper_data['status'] == 404)
             {
-                header("HTTP/1.1 404 Not Found");
-                $hyper_data = unserialize(file_get_contents(ABSPATH . 'wp-content/hyper-cache/404.dat'));
+                hyper_cache_log('was a 404');
+                $hyper_cache_404_file = ABSPATH . 'wp-content/hyper-cache/404.dat';
+                $hyper_data = @unserialize(file_get_contents($hyper_cache_404_file));
+                if ($hyper_data)
+                {
+                    header("HTTP/1.1 404 Not Found");
+                    hyper_cache_stats('404');                    
+                }
+                else
+                {
+                    @unlink($hyper_file);
+                    unset($hyper_data);
+                }
             }
+        }
 
+        // It's time to serve the cached page
+        if ($hyper_data != null)
+        {
             if (array_key_exists("HTTP_IF_MODIFIED_SINCE", $_SERVER))
             {
                 $if_modified_since = strtotime(preg_replace('/;.*$/', '', $_SERVER["HTTP_IF_MODIFIED_SINCE"]));
@@ -111,49 +141,69 @@ if (is_file($hyper_file))
                 {
                     header("HTTP/1.0 304 Not Modified");
                     flush();
+                    hyper_cache_stats('304');
                     die();
                 }
             }
-
 
             header('Last-Modified: ' . date("r", filectime($hyper_file)));
 
             header('Content-Type: ' . $hyper_data['mime']);
 
+            hyper_cache_log('encoding accepted: ' . $_SERVER['HTTP_ACCEPT_ENCODING']);
             // Send the cached html
             if ($hyper_cache_gzip && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false && strlen($hyper_data['gz']) > 0)
             {
+                hyper_cache_log('gzip encoding accepted, serving compressed data');
                 header('Content-Encoding: gzip');
                 echo $hyper_data['gz'];
+                hyper_cache_stats('gzip');
             }
             else
             {
-                if (strlen($hyper_data['html']) > 0)
+                // No compression accepted, check if we have the plain html or
+                // decompress the compressed one.
+                if ($hyper_data['html'])
                 {
+                    hyper_cache_log('serving plain data');
                     echo $hyper_data['html'];
                 }
                 else
                 {
-                    echo gzdecode($hyper_data['gz']);
+                    hyper_cache_log('decoding compressed data (length: ' . strlen($hyper_data['gz']) . ')');
+                    echo hyper_cache_gzdecode($hyper_data['gz']);
                 }
+                hyper_cache_stats('plain');
             }
             flush();
             hyper_cache_clean();
             die();
         }
+        else
+        {
+            hyper_cache_log('[ERROR] unable to deserialize data');
+        }
     }
+}
+else
+{
+    hyper_cache_log('cached page file NOT found: ' . $hyper_file);
 }
 
 // Now we start the caching, but we remove the cookie which stores the commenter data otherwise the page will be generated
 // with a pre compiled comment form...
-foreach ($_COOKIE as $n=>$v ) 
+if (!$hyper_cache_comment)
 {
-    if (substr($n, 0, 14) == 'comment_author')
+    foreach ($_COOKIE as $n=>$v )
     {
-        unset($_COOKIE[$n]);
+        if (substr($n, 0, 14) == 'comment_author')
+        {
+            unset($_COOKIE[$n]);
+        }
     }
 }
 
+hyper_cache_stats('wp');
 ob_start('hyper_cache_callback');
 
 // From here Wordpress starts to process the request
@@ -212,11 +262,6 @@ function hyper_cache_callback($buffer)
 
     $data['html'] = $buffer;
 
-    if ($hyper_cache_gzip && function_exists('gzencode'))
-    {
-        $data['gz'] = gzencode($buffer);
-    }
-
     if (is_404())
     {
         if (!file_exists(ABSPATH . 'wp-content/hyper-cache/404.dat'))
@@ -226,7 +271,6 @@ function hyper_cache_callback($buffer)
             fclose($file);
         }
         unset($data['html']);
-        unset($data['gz']);
         $data['status'] = 404;
     }
 
@@ -237,17 +281,19 @@ function hyper_cache_callback($buffer)
 
 function hyper_cache_write(&$data)
 {
-    global $hyper_file, $hyper_cache_storage;
+    global $hyper_file, $hyper_cache_store_compressed;
 
     $data['uri'] = $_SERVER['REQUEST_URI'];
-    $data['referer'] = $_SERVER['HTTP_REFERER'];
-    $data['time'] = time();
-    $data['host'] = $_SERVER['HTTP_HOST'];
-    $data['agent'] = $_SERVER['HTTP_USER_AGENT'];
+//    $data['referer'] = $_SERVER['HTTP_REFERER'];
+//    $data['time'] = time();
+//    $data['host'] = $_SERVER['HTTP_HOST'];
+//    $data['agent'] = $_SERVER['HTTP_USER_AGENT'];
 
-    if ($hyper_cache_storage == 'minimize')
+    // Look if we need the compressed version
+    if ($hyper_cache_store_compressed)
     {
-        unset($data['html']);
+        $data['gz'] = gzencode($data['html']);
+        if ($data['gz']) unset($data['html']);
     }
 
     $file = fopen($hyper_file, 'w');
@@ -255,7 +301,6 @@ function hyper_cache_write(&$data)
     fclose($file);
 
     header('Last-Modified: ' . date("r", filectime($hyper_file)));
-
 }
 
 function hyper_cache_compress(&$buffer)
@@ -310,6 +355,8 @@ function hyper_cache_clean()
     if (!$hyper_cache_clean_interval) return;
     if (rand(1, 10) != 5) return;
 
+    hyper_cache_log('start cleaning');
+
     $time = time();
     $file = ABSPATH . 'wp-content/hyper-cache/last-clean.dat';
     if (file_exists($file) && ($time - filectime($file) < $hyper_cache_clean_interval*60)) return;
@@ -324,42 +371,60 @@ function hyper_cache_clean()
             if ($file == '.' || $file == '..') continue;
 
             $t = filectime($path . '/' . $file);
-            if ($time - $t > $hyper_cache_timeout) @unlink($path . '/' . $file);
+            if ($time - $t > $hyper_cache_timeout*60) @unlink($path . '/' . $file);
         }
         closedir($handle);
     }
+    hyper_cache_log('end cleaning');
 }
 
-if (!function_exists('gzdecode')) 
+
+function hyper_cache_gzdecode ($data)
 {
-    function gzdecode ($data)
-    {
-        $flags = ord(substr($data, 3, 1));
-        $headerlen = 10;
-        $extralen = 0;
+    hyper_cache_log('gzdecode called with data length ' + strlen($data));
 
-        $filenamelen = 0;
-        if ($flags & 4) {
-            $extralen = unpack('v' ,substr($data, 10, 2));
+    $flags = ord(substr($data, 3, 1));
+    $headerlen = 10;
+    $extralen = 0;
 
-            $extralen = $extralen[1];
-            $headerlen += 2 + $extralen;
-        }
-        if ($flags & 8) // Filename
+    $filenamelen = 0;
+    if ($flags & 4) {
+        $extralen = unpack('v' ,substr($data, 10, 2));
 
-        $headerlen = strpos($data, chr(0), $headerlen) + 1;
-        if ($flags & 16) // Comment
-
-        $headerlen = strpos($data, chr(0), $headerlen) + 1;
-        if ($flags & 2) // CRC at end of file
-
-        $headerlen += 2;
-        $unpacked = gzinflate(substr($data, $headerlen));
-        if ($unpacked === FALSE)
-
-        $unpacked = $data;
-        return $unpacked;
+        $extralen = $extralen[1];
+        $headerlen += 2 + $extralen;
     }
+    if ($flags & 8) // Filename
+
+    $headerlen = strpos($data, chr(0), $headerlen) + 1;
+    if ($flags & 16) // Comment
+
+    $headerlen = strpos($data, chr(0), $headerlen) + 1;
+    if ($flags & 2) // CRC at end of file
+
+    $headerlen += 2;
+    $unpacked = gzinflate(substr($data, $headerlen));
+    if ($unpacked === FALSE) $unpacked = $data;
+    return $unpacked;
 }
 
+
+function hyper_cache_log($text)
+{
+//    $file = fopen(dirname(__FILE__) . '/hyper_cache.log', 'a');
+//    if (!$file) return;
+//    fwrite($file, $_SERVER['REMOTE_ADDR'] . ' ' . date('Y-m-d H:i:s') . ' ' . $text . "\n");
+//    fclose($file);
+}
+
+function hyper_cache_stats($type)
+{
+    global $hyper_cache_stats;
+
+    if (!$hyper_cache_stats) return;
+    $file = fopen(dirname(__FILE__) . '/hyper-cache-' . $type . '.txt', 'a');
+    if (!$file) return;
+    fwrite($file, 'x');
+    fclose($file);
+}
 ?>

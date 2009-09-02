@@ -1,8 +1,8 @@
 <?php
 
-$hyper_labels['wp_cache_not_enabled'] = "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!";
-$hyper_labels['configuration'] = "Configuration";
-$hyper_labels['activate'] = "Activate the cache?";
+//$hyper_labels['wp_cache_not_enabled'] = "The wordPress cache system is not enabled. Please, activate it adding the line of code below in the file wp-config.php. Thank you!";
+//$hyper_labels['configuration'] = "Configuration";
+//$hyper_labels['activate'] = "Activate the cache?";
 $hyper_labels['timeout'] = "Expire a cached page after";
 $hyper_labels['timeout_desc'] = "minutes (set to zero to never expire)";
 $hyper_labels['count'] = "Total cached pages (cached redirect is counted too)";
@@ -19,7 +19,7 @@ $hyper_labels['redirects_desc'] = "Can give problems with some configuration. Tr
 $hyper_labels['mobile'] = "Detetect and cache for mobile devices";
 $hyper_labels['clean_interval'] = "Autoclean every";
 $hyper_labels['clean_interval_desc'] = "minutes (set to zero to disable)";
-$hyper_labels['not_activated'] = "Hyper Cache is NOT correctly installed: some files or directories have not been created. Check if the wp-content directory is writable and remove any advanced-cache.php file into it. Deactivate and reactivate the plugin.";
+//$hyper_labels['not_activated'] = "Hyper Cache is NOT correctly installed: some files or directories have not been created. Check if the wp-content directory is writable and remove any advanced-cache.php file into it. Deactivate and reactivate the plugin.";
 $hyper_labels['expire_type'] = "What cached pages to delete on events";
 $hyper_labels['expire_type_desc'] = "<b>none</b>: the cache never delete the cached page on events (comments, new posts, and so on)<br />";
 $hyper_labels['expire_type_desc'] .= "<b>single pages</b>: the cached pages relative to the post modified (by the editor or when a comment is added) plus the home page. New published posts invalidate all the cache.<br />";
