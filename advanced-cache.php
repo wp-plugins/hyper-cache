@@ -1,9 +1,6 @@
 <?php
 @include(dirname(__FILE__) . '/hyper-cache-config.php');
 
-// From the config file
-if (!$hyper_cache_enabled) return false;
-
 global $hyper_cache_stop;
 $hyper_cache_stop = false;
 
