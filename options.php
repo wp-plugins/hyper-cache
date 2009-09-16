@@ -13,7 +13,8 @@ $installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp
 
 if ($installed && isset($_POST['clean']))
 {
-    hyper_cache_invalidate();
+    //hyper_cache_invalidate();
+    hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
 }
 
 
@@ -34,8 +35,9 @@ if ($installed && isset($_POST['save']))
     $buffer .= '$hyper_cache_enabled = true' . ";\n";
     $buffer .= '$hyper_cache_stats = ' . ($options['stats']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_comment = ' . ($options['comment']?'true':'false') . ";\n";
+    $buffer .= '$hyper_cache_archive = ' . ($options['archive']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_timeout = ' . $options['timeout'] . ";\n";
+    $buffer .= '$hyper_cache_timeout = ' . ($options['timeout']*60) . ";\n";
     $buffer .= '$hyper_cache_cron_key = \'' . $options['cron_key'] . "';\n";
     $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
@@ -53,7 +55,7 @@ if ($installed && isset($_POST['save']))
     
     $buffer .= '$hyper_cache_urls = \'' . $options['urls'] . "';\n";
     $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
-    $buffer .= '$hyper_cache_clean_interval = ' . $options['clean_interval'] . ";\n";
+    $buffer .= '$hyper_cache_clean_interval = ' . ($options['clean_interval']*60) . ";\n";
 
     if (trim($options['reject']) != '')
     {
@@ -159,6 +161,9 @@ else
     </div>
 <?php } ?>
 
+<iframe width="100%" height="100" src="http://www.satollo.net/services/hyper-cache" style="border: 1px solid #009"></iframe>
+
+<br />
 <div style="padding: 10px; background-color: #E0EFF6; border: 1px solid #006">
     <?php printf(__('<strong>And if this plugin stops to work?</strong><br />Hyper Cache required a lot of effort to be developed and
     I\'m pretty sure is giving you a good, even if invisible, service.
@@ -173,6 +178,8 @@ else
     on <a href="%s">Hyper Cache official page</a>.', 'hyper-cache'),
     'http://www.satollo.net/plugins/hyper-cache'); ?>
 </p>
+
+<p>Version 2.5+ has been widely changed. Please give a look to the new invalidation options.</p>
 
 <p>
     <?php _e('Other interesting plugins:'); ?>
@@ -281,6 +288,8 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         disk space.', 'hyper-cache'); ?>
         <?php _e('Set lower or equals of timeout above. If set to zero the autoclean process never
         runs.', 'hyper-cache'); ?>
+        <?php _e('There is no performance improvements setting to zero, worse the cache folder will fill up
+        being slower.', 'hyper-cache'); ?>
         <?php _e('If timeout is set to zero, autoclean never runs, so this value has no meaning', 'hyper-cache'); ?>
     </td>
 </tr>
@@ -290,14 +299,20 @@ explicitely not cacheable.', 'hyper-cache'); ?>
     <td>
         <select name="options[expire_type]">
             <option value="all" <?php echo ($options['expire_type'] == 'all')?'selected':''; ?>><?php _e('All cached pages', 'hyper-cache'); ?></option>
-            <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>><?php _e('Modified pages and home page', 'hyper-cache'); ?></option>
-            <option value="post_strictly" <?php echo ($options['expire_type'] == 'post_strictly')?'selected':''; ?>><?php _e('Only modified pages', 'hyper-cache'); ?></option>
+            <option value="post" <?php echo ($options['expire_type'] == 'post')?'selected':''; ?>><?php _e('Only modified posts', 'hyper-cache'); ?></option>
+            <!--<option value="post_strictly" <?php echo ($options['expire_type'] == 'post_strictly')?'selected':''; ?>><?php _e('Only modified pages', 'hyper-cache'); ?></option>-->
             <option value="none" <?php echo ($options['expire_type'] == 'none')?'selected':''; ?>><?php _e('Nothing', 'hyper-cache'); ?></option>
         </select>
+        <br />
+        <input type="checkbox" name="options[archive]" value="1" <?php echo $options['archive']?'checked':''; ?>/>
+        <?php _e('Invalidate home, archives, categories on single post invalidation', 'hyper-cache'); ?>
+        <br />
         <br />
         <?php _e('"Invalidation" is the process of deleting cached pages when they are no more valid.', 'hyper-cache'); ?>
         <?php _e('Invalidation process is started when blog contents are modified (new post, post update, new comment,...) so
         one or more cached pages need to be refreshed to get that new content.', 'hyper-cache'); ?>
+        <?php _e('A new comment submission or a comment moderation is considered like a post modification
+        where the post is the one the comment is relative to.', 'hyper-cache'); ?>
     </td>
 </tr>
 

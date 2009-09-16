@@ -1,6 +1,8 @@
 <?php
 @include(dirname(__FILE__) . '/hyper-cache-config.php');
 
+if (!$hyper_cache_enabled) return false;
+
 global $hyper_cache_stop;
 $hyper_cache_stop = false;
 
@@ -87,14 +89,33 @@ $hyper_file = ABSPATH . 'wp-content/hyper-cache/' . hyper_mobile_type() . $hyper
 if (is_file($hyper_file)) 
 {
     hyper_cache_log('cached page file found: ' . $hyper_cache_name);
+    
+    $hyper_cache_file_time = @filectime($hyper_file);
+    $hyper_cache_file_age = time() - $hyper_cache_file_time;
 
-    if (!$hyper_cache_timeout || (time() - filectime($hyper_file)) < $hyper_cache_timeout*60)
+    // There is a timeout and the file is still valid?
+    if ($hyper_cache_timeout == 0 || $hyper_cache_file_age < $hyper_cache_timeout) 
     {
-        hyper_cache_log('cached page still valid');
+        // A general invalidation file is missing or, if exists, is older than the cached file?
+        $hyper_cache_general_time = @filectime(ABSPATH . 'wp-content/hyper-cache/invalidation.dat');
         
-        // Load it and check is it's still valid
-        $hyper_data = unserialize(file_get_contents($hyper_file));
+        if ($hyper_cache_general_time === false || $hyper_cache_general_time < $hyper_cache_file_time)
+        {
 
+            hyper_cache_log('cached page still valid');
+        
+            // Load it and check is it's still valid
+            $hyper_data = unserialize(file_get_contents($hyper_file));
+
+            if ($hyper_data['type'] == 'home' || $hyper_data['type'] == 'archive') 
+            {
+                $hyper_cache_archive_time = @filectime(ABSPATH . 'wp-content/hyper-cache-invalidation-archive.dat');
+                if ($hyper_cache_archive_time && $hyper_cache_archive_time > $hyper_cache_file_time)
+                {
+                    $hyper_data = null;
+                }
+            }
+        }
         // Protect against broken cache files and start to check redirects and
         // 404.
         if ($hyper_data != null)
@@ -143,7 +164,7 @@ if (is_file($hyper_file))
                 }
             }
 
-            header('Last-Modified: ' . date("r", filectime($hyper_file)));
+            header('Last-Modified: ' . date("r", @filectime($hyper_file)));
 
             header('Content-Type: ' . $hyper_data['mime']);
 
@@ -233,6 +254,9 @@ function hyper_cache_callback($buffer)
         return $buffer;
     }
 
+    if (is_home()) $data['type'] = 'home';
+    else if (is_feed()) $data['type'] = 'feed';
+    else if (is_archive()) $data['type'] = 'archive';
     $buffer = trim($buffer);
 
     // Can be a trackback or other things without a body. We do not cache them, WP needs to get those calls.
@@ -297,28 +321,8 @@ function hyper_cache_write(&$data)
     fwrite($file, serialize($data));
     fclose($file);
 
-    header('Last-Modified: ' . date("r", filectime($hyper_file)));
+    header('Last-Modified: ' . date("r", @filectime($hyper_file)));
 }
-
-function hyper_cache_compress(&$buffer)
-{
-    $buffer = ereg_replace("[ \t]+", ' ', $buffer);
-    $buffer = ereg_replace("[\r\n]", "\n", $buffer);
-    $buffer = ereg_replace(" *\n *", "\n", $buffer);
-    $buffer = ereg_replace("\n+", "\n", $buffer);
-    $buffer = ereg_replace("\" />", "\"/>", $buffer);
-    $buffer = ereg_replace("<tr>\n", "<tr>", $buffer);
-    $buffer = ereg_replace("<td>\n", "<td>", $buffer);
-    $buffer = ereg_replace("<ul>\n", "<ul>", $buffer);
-    $buffer = ereg_replace("</ul>\n", "</ul>", $buffer);
-    $buffer = ereg_replace("<p>\n", "<p>", $buffer);
-    $buffer = ereg_replace("</p>\n", "</p>", $buffer);
-    $buffer = ereg_replace("</li>\n", "</li>", $buffer);
-    $buffer = ereg_replace("</td>\n", "</td>", $buffer);
-
-    return $buffer;
-}
-
 
 function hyper_mobile_type()
 {
@@ -348,27 +352,34 @@ function hyper_mobile_type()
 function hyper_cache_clean()
 {
     global $hyper_cache_timeout, $hyper_cache_clean_interval;
+    $invalidation_time = @filectime(ABSPATH . 'wp-content/hyper-cache-invalidation.dat');
+    if (!$hyper_cache_clean_interval || (!$hyper_cache_timeout && !$invalidation_time)) return;
 
-    if (!$hyper_cache_clean_interval || !$hyper_cache_timeout) return;
-    if (rand(1, 10) != 5) return;
+    if (rand(1, 20) != 1) return;
 
     hyper_cache_log('start cleaning');
 
     $time = time();
-    $file = ABSPATH . 'wp-content/hyper-cache/last-clean.dat';
-    if (file_exists($file) && ($time - filectime($file) < $hyper_cache_clean_interval*60)) return;
+    $file = ABSPATH . 'wp-content/hyper-cache-last-clean.dat';
+    $last_clean_time = @filectime($file);
+    if ($last_clean_time && ($time - $last_clean_time < $hyper_cache_clean_interval)) return;
 
-    touch(ABSPATH . 'wp-content/hyper-cache/last-clean.dat');
+    touch($file);
 
     $path = ABSPATH . 'wp-content/hyper-cache';
-    if ($handle = @opendir($path))
+    $handle = @opendir($path);
+    if ($handle)
     {
+        $count = 0;
         while ($file = readdir($handle))
         {
             if ($file == '.' || $file == '..') continue;
-
-            $t = filectime($path . '/' . $file);
-            if ($time - $t > $hyper_cache_timeout*60) @unlink($path . '/' . $file);
+            $t = @filectime($path . '/' . $file);
+            if ($time - $t > $hyper_cache_timeout || ($invalidation_time && $t < $invalidation_time)) {
+                @unlink($path . '/' . $file);
+                $count++;
+                if ($count > 100) break;
+            }
         }
         closedir($handle);
     }
