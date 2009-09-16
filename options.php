@@ -22,8 +22,15 @@ if ($installed && isset($_POST['save']))
 {
     if (!check_admin_referer()) die('No hacking please');
     
-    $options = stripslashes_deep($_POST['options']);
+    $tmp = stripslashes_deep($_POST['options']);
 
+    if ($options['gzip'] != $tmp['gzip'])
+    {
+        hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
+    }
+
+    $options = $tmp;
+    
     if (!is_numeric($options['timeout'])) $options['timeout'] = 60;
     $options['timeout'] = (int)$options['timeout'];
 
@@ -373,9 +380,9 @@ explicitely not cacheable.', 'hyper-cache'); ?>
 
 <h3><?php _e('Compression', 'hyper-cache'); ?></h3>
 
-<?php if (!function_exists('gzencode')) { ?>
+<?php if (!function_exists('gzencode') || !function_exists('gzinflate')) { ?>
 
-<p><?php _e('Your hosting space has not the "gzencode" function, so no compression options are available.', 'hyper-cache'); ?></p>
+<p><?php _e('Your hosting space has not the "gzencode" or "gzinflate" function, so no compression options are available.', 'hyper-cache'); ?></p>
 
 <?php } else { ?>
 
