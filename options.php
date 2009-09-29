@@ -8,17 +8,14 @@ if (!$options['notranslation'])
     load_plugin_textdomain('hyper-cache', 'wp-content/plugins/' . $plugin_dir, $plugin_dir);
 }
 
-$installed = is_dir(ABSPATH . 'wp-content/hyper-cache') && is_file(ABSPATH . 'wp-content/advanced-cache.php') &&
-@filesize(ABSPATH . 'wp-content/advanced-cache.php') == @filesize(ABSPATH . 'wp-content/plugins/hyper-cache/advanced-cache.php');
 
-if ($installed && isset($_POST['clean']))
+if (isset($_POST['clean']))
 {
-    //hyper_cache_invalidate();
-    hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
+    hyper_delete_path(dirname(__FILE__) . '/cache');
 }
 
 
-if ($installed && isset($_POST['save'])) 
+if (isset($_POST['save'])) 
 {
     if (!check_admin_referer()) die('No hacking please');
     
@@ -26,7 +23,7 @@ if ($installed && isset($_POST['save']))
 
     if ($options['gzip'] != $tmp['gzip'])
     {
-        hyper_delete_path(ABSPATH . 'wp-content/hyper-cache');
+        hyper_delete_path(dirname(__FILE__) . '/cache');
     }
 
     $options = $tmp;
@@ -37,110 +34,19 @@ if ($installed && isset($_POST['save']))
     if (!is_numeric($options['clean_interval'])) $options['clean_interval'] = 60;
     $options['clean_interval'] = (int)$options['clean_interval'];
 
-    $buffer = "<?php\n";
-    $buffer .= '$hyper_cache_charset = "' . get_option('blog_charset') . '"' . ";\n";
-    $buffer .= '$hyper_cache_enabled = true' . ";\n";
-    $buffer .= '$hyper_cache_stats = ' . ($options['stats']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_comment = ' . ($options['comment']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_archive = ' . ($options['archive']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_compress = ' . ($options['compress']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_timeout = ' . ($options['timeout']*60) . ";\n";
-    $buffer .= '$hyper_cache_cron_key = \'' . $options['cron_key'] . "';\n";
-    $buffer .= '$hyper_cache_get = ' . ($options['get']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_redirects = ' . ($options['redirects']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_mobile = ' . ($options['mobile']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_feed = ' . ($options['feed']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_cache_qs = ' . ($options['cache_qs']?'true':'false') . ";\n";
-
-    $buffer .= '$hyper_cache_home = ' . ($options['home']?'true':'false') . ";\n";
-    //$buffer .= '$hyper_cache_folder = \'' . $options['folder'] . "';\n";
-
-    if ($options['gzip']) $options['store_compressed'] = 1;
+    $buffer = hyper_generate_config($options);
     
-    $buffer .= '$hyper_cache_gzip = ' . ($options['gzip']?'true':'false') . ";\n";
-    $buffer .= '$hyper_cache_store_compressed = ' . ($options['store_compressed']?'true':'false') . ";\n";
-    
-    $buffer .= '$hyper_cache_urls = \'' . $options['urls'] . "';\n";
-    $buffer .= '$hyper_cache_folder = \'' . ABSPATH . 'wp-content/hyper-cache' . "';\n";
-    $buffer .= '$hyper_cache_clean_interval = ' . ($options['clean_interval']*60) . ";\n";
-
-    if (trim($options['reject']) != '')
-    {
-        $options['reject'] = str_replace(' ', "\n", $options['reject']);
-        $options['reject'] = str_replace("\r", "\n", $options['reject']);
-        $buffer .= '$hyper_cache_reject = array(';
-        $reject = explode("\n", $options['reject']);
-        $options['reject'] = '';
-        foreach ($reject as $uri)
-        {
-            $uri = trim($uri);
-            if ($uri == '') continue;
-            $buffer .= "\"" . addslashes(trim($uri)) . "\",";
-            $options['reject'] .= $uri . "\n";
-        }
-        $buffer = rtrim($buffer, ',');
-        $buffer .= ");\n";
-    }
-
-    if (trim($options['reject_agents']) != '')
-    {
-        $options['reject_agents'] = str_replace(' ', "\n", $options['reject_agents']);
-        $options['reject_agents'] = str_replace("\r", "\n", $options['reject_agents']);
-        $buffer .= '$hyper_cache_reject_agents = array(';
-        $reject_agents = explode("\n", $options['reject_agents']);
-        $options['reject_agents'] = '';
-        foreach ($reject_agents as $uri)
-        {
-            $uri = trim($uri);
-            if ($uri == '') continue;
-            $buffer .= "\"" . addslashes(strtolower(trim($uri))) . "\",";
-            $options['reject_agents'] .= $uri . "\n";
-        }
-        $buffer = rtrim($buffer, ',');
-        $buffer .= ");\n";
-    }
-
-    if (trim($options['reject_cookies']) != '')
-    {
-        $options['reject_cookies'] = str_replace(' ', "\n", $options['reject_cookies']);
-        $options['reject_cookies'] = str_replace("\r", "\n", $options['reject_cookies']);
-        $buffer .= '$hyper_cache_reject_cookies = array(';
-        $reject_cookies = explode("\n", $options['reject_cookies']);
-        $options['reject_cookies'] = '';
-        foreach ($reject_cookies as $c)
-        {
-            $c = trim($c);
-            if ($c == '') continue;
-            $buffer .= "\"" . addslashes(strtolower(trim($c))) . "\",";
-            $options['reject_cookies'] .= $c . "\n";
-        }
-        $buffer = rtrim($buffer, ',');
-        $buffer .= ");\n";
-    }
-
-    if (trim($options['mobile_agents']) != '')
-    {
-        $options['mobile_agents'] = str_replace(',', "\n", $options['mobile_agents']);
-        $options['mobile_agents'] = str_replace("\r", "\n", $options['mobile_agents']);
-        $buffer .= '$hyper_cache_mobile_agents = array(';
-        $mobile_agents = explode("\n", $options['mobile_agents']);
-        $options['mobile_agents'] = '';
-        foreach ($mobile_agents as $uri)
-        {
-            $uri = trim($uri);
-            if ($uri == '') continue;
-            $buffer .= "\"" . addslashes(strtolower(trim($uri))) . "\",";
-            $options['mobile_agents'] .= $uri . "\n";
-        }
-        $buffer = rtrim($buffer, ',');
-        $buffer .= ");\n";
-    }
-
-    $buffer .= '?>';
-    $file = fopen(ABSPATH . 'wp-content/hyper-cache-config.php', 'w');
+    $file = fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
     fwrite($file, $buffer);
     fclose($file);
     update_option('hyper', $options);
+
+    // When the cache does not expire
+    if ($options['expire_type'] == 'none')
+    {
+        @unlink(dirname(__FILE__) . '/invalidation.dat');
+        @unlink(dirname(__FILE__) . '/invalidation-archive.dat');
+    }
 } 
 else 
 {
@@ -150,43 +56,19 @@ else
     }
 }
 
+
 ?>
 <div class="wrap">
 
 <h2>Hyper Cache</h2>
 
-<?php if (!$installed) { ?>
-    <div class="alert error" style="margin-top:10px;">
-    <?php _e('Hyper Cache is NOT correctly installed: some files or directories have not been created. Check if the wp-content directory is writable and remove any advanced-cache.php file into it. Deactivate and reactivate the plugin.'); ?>
-    </div>
-<?php } ?>
-
-<?php if (!defined('WP_CACHE') || !WP_CACHE) { ?>
-    <div class="alert error" style="margin-top:10px;">
-    <?php _e('The WordPress cache system is not enabled! Please, activate it adding the line of code below in the file wp-config.php.'); ?>
-    <pre>define('WP_CACHE', true);</pre>
-    </div>
-<?php } ?>
-
-<iframe width="100%" height="100" src="http://www.satollo.net/services/hyper-cache" style="border: 1px solid #009"></iframe>
-
-<br />
-<div style="padding: 10px; background-color: #E0EFF6; border: 1px solid #006">
-    <?php printf(__('<strong>And if this plugin stops to work?</strong><br />Hyper Cache required a lot of effort to be developed and
-    I\'m pretty sure is giving you a good, even if invisible, service.
-    Probably Hyper Cache makes you save money with your hosting provider using a
-    basic and cheap hosting plan intead of a bigger and expensive one.
-    <br />So, why not consider a <a href="%s"><strong>donation</strong></a>?', 'hyper-cache'),
-    'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483'); ?>
-</div>
+<iframe width="100%" height="120" src="http://www.satollo.net/services/hyper-cache" style="border: 1px solid #ccc"></iframe>
 
 <p>
     <?php printf(__('You can find more details about configurations and working mode
     on <a href="%s">Hyper Cache official page</a>.', 'hyper-cache'),
     'http://www.satollo.net/plugins/hyper-cache'); ?>
 </p>
-
-<p>Version 2.5+ has been widely changed. Please give a look to the new invalidation options.</p>
 
 <p>
     <?php _e('Other interesting plugins:'); ?>
@@ -202,7 +84,7 @@ else
 <h3><?php _e('Cache status', 'hyper-cache'); ?></h3>
 <table class="form-table">
 <tr valign="top">
-    <th><?php _e('Cached page count', 'hyper-cache'); ?></th>
+    <th><?php _e('Files in cache (valid and expired)', 'hyper-cache'); ?></th>
     <td><?php echo hyper_count(); ?></td>
 </tr>
 </table>
@@ -230,12 +112,12 @@ else
 <?php if ($options['stats']) { ?>
 
 <?php
-$hit_304 = @filesize(ABSPATH . 'wp-content/hyper-cache-304.txt');
-$hit_404 = @filesize(ABSPATH . 'wp-content/hyper-cache-404.txt');
-$hit_gzip = @filesize(ABSPATH . 'wp-content/hyper-cache-gzip.txt');
-$hit_plain = @filesize(ABSPATH . 'wp-content/hyper-cache-plain.txt');
-$hit_wp = @filesize(ABSPATH . 'wp-content/hyper-cache-wp.txt');
-$hit_commenter = @filesize(ABSPATH . 'wp-content/hyper-cache-commenter.txt');
+$hit_304 = @filesize(dirname(__FILE__) . '/stats/hyper-cache-304.txt');
+$hit_404 = @filesize(dirname(__FILE__) . '/stats/hyper-cache-404.txt');
+$hit_gzip = @filesize(dirname(__FILE__) . '/stats/hyper-cache-gzip.txt');
+$hit_plain = @filesize(dirname(__FILE__) . '/stats/hyper-cache-plain.txt');
+$hit_wp = @filesize(dirname(__FILE__) . '/stats/hyper-cache-wp.txt');
+$hit_commenter = @filesize(dirname(__FILE__) . '/stats/hyper-cache-commenter.txt');
 $total = (float)($hit_304 + $hit_404 + $hit_gzip + $hit_plain + $hit_wp + 1);
 ?>
 
@@ -427,16 +309,6 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         <input type="checkbox" name="options[notranslation]" value="1" <?php echo $options['notranslation']?'checked':''; ?>/>
         <br />
         <?php _e('DO NOT show this panel translated.', 'hyper-cache'); ?>
-    </td>
-</tr>
-<tr valign="top">
-    <th><?php _e('HTML optimization', 'hyper-cache'); ?></th>
-    <td>
-        <input type="checkbox" name="options[compress]" value="1" <?php echo $options['compress']?'checked':''; ?>/>
-        <br />
-        <?php _e('Try to optimize the generated HTML.','hyper-cache'); ?>
-        <?php _e('Be sure to extensively verify it it works with your theme on different browsers!', 'hyper-cache'); ?>
-        <?php _e('NO MORE EFFECTIVE DUE TO COMPATIBILITY PROBLEMS', 'hyper-cache'); ?>
     </td>
 </tr>
 
