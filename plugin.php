@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a features rich cache system WordPress. If you do an auto upgrade via WordPress, you need only to reconfigure the cache, if you upgrade manually be sure to deactivate the plugin before upload the new files. Version 2.5.0 has been widely changed, look for the new invalidation options and configure as you prefer.
-Version: 2.5.5
+Version: 2.5.6
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -144,7 +144,7 @@ function hyper_cache_invalidate()
         return;
     }
 
-    if (!touch(dirname(__FILE__) . '/invalidation.dat'))
+    if (!@touch(dirname(__FILE__) . '/invalidation.dat'))
     {
         hyper_log("hyper_cache_invalidate> Unable to touch invalidation.dat");
     }
@@ -202,7 +202,7 @@ function hyper_cache_invalidate_post($post_id)
 
             hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Archive invalidation required");
 
-            if (!touch(dirname(__FILE__) . '/invalidation-archive.dat'))
+            if (!@touch(dirname(__FILE__) . '/invalidation-archive.dat'))
             {
                 hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Unable to touch invalidation-archive.dat");
             }
@@ -265,6 +265,7 @@ function hyper_count()
 add_action('switch_theme', 'hyper_cache_invalidate', 0);
 
 add_action('edit_post', 'hyper_cache_invalidate_post', 0);
+add_action('publish_post', 'hyper_cache_invalidate_post', 0);
 add_action('delete_post', 'hyper_cache_invalidate_post', 0);
 
 
