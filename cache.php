@@ -322,7 +322,7 @@ function hyper_mobile_type()
 function hyper_cache_clean()
 {
     global $hyper_cache_timeout, $hyper_cache_clean_interval;
-    $invalidation_time = @filectime(ABSPATH . 'wp-content/plugins/hyper-cache/invalidation.dat');
+    $invalidation_time = @filectime(dirname(__FILE__) . '/invalidation.dat');
     if (!$hyper_cache_clean_interval || (!$hyper_cache_timeout && !$invalidation_time)) return;
 
     if (rand(1, 20) != 1) return;
@@ -330,7 +330,7 @@ function hyper_cache_clean()
     hyper_cache_log('start cleaning');
 
     $time = time();
-    $file = ABSPATH . 'wp-content/plugins/hyper-cache/last-clean.dat';
+    $file = dirname(__FILE__) . '/last-clean.dat';
     $last_clean_time = @filectime($file);
     if ($last_clean_time && ($time - $last_clean_time < $hyper_cache_clean_interval)) return;
 
@@ -344,15 +344,20 @@ function hyper_cache_clean()
         while ($file = readdir($handle))
         {
             if ($file == '.' || $file == '..') continue;
+            hyper_cache_log('checking ' . $file . ' for cleaning');
             $t = @filectime($path . '/' . $file);
+            hyper_cache_log('file time ' . $t);
             if ($time - $t > $hyper_cache_timeout || ($invalidation_time && $t < $invalidation_time))
             {
                 @unlink($path . '/' . $file);
+                hyper_cache_log('cleaned ' . $file);
                 $count++;
-                if ($count > 100) break;
             }
         }
         closedir($handle);
+    }
+    else {
+        hyper_cache_log('unable to open cache dir');
     }
     hyper_cache_log('end cleaning');
 }
