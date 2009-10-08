@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a features rich cache system WordPress. If you do an auto upgrade via WordPress, you need only to reconfigure the cache, if you upgrade manually be sure to deactivate the plugin before upload the new files. Version 2.5.0 has been widely changed, look for the new invalidation options and configure as you prefer.
-Version: 2.6.0
+Version: 2.6.1
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -84,11 +84,6 @@ if (is_admin())
     if (!is_dir(dirname(__FILE__) . '/cache'))
     {
         $hyper_notice .= 'Hyper Cache was not able to create the folder "cache" in its installation dir. Create it by hand and make it writable.<br />';
-    }
-
-    if (!is_file(dirname(__FILE__) . '/cache/test.dat'))
-    {
-        $hyper_notice .= 'Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).<br />';
     }
 
     if (!is_file(ABSPATH . 'wp-content/advanced-cache.php'))

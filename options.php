@@ -61,7 +61,12 @@ else
 <div class="wrap">
 
 <h2>Hyper Cache</h2>
-
+<?php
+    if (!@touch(dirname(__FILE__) . '/cache/test.dat'))
+    {
+        echo '<p><strong>Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).</strong></p>';
+    }
+?>
 <iframe width="100%" height="120" src="http://www.satollo.net/services/hyper-cache" style="border: 1px solid #ccc"></iframe>
 
 <p>
