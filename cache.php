@@ -159,8 +159,13 @@ if (array_key_exists("HTTP_IF_MODIFIED_SINCE", $_SERVER))
 
 // Now serve the real content
 
-header('Cache-Control: must-revalidate');
-header('Last-Modified: ' . date("r", $hc_file_time));
+// True if user ask to NOT send Last-Modified
+if (!$hyper_cache_lastmodified)
+{
+    header('Cache-Control: must-revalidate');
+    header('Last-Modified: ' . date("r", $hc_file_time));
+}
+
 header('Content-Type: ' . $hyper_data['mime']);
 if ($hyper_data['status'] == 404) header("HTTP/1.1 404 Not Found");
 

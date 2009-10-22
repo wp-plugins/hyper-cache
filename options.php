@@ -94,7 +94,7 @@ else
 </tr>
 </table>
 <p class="submit">
-    <input class="button" type="submit" name="clean" value="<?php _e('Clean the cache', 'hyper-cache'); ?>">
+    <input class="button" type="submit" name="clean" value="<?php _e('Clear cache', 'hyper-cache'); ?>">
 </p>
 
 
@@ -314,6 +314,15 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         <input type="checkbox" name="options[notranslation]" value="1" <?php echo $options['notranslation']?'checked':''; ?>/>
         <br />
         <?php _e('DO NOT show this panel translated.', 'hyper-cache'); ?>
+    </td>
+</tr>
+
+<tr valign="top">
+    <th><?php _e('Disable Last-Modified header', 'hyper-cache'); ?></th>
+    <td>
+        <input type="checkbox" name="options[lastmodified]" value="1" <?php echo $options['lastmodified']?'checked':''; ?>/>
+        <br />
+        <?php _e('Diasable some HTTP headers (Last-Modified) which improve performances but some one is reporting they create problems which some hosting configurations.','hyper-cache'); ?>
     </td>
 </tr>
 
