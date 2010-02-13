@@ -14,7 +14,7 @@ if (isset($_POST['clean']))
     hyper_delete_path(dirname(__FILE__) . '/cache');
 }
 
-
+$error = false;
 if (isset($_POST['save'])) 
 {
     if (!check_admin_referer()) die('No hacking please');
@@ -36,9 +36,14 @@ if (isset($_POST['save']))
 
     $buffer = hyper_generate_config($options);
     
-    $file = fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
-    fwrite($file, $buffer);
-    fclose($file);
+    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'w');
+    if ($file) {
+    @fwrite($file, $buffer);
+    @fclose($file);
+    }
+    else {
+        $error = true;
+    }
     update_option('hyper', $options);
 
     // When the cache does not expire
@@ -61,6 +66,12 @@ else
 <div class="wrap">
 
 <h2>Hyper Cache</h2>
+<?php
+    if ($error)
+    {
+        echo '<p><strong>Options saved BUT not active because Hyper Cache was not able to update the file wp-content/advanced-cache.php (is it writable?).</strong></p>';
+    }
+?>
 <?php
     if (!@touch(dirname(__FILE__) . '/cache/test.dat'))
     {
