@@ -2,8 +2,8 @@
 /*
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
-Description: Hyper Cache is a features rich cache system WordPress. If you do an auto upgrade via WordPress, you need only to reconfigure the cache, if you upgrade manually be sure to deactivate the plugin before upload the new files. Version 2.5.0 has been widely changed, look for the new invalidation options and configure as you prefer.
-Version: 2.6.4
+Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
+Version: 2.6.5
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.

@@ -93,7 +93,7 @@ if (!file_exists($hc_file))
 }
 
 hyper_cache_log('Cache file exists');
-$hc_file_time = @filectime($hc_file);
+$hc_file_time = @filemtime($hc_file);
 $hc_file_age = time() - $hc_file_time;
 
 if ($hc_file_age > $hyper_cache_timeout)
@@ -103,7 +103,7 @@ if ($hc_file_age > $hyper_cache_timeout)
     return;
 }
 
-$hc_invalidation_time = @filectime(dirname(__FILE__) . '/invalidation.dat');
+$hc_invalidation_time = @filemtime(dirname(__FILE__) . '/invalidation.dat');
 if ($hc_invalidation_time && $hc_file_time < $hc_invalidation_time)
 {
     hyper_cache_log('Invalidation file is newer than cache file');
@@ -125,7 +125,7 @@ if ($hyper_data['type'] == 'home' || $hyper_data['type'] == 'archive')
 {
     hyper_cache_log('Archive page type: ' . $hyper_data['type']);
 
-    $hc_invalidation_archive_file =  @filectime(dirname(__FILE__) . '/invalidation-archive.dat');
+    $hc_invalidation_archive_file =  @filemtime(dirname(__FILE__) . '/invalidation-archive.dat');
     if ($hc_invalidation_archive_file && $hc_file_time < $hc_invalidation_archive_file)
     {
         hyper_cache_log('Archive invalidation file is newer than cache file');
@@ -299,7 +299,7 @@ function hyper_cache_write(&$data)
     fwrite($file, serialize($data));
     fclose($file);
 
-    header('Last-Modified: ' . date("r", @filectime($hc_file)));
+    header('Last-Modified: ' . date("r", @filemtime($hc_file)));
 }
 
 function hyper_mobile_type()
@@ -330,7 +330,7 @@ function hyper_mobile_type()
 function hyper_cache_clean()
 {
     global $hyper_cache_timeout, $hyper_cache_clean_interval;
-    $invalidation_time = @filectime(dirname(__FILE__) . '/invalidation.dat');
+    $invalidation_time = @filemtime(dirname(__FILE__) . '/invalidation.dat');
     if (!$hyper_cache_clean_interval || (!$hyper_cache_timeout && !$invalidation_time)) return;
 
     if (rand(1, 20) != 1) return;
@@ -339,7 +339,7 @@ function hyper_cache_clean()
 
     $time = time();
     $file = dirname(__FILE__) . '/last-clean.dat';
-    $last_clean_time = @filectime($file);
+    $last_clean_time = @filemtime($file);
     if ($last_clean_time && ($time - $last_clean_time < $hyper_cache_clean_interval)) return;
 
     touch($file);
@@ -353,7 +353,7 @@ function hyper_cache_clean()
         {
             if ($file == '.' || $file == '..') continue;
             hyper_cache_log('checking ' . $file . ' for cleaning');
-            $t = @filectime($path . '/' . $file);
+            $t = @filemtime($path . '/' . $file);
             hyper_cache_log('file time ' . $t);
             if ($time - $t > $hyper_cache_timeout || ($invalidation_time && $t < $invalidation_time))
             {
