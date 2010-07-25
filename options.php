@@ -187,7 +187,7 @@ else
     <td>
         <input type="checkbox" name="options[plugin_mobile_pack]" value="1" <?php echo $options['plugin_mobile_pack']?'checked':''; ?>/>
         <br />
-        Enbale integration with WordPress Mobile Pack plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
+        Enbale integration with <a href="http://wordpress.org/extend/plugins/wordpress-mobile-pack/">WordPress Mobile Pack</a> plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
         the different pages generated.
     </td>
 </tr>
