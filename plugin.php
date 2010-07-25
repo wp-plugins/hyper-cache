@@ -341,9 +341,9 @@ function hyper_redirect_canonical($redirect_url, $requested_url)
 
 function hyper_log($text)
 {
-    $file = fopen(dirname(__FILE__) . '/log.txt', 'a');
-    fwrite($file, $text . "\n");
-    fclose($file);
+//    $file = fopen(dirname(__FILE__) . '/log.txt', 'a');
+//    fwrite($file, $text . "\n");
+//    fclose($file);
 }
 
 function hyper_generate_config(&$options)
