@@ -1,7 +1,7 @@
 === Hyper Cache ===
 Tags: cache,chaching,speed,performance,super cache,wp cache
 Requires at least: 2.5
-Tested up to: 2.9
+Tested up to: 3.0
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo,momo360modena
@@ -15,6 +15,8 @@ people which have their blogs on low resources hosting provider
 (cpu and mysql). It works even with hosting based on Microsoft IIS (just tuning
 the configuration). It has three invalidation method: all the cache, single post
 based and nothing but with control on home and archive pages invalidation.
+
+It has not yet tested for multisite configuration (WordPress 3.0 feature).
 
 Some features:
 

@@ -49,8 +49,8 @@ if (isset($_POST['save']))
     // When the cache does not expire
     if ($options['expire_type'] == 'none')
     {
-        @unlink(dirname(__FILE__) . '/invalidation.dat');
-        @unlink(dirname(__FILE__) . '/invalidation-archive.dat');
+        @unlink(dirname(__FILE__) . '/cache/_global.dat');
+        @unlink(dirname(__FILE__) . '/cache/_archives.dat');
     }
 } 
 else 
@@ -73,7 +73,7 @@ else
     }
 ?>
 <?php
-    if (!@touch(dirname(__FILE__) . '/cache/test.dat'))
+    if (!@touch(dirname(__FILE__) . '/cache/_test.dat'))
     {
         echo '<p><strong>Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).</strong></p>';
     }
@@ -103,66 +103,13 @@ else
     <th><?php _e('Files in cache (valid and expired)', 'hyper-cache'); ?></th>
     <td><?php echo hyper_count(); ?></td>
 </tr>
+<tr valign="top">
+    <th>Cleaning process</th>
+    <td>Next run on: <?php echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), wp_next_scheduled('hyper_clean') + get_option('gmt_offset')*3600); ?></td>
+</tr>
 </table>
 <p class="submit">
     <input class="button" type="submit" name="clean" value="<?php _e('Clear cache', 'hyper-cache'); ?>">
-</p>
-
-
-<h3><?php _e('Statistics', 'hyper-cache'); ?></h3>
-
-<table class="form-table">
-<tr valign="top">
-    <th><?php _e('Enable statistics collection', 'hyper-cache'); ?></th>
-    <td>
-        <input type="checkbox" name="options[stats]" value="1" <?php echo $options['stats']?'checked':''; ?>/>
-        <br />
-        <?php _e('Very experimental and not really efficient,
-        but can be useful to check how the cache works.', 'hyper-cache'); ?>
-        <?php _e('Many .txt files willbe created inside the wp-content folder,
-        you can safely delete them if you need.', 'hyper-cache'); ?>
-    </td>
-</tr>
-</table>
-
-<?php if ($options['stats']) { ?>
-
-<?php
-$hit_304 = @filesize(dirname(__FILE__) . '/stats/hyper-cache-304.txt');
-$hit_404 = @filesize(dirname(__FILE__) . '/stats/hyper-cache-404.txt');
-$hit_gzip = @filesize(dirname(__FILE__) . '/stats/hyper-cache-gzip.txt');
-$hit_plain = @filesize(dirname(__FILE__) . '/stats/hyper-cache-plain.txt');
-$hit_wp = @filesize(dirname(__FILE__) . '/stats/hyper-cache-wp.txt');
-$hit_commenter = @filesize(dirname(__FILE__) . '/stats/hyper-cache-commenter.txt');
-$total = (float)($hit_304 + $hit_404 + $hit_gzip + $hit_plain + $hit_wp + 1);
-?>
-
-<p>
-<?php _e('Below are statitics about requests Hyper Cache can handle and the ratio between the
-requests served by Hyper Cache and the ones served by WordPress.', 'hyper-cache'); ?>
-
-<?php _e('Requests that bypass the cache due to configurations are not counted because they are
-explicitely not cacheable.', 'hyper-cache'); ?>
-</p>
-<table cellspacing="5">
-<tr><td>Cache hits</td><td><div style="width:<?php echo (int)(($total-$hit_wp)/$total*300); ?>px; background-color: #0f0; float: left;">&nbsp;</div> <?php echo (int)(($total-$hit_wp)/$total*100); ?>%</td></tr>
-<tr><td>Cache misses</td><td><div style="width:<?php echo (int)(($hit_wp)/$total*300); ?>px; background-color: #f00; float: left;">&nbsp;</div> <?php echo (int)(($hit_wp)/$total*100); ?>%</td></tr>
-</table>
-
-<p><?php _e('Detailed data broken up on different types of cache hits'); ?></p>
-
-<table cellspacing="5">
-<tr><td>Total requests handled</td><td><?php echo $total; ?></td></tr>
-<tr><td>304 responses</td><td><div style="width:<?php echo (int)(($hit_304)/$total*300); ?>px; background-color: #339; float: left;">&nbsp;</div><?php echo (int)($hit_304/$total*100); ?>% (<?php echo $hit_304; ?>)</td></tr>
-<tr><td>404 responses</td><td><div style="width:<?php echo (int)(($hit_404)/$total*300); ?>px; background-color: #33b; float: left;">&nbsp;</div><?php echo (int)($hit_404/$total*100); ?>% (<?php echo $hit_404; ?>)</td></tr>
-<tr><td>Compressed pages served</td><td><div style="width:<?php echo (int)(($hit_gzip)/$total*300); ?>px; background-color: #33d; float: left;">&nbsp;</div><?php echo (int)($hit_gzip/$total*100); ?>% (<?php echo $hit_gzip; ?>)</td></tr>
-<tr><td>Plain pages served</td><td><div style="width:<?php echo (int)(($hit_plain)/$total*300); ?>px; background-color: #33f; float: left;">&nbsp;</div><?php echo (int)($hit_plain/$total*100); ?>% (<?php echo $hit_plain; ?>)</td></tr>
-<tr><td>Not in cache</td><td><div style="width:<?php echo (int)(($hit_wp)/$total*300); ?>px; background-color: #f00; float: left;">&nbsp;</div><?php echo (int)($hit_wp/$total*100); ?>% (<?php echo $hit_wp; ?>)</td></tr>
-</table>
-
-<?php } ?>
-<p class="submit">
-    <input class="button" type="submit" name="save" value="<?php _e('Update'); ?>">
 </p>
 
 <h3><?php _e('Configuration'); ?></h3>
@@ -180,22 +127,6 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         <?php _e('If a cached page is older than specified value (expired) it is no more used and
         will be regenerated on next request of it.', 'hyper-cache'); ?>
         <?php _e('720 minutes is half a day, 1440 is a full day and so on.', 'hyper-cache'); ?>
-    </td>
-</tr>
-
-<tr valign="top">
-    <th><?php _e('Cache autoclean', 'hyper-cache'); ?></th>
-    <td>
-        <input type="text" size="5" name="options[clean_interval]" value="<?php echo htmlspecialchars($options['clean_interval']); ?>"/>
-        (<?php _e('minutes', 'hyper-cache'); ?>)
-        <br />
-        <?php _e('Frequency of the autoclean process which removes to expired cached pages to free
-        disk space.', 'hyper-cache'); ?>
-        <?php _e('Set lower or equals of timeout above. If set to zero the autoclean process never
-        runs.', 'hyper-cache'); ?>
-        <?php _e('There is no performance improvements setting to zero, worse the cache folder will fill up
-        being slower.', 'hyper-cache'); ?>
-        <?php _e('If timeout is set to zero, autoclean never runs, so this value has no meaning', 'hyper-cache'); ?>
     </td>
 </tr>
 
@@ -251,6 +182,15 @@ explicitely not cacheable.', 'hyper-cache'); ?>
 
 <h3><?php _e('Configuration for mobile devices', 'hyper-cache'); ?></h3>
 <table class="form-table">
+<tr valign="top">
+    <th>WordPress Mobile Pack</th>
+    <td>
+        <input type="checkbox" name="options[plugin_mobile_pack]" value="1" <?php echo $options['plugin_mobile_pack']?'checked':''; ?>/>
+        <br />
+        Enbale integration with WordPress Mobile Pack plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
+        the different pages generated.
+    </td>
+</tr>
 <tr valign="top">
     <th><?php _e('Detect mobile devices', 'hyper-cache'); ?></th>
     <td>
@@ -353,6 +293,13 @@ explicitely not cacheable.', 'hyper-cache'); ?>
         <br />
         <?php _e('Cache WordPress redirects.', 'hyper-cache'); ?>
         <?php _e('WordPress sometime sends back redirects that can be cached to avoid further processing time.', 'hyper-cache'); ?>
+    </td>
+</tr>
+
+<tr valign="top">
+    <th><?php _e('Page not found caching (HTTP 404)', 'hyper-cache'); ?></th>
+    <td>
+        <input type="checkbox" name="options[notfound]" value="1" <?php echo $options['notfound']?'checked':''; ?>/>
     </td>
 </tr>
 

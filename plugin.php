@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.6.6
+Version: 2.7.0
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -38,10 +38,11 @@ define('HYPER_CACHE', '2.6.6');
 $hyper_invalidated = false;
 $hyper_invalidated_post_id = null;
 
+
 // On activation, we try to create files and directories. If something goes wrong
 // (eg. for wrong permission on file system) the options page will give a
 // warning.
-add_action('activate_hyper-cache/plugin.php', 'hyper_activate');
+register_activation_hook(__FILE__, 'hyper_activate');
 function hyper_activate()
 {
     $options = get_option('hyper');
@@ -53,6 +54,7 @@ function hyper_activate()
         $options['archive'] = 1;
         $options['timeout'] = 1440;
         $options['redirects'] = 1;
+        $options['notfound'] = 1;
         $options['clean_interval'] = 60;
         $options['gzip'] = 1;
         $options['store_compressed'] = 1;
@@ -66,17 +68,51 @@ function hyper_activate()
     @fclose($file);
 
     @mkdir(dirname(__FILE__) . '/cache');
-    @touch(dirname(__FILE__) . '/cache/test.dat');
+    @touch(dirname(__FILE__) . '/cache/_test.dat');
 
-    //@mkdir(ABSPATH . 'wp-content/hyper-cache', 0766);
-
-//    $buffer = file_get_contents(dirname(__FILE__) . '/advanced-cache.php');
-//    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'wb');
-//    if ($file) {
-//        fwrite($file, $buffer);
-//        fclose($file);
-//    }
+    wp_schedule_event(time()+60, 'hourly', 'hyper_clean');
 }
+
+add_action('hyper_clean', 'hyper_clean');
+function hyper_clean()
+{
+    // Latest global invalidation (may be false)
+    $invalidation_time = @filemtime(dirname(__FILE__) . '/cache/_global.dat');
+
+    hyper_log('start cleaning');
+
+    $options = get_option('hyper');
+
+    $timeout = $options['timeout']*60;
+    if ($timeout == 0) return;
+
+    $path = dirname(__FILE__) . '/cache';
+    $time = time();
+
+    $handle = @opendir($path);
+    if (!$handle) {
+        hyper_log('unable to open cache dir');
+        return;
+    }
+
+    while ($file = readdir($handle)) {
+        if ($file == '.' || $file == '..' || $file[0] == '_') continue;
+
+        hyper_log('checking ' . $file . ' for cleaning');
+        $t = @filemtime($path . '/' . $file);
+        hyper_log('file time ' . $t);
+        if ($time - $t > $timeout || ($invalidation_time && $t < $invalidation_time)) {
+            @unlink($path . '/' . $file);
+            hyper_log('cleaned ' . $file);
+        }
+    }
+    closedir($handle);
+
+    hyper_log('end cleaning');
+}
+
+register_deactivation_hook(__FILE__, 'hyper_deactivate');
+
 
 $hyper_notice = '';
 
@@ -106,13 +142,13 @@ if (is_admin())
     }
 }
 
-add_action('deactivate_hyper-cache/plugin.php', 'hyper_deactivate');
 function hyper_deactivate()
 {
+        wp_clear_scheduled_hook('hyper_clean');
 //@unlink(ABSPATH . 'wp-content/advanced-cache.php');
 
 // We can safely delete the hyper-cache directory, is not more used at this time.
-    hyper_delete_path(dirname(__FILE__) . '/cache');
+    //hyper_delete_path(dirname(__FILE__) . '/cache');
 
     // burn the file without delete it so one can rewrite it
     $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'wb');
@@ -153,15 +189,15 @@ function hyper_cache_invalidate()
         return;
     }
 
-    if (!@touch(dirname(__FILE__) . '/invalidation.dat'))
+    if (!@touch(dirname(__FILE__) . '/cache/_global.dat'))
     {
-        hyper_log("hyper_cache_invalidate> Unable to touch invalidation.dat");
+        hyper_log("hyper_cache_invalidate> Unable to touch cache/_global.dat");
     }
     else
     {
-        hyper_log("hyper_cache_invalidate> Touched invalidation.dat");
+        hyper_log("hyper_cache_invalidate> Touched cache/_global.dat");
     }
-    @unlink(dirname(__FILE__) . '/invalidation-archive.dat');
+    @unlink(dirname(__FILE__) . '/cache/_archives.dat');
     $hyper_invalidated = true;
 
 }
@@ -198,9 +234,19 @@ function hyper_cache_invalidate_post($post_id)
         $link = substr($link, 7);
         $file = md5($link);
 
-        @unlink(dirname(__FILE__) . '/cache/' . $file . '.dat');
-        @unlink(dirname(__FILE__) . '/cache/pda' . $file . '.dat');
-        @unlink(dirname(__FILE__) . '/cache/iphone' . $file . '.dat');
+        $handle = @opendir(dirname(__FILE__) . '/cache');
+        if ($handle)
+        {
+            while ($f = readdir($handle))
+            {
+                if (substr($f, 0, 32) == $file)
+                {
+                    @unlink($path . '/' . $f);
+                    hyper_log('Deleted ' . $f);
+                }
+            }
+            closedir($handle);
+        }
 
         $hyper_invalidated_post_id = $post_id;
 
@@ -211,13 +257,13 @@ function hyper_cache_invalidate_post($post_id)
 
             hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Archive invalidation required");
 
-            if (!@touch(dirname(__FILE__) . '/invalidation-archive.dat'))
+            if (!@touch(dirname(__FILE__) . '/cache/_archives.dat'))
             {
-                hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Unable to touch invalidation-archive.dat");
+                hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Unable to touch cache/_archives.dat");
             }
             else
             {
-                hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Touched invalidation-archive.dat");
+                hyper_log("hyper_cache_invalidate_post(" . $post_id . ")> Touched cache/_archives.dat");
             }
         }
         return;
@@ -295,9 +341,9 @@ function hyper_redirect_canonical($redirect_url, $requested_url)
 
 function hyper_log($text)
 {
-//    $file = fopen(dirname(__FILE__) . '/plugin.log', 'a');
-//    fwrite($file, $text . "\n");
-//    fclose($file);
+    $file = fopen(dirname(__FILE__) . '/log.txt', 'a');
+    fwrite($file, $text . "\n");
+    fclose($file);
 }
 
 function hyper_generate_config(&$options)
@@ -308,6 +354,7 @@ function hyper_generate_config(&$options)
     if ($timeout == 0) $timeout = 2000000000;
 
     $buffer = "<?php\n";
+    $buffer .= '$hyper_cache_path = "' . dirname(__FILE__) . '/cache/"' . ";\n";
     $buffer .= '$hyper_cache_charset = "' . get_option('blog_charset') . '"' . ";\n";
     // Collect statistics
     $buffer .= '$hyper_cache_stats = ' . (isset($options['stats'])?'true':'false') . ";\n";
@@ -319,8 +366,12 @@ function hyper_generate_config(&$options)
     $buffer .= '$hyper_cache_timeout = ' . ($timeout) . ";\n";
     // Cache redirects?
     $buffer .= '$hyper_cache_redirects = ' . (isset($options['redirects'])?'true':'false') . ";\n";
+    // Cache page not found?
+    $buffer .= '$hyper_cache_notfound = ' . (isset($options['notfound'])?'true':'false') . ";\n";
     // Separate caching for mobile agents?
     $buffer .= '$hyper_cache_mobile = ' . (isset($options['mobile'])?'true':'false') . ";\n";
+    // WordPress mobile pack integration?
+    $buffer .= '$hyper_cache_plugin_mobile_pack = ' . (isset($options['plugin_mobile_pack'])?'true':'false') . ";\n";
     // Cache the feeds?
     $buffer .= '$hyper_cache_feed = ' . (isset($options['feed'])?'true':'false') . ";\n";
     // Cache GET request with parameters?
