@@ -58,6 +58,9 @@ foreach ($_COOKIE as $n=>$v) {
 // Do not cache WP pages, even if those calls typically don't go throught this script
 if (strpos($hyper_uri, '/wp-') !== false) return false;
 
+// Multisite
+if (function_exists('is_multisite') && is_multisite() && strpos($hyper_uri, '/files/') !== false) return false;
+
 $hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
 
 // The name of the file with html and other data
