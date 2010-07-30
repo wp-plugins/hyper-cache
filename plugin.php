@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.7.2
+Version: 2.7.3
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -33,7 +33,7 @@ Changelog
 See the readme.txt.
 
 */
-define('HYPER_CACHE', '2.6.6');
+define('HYPER_CACHE', '2.7.3');
 
 $hyper_invalidated = false;
 $hyper_invalidated_post_id = null;
@@ -231,18 +231,26 @@ function hyper_cache_invalidate_post($post_id)
         $post = get_post($post_id);
 
         $link = get_permalink($post_id);
+        hyper_log('Permalink to invalidate ' . $link);
         $link = substr($link, 7);
+        hyper_log('Corrected permalink to invalidate ' . $link);
         $file = md5($link);
+        hyper_log('File basename to invalidate ' . $file);
 
-        $handle = @opendir(dirname(__FILE__) . '/cache');
+        $path = dirname(__FILE__) . '/cache';
+        $handle = @opendir($path);
         if ($handle)
         {
             while ($f = readdir($handle))
             {
                 if (substr($f, 0, 32) == $file)
                 {
-                    @unlink($path . '/' . $f);
-                    hyper_log('Deleted ' . $f);
+                    if (unlink($path . '/' . $f)) {
+                        hyper_log('Deleted ' . $path . '/' . $f);
+                    }
+                    else {
+                        hyper_log('Unable to delete ' . $path . '/' . $f);
+                    }
                 }
             }
             closedir($handle);
