@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.7.1
+Version: 2.7.2
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -354,10 +354,10 @@ function hyper_generate_config(&$options)
     if ($timeout == 0) $timeout = 2000000000;
 
     $buffer = "<?php\n";
-    $buffer .= '$hyper_cache_path = "' . dirname(__FILE__) . '/cache/"' . ";\n";
+    $buffer .= '$hyper_cache_path = "' . addslashes(dirname(__FILE__)) . '/cache/"' . ";\n";
     $buffer .= '$hyper_cache_charset = "' . get_option('blog_charset') . '"' . ";\n";
     // Collect statistics
-    $buffer .= '$hyper_cache_stats = ' . (isset($options['stats'])?'true':'false') . ";\n";
+    //$buffer .= '$hyper_cache_stats = ' . (isset($options['stats'])?'true':'false') . ";\n";
     // Do not cache for commenters
     $buffer .= '$hyper_cache_comment = ' . (isset($options['comment'])?'true':'false') . ";\n";
     // Ivalidate archives on post invalidation
@@ -386,7 +386,7 @@ function hyper_generate_config(&$options)
     $buffer .= '$hyper_cache_gzip = ' . (isset($options['gzip'])?'true':'false') . ";\n";
     $buffer .= '$hyper_cache_store_compressed = ' . (isset($options['store_compressed'])?'true':'false') . ";\n";
 
-    $buffer .= '$hyper_cache_clean_interval = ' . ($options['clean_interval']*60) . ";\n";
+    //$buffer .= '$hyper_cache_clean_interval = ' . ($options['clean_interval']*60) . ";\n";
 
     if (isset($options['reject']) && trim($options['reject']) != '')
     {
