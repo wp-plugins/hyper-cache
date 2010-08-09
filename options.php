@@ -65,7 +65,7 @@ else
 ?>
 <div class="wrap">
 
-<h2>Hyper Cache</h2>
+<h2>Hyper Cache <small><?php echo HYPER_CACHE; ?></small></h2>
 <?php
     if ($error)
     {
@@ -94,7 +94,7 @@ else
     <a href="http://www.satollo.net/plugins/comment-image">Comment Image</a>.
 </p>
 
-<form method="post">
+<form method="post" action="">
 <?php wp_nonce_field(); ?>
 
 <h3><?php _e('Cache status', 'hyper-cache'); ?></h3>
@@ -300,6 +300,21 @@ else
     <th><?php _e('Page not found caching (HTTP 404)', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[notfound]" value="1" <?php echo $options['notfound']?'checked':''; ?>/>
+    </td>
+</tr>
+
+<tr valign="top">
+    <th>Strip query string</th>
+    <td>
+        <input type="checkbox" name="options[strip_qs]" value="1" <?php echo $options['strip_qs']?'checked':''; ?>/>
+        <br />
+        This is a really special case, usually you have to kept it disabled. When enabled, URL with query string will be
+        reduced removing the query string. So the URL http://www.domain.com/post-title and
+        http://www.domain.com/post-title?a=b&amp;c=d are cached as a single page.<br />
+        Setting this option disable the next one.
+        <br />
+        <strong>Many plugins can stop to work correctly with this option enabled
+        (eg. my <a href="http://www.satollo.net/plugins/newsletter">Newsletter plugin</a>)</strong>
     </td>
 </tr>
 

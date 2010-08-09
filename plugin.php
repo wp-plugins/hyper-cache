@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.7.3
+Version: 2.7.4
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -33,7 +33,7 @@ Changelog
 See the readme.txt.
 
 */
-define('HYPER_CACHE', '2.7.3');
+define('HYPER_CACHE', '2.7.4');
 
 $hyper_invalidated = false;
 $hyper_invalidated_post_id = null;
@@ -384,6 +384,8 @@ function hyper_generate_config(&$options)
     $buffer .= '$hyper_cache_feed = ' . (isset($options['feed'])?'true':'false') . ";\n";
     // Cache GET request with parameters?
     $buffer .= '$hyper_cache_cache_qs = ' . (isset($options['cache_qs'])?'true':'false') . ";\n";
+    // Strip query string?
+    $buffer .= '$hyper_cache_strip_qs = ' . (isset($options['strip_qs'])?'true':'false') . ";\n";
     // DO NOT cache the home?
     $buffer .= '$hyper_cache_home = ' . (isset($options['home'])?'true':'false') . ";\n";
     // Disable last modified header

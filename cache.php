@@ -10,8 +10,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 if (defined(SID) && SID != '') return false;
 
 $hyper_uri = $_SERVER['REQUEST_URI'];
+$hyper_qs = strpos($hyper_uri, '?');
 
-if (!$hyper_cache_cache_qs && strpos($hyper_uri, '?') !== false) return false;
+if ($hyper_qs !== false) {
+    if ($hyper_cache_strip_qs) $hyper_uri = substr($hyper_uri, 0, $hyper_qs);
+    else if (!$hyper_cache_cache_qs) return false;
+}
+
+
 
 if (strpos($hyper_uri, 'robots.txt') !== false) return false;
 
