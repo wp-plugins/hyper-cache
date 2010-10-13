@@ -1,6 +1,7 @@
 <?php
 
 global $hyper_cache_stop;
+
 $hyper_cache_stop = false;
 
 // Do not cache post request (comments, plugins and so on)
@@ -16,8 +17,6 @@ if ($hyper_qs !== false) {
     if ($hyper_cache_strip_qs) $hyper_uri = substr($hyper_uri, 0, $hyper_qs);
     else if (!$hyper_cache_cache_qs) return false;
 }
-
-
 
 if (strpos($hyper_uri, 'robots.txt') !== false) return false;
 
@@ -130,8 +129,10 @@ if (array_key_exists("HTTP_IF_MODIFIED_SINCE", $_SERVER)) {
 // Now serve the real content
 
 // True if user ask to NOT send Last-Modified
+header('Cache-Control: no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: Wed, 11 Jan 1984 05:00:00 GMT');
 if (!$hyper_cache_lastmodified) {
-    header('Cache-Control: must-revalidate');
     header('Last-Modified: ' . date("r", $hc_file_time));
 }
 
@@ -270,10 +271,7 @@ function hyper_mobile_type() {
 
     if (!isset($hyper_cache_mobile) || $hyper_cache_mobile_agents === false) return '';
 
-
-
     $hyper_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-    //$hyper_agents = explode(',', "elaine/3.0,iphone,ipod,palm,eudoraweb,blazer,avantgo,windows ce,cellphone,small,mmef20,danger,hiptop,proxinet,newt,palmos,netfront,sharp-tq-gx10,sonyericsson,symbianos,up.browser,up.link,ts21i-10,mot-v,portalmmm,docomo,opera mini,palm,handspring,nokia,kyocera,samsung,motorola,mot,smartphone,blackberry,wap,playstation portable,lg,mmp,opwv,symbian,epoc");
     foreach ($hyper_cache_mobile_agents as $hyper_a) {
         if (strpos($hyper_agent, $hyper_a) !== false) {
             if (strpos($hyper_agent, 'iphone') || strpos($hyper_agent, 'ipod')) {
