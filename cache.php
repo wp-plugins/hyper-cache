@@ -310,4 +310,3 @@ function hyper_cache_gzdecode ($data) {
     $unpacked = gzinflate(substr($data, $headerlen));
     return $unpacked;
 }
-?>
