@@ -65,7 +65,31 @@ else
 ?>
 <div class="wrap">
 
-<h2>Hyper Cache <small><?php echo HYPER_CACHE; ?></small></h2>
+<h2>Hyper Cache</h2>
+
+<div style="border: 1px solid #6d6; border-radius: 5px; background-color: #efe; padding: 10px;">
+<table cellpadding="0" cellspacing="0">
+    <tr>
+    <td valign="middle" align="left" width="110">
+        <a href="http://www.satollo.net/donations" target="_blank"><img src="http://www.satollo.net/images/donate.gif"/></a>
+    </td>
+    <td valign="top" align="left">
+        <strong>Your donation is like a diamond: it's forever.</strong> There is <a href="http://www.satollo.net/donations" target="_blank">something
+        to read about donations</a>.
+        <br />
+        <small>My plugins:
+        <a href="http://www.satollo.net/plugins/hyper-cache">Hyper Cache</a>,
+        <a href="http://www.satollo.net/plugins/newsletter">Newsletter</a>,
+        <a href="http://www.satollo.net/plugins/include-me">Include Me</a>,
+        <a href="http://www.satollo.net/plugins/post-layout">Post Layout</a>,
+        <a href="http://www.satollo.net/plugins/postacards">Postcards</a>,
+        <a href="http://www.satollo.net/plugins/comment-notifier">Comment Notifier</a>,
+        <a href="http://www.satollo.net/plugins/comment-image">Comment Image</a>.</small>
+    </td>
+</tr>
+</table>
+</div>
+
 <?php
     if ($error)
     {
@@ -78,7 +102,6 @@ else
         echo '<p><strong>Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).</strong></p>';
     }
 ?>
-<iframe width="100%" height="120" src="http://www.satollo.net/services/hyper-cache" style="border: 1px solid #ccc"></iframe>
 
 <p>
     <?php printf(__('You can find more details about configurations and working mode
@@ -273,7 +296,7 @@ else
     <td>
         <input type="checkbox" name="options[lastmodified]" value="1" <?php echo $options['lastmodified']?'checked':''; ?>/>
         <br />
-        <?php _e('Diasable some HTTP headers (Last-Modified) which improve performances but some one is reporting they create problems which some hosting configurations.','hyper-cache'); ?>
+        <?php _e('Disable some HTTP headers (Last-Modified) which improve performances but some one is reporting they create problems which some hosting configurations.','hyper-cache'); ?>
     </td>
 </tr>
 
