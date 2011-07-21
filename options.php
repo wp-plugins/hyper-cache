@@ -63,32 +63,45 @@ else
 
 
 ?>
+
+<script>
+jQuery(document).ready(function () {
+   jQuery(".wrap h3").each(function () {
+       jQuery(this).nextUntil('h3').hide();
+   });
+
+   jQuery(".wrap h3").click(function () {
+       jQuery(this).nextUntil('h3').toggle();
+   });
+});
+</script>
+<style>
+.hints {
+    border: 1px solid #aaf;
+    background-color: #fafaff;
+    padding: 5px;
+    margin-top: 10px;
+    border-bottom-left-radius: 4px 4px;
+    border-bottom-right-radius: 4px 4px;
+    border-top-left-radius: 4px 4px;
+    border-top-right-radius: 4px 4px;
+}
+.form-table {
+    background-color: #fff;
+    border: 3px solid #ddd;
+}
+
+.form-table th {
+    text-align: right;
+    font-weight: bold;
+}
+</style>
+
 <div class="wrap">
 
 <h2>Hyper Cache</h2>
 
-<div style="border: 1px solid #6d6; border-radius: 5px; background-color: #efe; padding: 10px;">
-<table cellpadding="0" cellspacing="0">
-    <tr>
-    <td valign="middle" align="left" width="110">
-        <a href="http://www.satollo.net/donations" target="_blank"><img src="http://www.satollo.net/images/donate.gif"/></a>
-    </td>
-    <td valign="top" align="left">
-        <strong>Your donation is like a diamond: it's forever.</strong> There is <a href="http://www.satollo.net/donations" target="_blank">something
-        to read about donations</a>.
-        <br />
-        <small>My plugins:
-        <a href="http://www.satollo.net/plugins/hyper-cache">Hyper Cache</a>,
-        <a href="http://www.satollo.net/plugins/newsletter">Newsletter</a>,
-        <a href="http://www.satollo.net/plugins/include-me">Include Me</a>,
-        <a href="http://www.satollo.net/plugins/post-layout">Post Layout</a>,
-        <a href="http://www.satollo.net/plugins/postacards">Postcards</a>,
-        <a href="http://www.satollo.net/plugins/comment-notifier">Comment Notifier</a>,
-        <a href="http://www.satollo.net/plugins/comment-image">Comment Image</a>.</small>
-    </td>
-</tr>
-</table>
-</div>
+<iframe src="http://frames.satollo.net/hyper-cache.php" frameborder="0" width="100%" height="80" style="border: 0"></iframe>
 
 <?php
     if ($error)
@@ -97,6 +110,7 @@ else
     }
 ?>
 <?php
+    @mkdir(dirname(__FILE__) . '/cache');
     if (!@touch(dirname(__FILE__) . '/cache/_test.dat'))
     {
         echo '<p><strong>Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).</strong></p>';
@@ -109,16 +123,14 @@ else
     'http://www.satollo.net/plugins/hyper-cache'); ?>
 </p>
 
-<p>
-    <?php _e('Other interesting plugins:'); ?>
-    <a href="http://www.satollo.net/plugins/post-layout">Post Layout</a>,
-    <a href="http://www.satollo.net/plugins/postacards">Postcards</a>,
-    <a href="http://www.satollo.net/plugins/comment-notifier">Comment Notifier</a>,
-    <a href="http://www.satollo.net/plugins/comment-image">Comment Image</a>.
-</p>
+
 
 <form method="post" action="">
 <?php wp_nonce_field(); ?>
+
+<p class="submit">
+    <input class="button" type="submit" name="clean" value="<?php _e('Clear cache', 'hyper-cache'); ?>">
+</p>
 
 <h3><?php _e('Cache status', 'hyper-cache'); ?></h3>
 <table class="form-table">
@@ -128,12 +140,21 @@ else
 </tr>
 <tr valign="top">
     <th>Cleaning process</th>
-    <td>Next run on: <?php echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), wp_next_scheduled('hyper_clean') + get_option('gmt_offset')*3600); ?></td>
+    <td>
+        Next run on: 
+        <?php
+        $next_scheduled = wp_next_scheduled('hyper_clean');
+        if (empty($next_scheduled)) echo '? (read below)';
+        else echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), $next_scheduled + get_option('gmt_offset')*3600);
+        ?>
+        <div class="hints">
+            The cleaning process runs hourly and it's ok to run it hourly: that grant you an efficient cache. If above there is not
+            a valid next run time, wait 10 seconds and reenter this panel. If nothing change, try to deactivate and reactivate Hyper Cache.
+        </div>
+    </td>
 </tr>
 </table>
-<p class="submit">
-    <input class="button" type="submit" name="clean" value="<?php _e('Clear cache', 'hyper-cache'); ?>">
-</p>
+
 
 <h3><?php _e('Configuration'); ?></h3>
 
@@ -144,12 +165,13 @@ else
     <td>
         <input type="text" size="5" name="options[timeout]" value="<?php echo htmlspecialchars($options['timeout']); ?>"/>
         (<?php _e('minutes', 'hyper-cache'); ?>)
-        <br />
+        <div class="hints">
         <?php _e('Minutes a cached page is valid and served to users. A zero value means a cached page is
         valid forever.', 'hyper-cache'); ?>
         <?php _e('If a cached page is older than specified value (expired) it is no more used and
         will be regenerated on next request of it.', 'hyper-cache'); ?>
         <?php _e('720 minutes is half a day, 1440 is a full day and so on.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -166,12 +188,13 @@ else
         <input type="checkbox" name="options[archive]" value="1" <?php echo $options['archive']?'checked':''; ?>/>
         <?php _e('Invalidate home, archives, categories on single post invalidation', 'hyper-cache'); ?>
         <br />
-        <br />
+        <div class="hints">
         <?php _e('"Invalidation" is the process of deleting cached pages when they are no more valid.', 'hyper-cache'); ?>
         <?php _e('Invalidation process is started when blog contents are modified (new post, post update, new comment,...) so
         one or more cached pages need to be refreshed to get that new content.', 'hyper-cache'); ?>
         <?php _e('A new comment submission or a comment moderation is considered like a post modification
         where the post is the one the comment is relative to.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -179,11 +202,12 @@ else
     <th><?php _e('Disable cache for commenters', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[comment]" value="1" <?php echo $options['comment']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('When users leave comments, WordPress show pages with their comments even if in moderation
         (and not visible to others) and pre-fills the comment form.', 'hyper-cache'); ?>
         <?php _e('If you want to keep those features, enable this option.', 'hyper-cache'); ?>
         <?php _e('The caching system will be less efficient but the blog more usable.'); ?>
+        </div>
 
     </td>
 </tr>
@@ -192,10 +216,11 @@ else
     <th><?php _e('Feeds caching', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[feed]" value="1" <?php echo $options['feed']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('When enabled the blog feeds will be cache as well.', 'hyper-cache'); ?>
         <?php _e('Usually this options has to be left unchecked but if your blog is rather static,
         you can enable it and have a bit more efficiency', 'hyper-cache'); ?>
+        </div>
     </td>    
 </tr>
 </table>
@@ -209,18 +234,20 @@ else
     <th>WordPress Mobile Pack</th>
     <td>
         <input type="checkbox" name="options[plugin_mobile_pack]" value="1" <?php echo $options['plugin_mobile_pack']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         Enbale integration with <a href="http://wordpress.org/extend/plugins/wordpress-mobile-pack/">WordPress Mobile Pack</a> plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
         the different pages generated.
+        </div>
     </td>
 </tr>
 <tr valign="top">
     <th><?php _e('Detect mobile devices', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[mobile]" value="1" <?php echo $options['mobile']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('When enabled mobile devices will be detected and the cached page stored under different name.', 'hyper-cache'); ?>
         <?php _e('This makes blogs with different themes for mobile devices to work correctly.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -228,9 +255,10 @@ else
     <th><?php _e('Mobile agent list', 'hyper-cache'); ?></th>
     <td>
         <textarea wrap="off" rows="4" cols="70" name="options[mobile_agents]"><?php echo htmlspecialchars($options['mobile_agents']); ?></textarea>
-        <br />
+        <div class="hints">
         <?php _e('One per line mobile agents to check for when a page is requested.', 'hyper-cache'); ?>
         <?php _e('The mobile agent string is matched against the agent a device is sending to the server.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 </table>
@@ -252,13 +280,14 @@ else
     <th><?php _e('Enable compression', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[gzip]" value="1" <?php echo $options['gzip']?'checked':''; ?> />
-        <br />
+        <div class="hints">
         <?php _e('When possible the page will be sent compressed to save bandwidth.', 'hyper-cache'); ?>
         <?php _e('Only the textual part of a page can be compressed, not images, so a photo
         blog will consume a lot of bandwidth even with compression enabled.', 'hyper-cache'); ?>
         <?php _e('Leave the options disabled if you note malfunctions, like blank pages.', 'hyper-cache'); ?>
         <br />
         <?php _e('If you enable this option, the option below will be enabled as well.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -266,10 +295,11 @@ else
     <th><?php _e('Disk space usage', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[store_compressed]" value="1" <?php echo $options['store_compressed']?'checked':''; ?> />
-        <br />
+        <div class="hints">
         <?php _e('Enable this option to minimize disk space usage.', 'hyper-cache'); ?>
         <?php _e('The cache will be a little less performant.', 'hyper-cache'); ?>
         <?php _e('Leave the options disabled if you note malfunctions, like blank pages.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 </table>
@@ -286,8 +316,9 @@ else
     <th><?php _e('Translation', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[notranslation]" value="1" <?php echo $options['notranslation']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('DO NOT show this panel translated.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -295,8 +326,9 @@ else
     <th><?php _e('Disable Last-Modified header', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[lastmodified]" value="1" <?php echo $options['lastmodified']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('Disable some HTTP headers (Last-Modified) which improve performances but some one is reporting they create problems which some hosting configurations.','hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -304,8 +336,9 @@ else
     <th><?php _e('Home caching', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[home]" value="1" <?php echo $options['home']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('DO NOT cache the home page so it is always fresh.','hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -330,7 +363,7 @@ else
     <th>Strip query string</th>
     <td>
         <input type="checkbox" name="options[strip_qs]" value="1" <?php echo $options['strip_qs']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         This is a really special case, usually you have to kept it disabled. When enabled, URL with query string will be
         reduced removing the query string. So the URL http://www.domain.com/post-title and
         http://www.domain.com/post-title?a=b&amp;c=d are cached as a single page.<br />
@@ -338,6 +371,7 @@ else
         <br />
         <strong>Many plugins can stop to work correctly with this option enabled
         (eg. my <a href="http://www.satollo.net/plugins/newsletter">Newsletter plugin</a>)</strong>
+        </div>
     </td>
 </tr>
 
@@ -345,21 +379,30 @@ else
     <th><?php _e('URL with parameters', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[cache_qs]" value="1" <?php echo $options['cache_qs']?'checked':''; ?>/>
-        <br />
+        <div class="hints">
         <?php _e('Cache requests with query string (parameters).', 'hyper-cache'); ?>
         <?php _e('This option has to be enabled for blogs which have post URLs with a question mark on them.', 'hyper-cache'); ?>
         <?php _e('This option is disabled by default because there is plugins which use
         URL parameter to perform specific action that cannot be cached', 'hyper-cache'); ?>
         <?php _e('For who is using search engines friendly permalink format is safe to
         leave this option disabled, no performances will be lost.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
+</table>
 
+
+<h3>Filters</h3>
+<p>
+    Here you can: exclude pages and posts from the cache, specifying their address (URI); disable Hyper Cache for specific
+    User Agents (browsers, bot, mobile devices, ...); disable the cache for users that have specific cookies.
+</p>
+<table class="form-table">
 <tr valign="top">
     <th><?php _e('URI to reject', 'hyper-cache'); ?></th>
     <td>
         <textarea wrap="off" rows="5" cols="70" name="options[reject]"><?php echo htmlspecialchars($options['reject']); ?></textarea>
-        <br />
+        <div class="hints">
         <?php _e('Write one URI per line, each URI has to start with a slash.', 'hyper-cache'); ?>
         <?php _e('A specified URI will match the requested URI if the latter starts with the former.', 'hyper-cache'); ?>
         <?php _e('If you want to specify a stric matching, surround the URI with double quotes.', 'hyper-cache'); ?>
@@ -377,6 +420,7 @@ else
             foreach($languages as $l) echo $base . '/' . $l . '/ ';
         }
         ?>
+        </div>
     </td>
 </tr>
 
@@ -384,9 +428,10 @@ else
     <th><?php _e('Agents to reject', 'hyper-cache'); ?></th>
     <td>
         <textarea wrap="off" rows="5" cols="70" name="options[reject_agents]"><?php echo htmlspecialchars($options['reject_agents']); ?></textarea>
-        <br />
+        <div class="hints">
         <?php _e('Write one agent per line.', 'hyper-cache'); ?>
         <?php _e('A specified agent will match the client agent if the latter contains the former. The matching is case insensitive.', 'hyper-cache'); ?>
+        </div>
     </td>
 </tr>
 
@@ -394,7 +439,7 @@ else
     <th><?php _e('Cookies matching', 'hyper-cache'); ?></th>
     <td>
         <textarea wrap="off" rows="5" cols="70" name="options[reject_cookies]"><?php echo htmlspecialchars($options['reject_cookies']); ?></textarea>
-        <br />
+        <div class="hints">
         <?php _e('Write one cookie name per line.', 'hyper-cache'); ?>
         <?php _e('When a specified cookie will match one of the cookie names sent bby the client the cache stops.', 'hyper-cache'); ?>
         <?php if (defined('FBC_APP_KEY_OPTION')) { ?>
@@ -404,7 +449,7 @@ else
         <br />
         <strong><?php echo get_option(FBC_APP_KEY_OPTION); ?>_user</strong>
         <?php } ?>
-
+        </div>
     </td>
 </tr>
 

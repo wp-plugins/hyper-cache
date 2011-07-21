@@ -133,7 +133,7 @@ header('Cache-Control: no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: Wed, 11 Jan 1984 05:00:00 GMT');
 if (!$hyper_cache_lastmodified) {
-    header('Last-Modified: ' . date("r", $hc_file_time));
+    header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $hc_file_time). " GMT");
 }
 
 header('Content-Type: ' . $hyper_data['mime']);
