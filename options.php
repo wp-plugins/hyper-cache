@@ -11,7 +11,7 @@ if (!$options['notranslation'])
 
 if (isset($_POST['clean']))
 {
-    hyper_delete_path(dirname(__FILE__) . '/cache');
+    hyper_delete_path(WP_CONTENT_DIR . '/cache/hyper-cache');
 }
 
 $error = false;
@@ -23,7 +23,7 @@ if (isset($_POST['save']))
 
     if ($options['gzip'] != $tmp['gzip'])
     {
-        hyper_delete_path(dirname(__FILE__) . '/cache');
+        hyper_delete_path(WP_CONTENT_DIR . '/cache/hyper-cache');
     }
 
     $options = $tmp;

@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.3 =
+
+* fixed the clean from admin panel
+
 = 2.8.2 =
 
 * moved the cache folder to wp-content/cache/hyper-cache
