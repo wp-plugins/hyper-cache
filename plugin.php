@@ -8,7 +8,7 @@ Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
 
-Copyright 2010  Satollo  (email : info@satollo.net)
+Copyright 2011  Satollo  (email : info@satollo.net)
  
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
