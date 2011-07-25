@@ -84,6 +84,12 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.2 =
+
+* moved the cache folder to wp-content/cache/hyper-cache
+* configuration panel has no more expandable sections
+* the cached pages are no more deleted on update
+
 = 2.8.1 =
 
 * fixed the Last Modified header (thanks Yuri C.)

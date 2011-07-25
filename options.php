@@ -49,8 +49,8 @@ if (isset($_POST['save']))
     // When the cache does not expire
     if ($options['expire_type'] == 'none')
     {
-        @unlink(dirname(__FILE__) . '/cache/_global.dat');
-        @unlink(dirname(__FILE__) . '/cache/_archives.dat');
+        @unlink(WP_CONTENT_DIR . '/cache/hyper-cache/_global.dat');
+        @unlink(WP_CONTENT_DIR . '/cache/hyper-cache/_archives.dat');
     }
 } 
 else 
@@ -63,18 +63,6 @@ else
 
 
 ?>
-
-<script>
-jQuery(document).ready(function () {
-   jQuery(".wrap h3").each(function () {
-       jQuery(this).nextUntil('h3').hide();
-   });
-
-   jQuery(".wrap h3").click(function () {
-       jQuery(this).nextUntil('h3').toggle();
-   });
-});
-</script>
 <style>
 .hints {
     border: 1px solid #aaf;
@@ -99,6 +87,13 @@ jQuery(document).ready(function () {
 
 <div class="wrap">
 
+<?php if (!defined('WP_CACHE') || !WP_CACHE) { ?>
+<div class="error">
+    To use this working mode, you must add to the file wp-config.php (at its beginning after the &lt;?php) the line of code:
+    <code>define('WP_CACHE', true);</code>.
+</div>
+<?php } ?>
+
 <h2>Hyper Cache</h2>
 
 <iframe src="http://frames.satollo.net/hyper-cache.php" frameborder="0" width="100%" height="80" style="border: 0"></iframe>
@@ -110,10 +105,9 @@ jQuery(document).ready(function () {
     }
 ?>
 <?php
-    @mkdir(dirname(__FILE__) . '/cache');
-    if (!@touch(dirname(__FILE__) . '/cache/_test.dat'))
+    if (!wp_mkdir_p(WP_CONTENT_DIR . '/cache/hyper-cache'))
     {
-        echo '<p><strong>Hyper Cache was not able to create files in the folder "cache" in its installation dir. Make it writable (eg. chmod 777).</strong></p>';
+        echo '<p><strong>Hyper Cache was not able to create the folder "cache/hyper-cache" under the wp-content folder. Make it writable (eg. chmod 777).</strong></p>';
     }
 ?>
 
