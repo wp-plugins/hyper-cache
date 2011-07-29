@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.4 =
+
+* fixed the single page invalidation
+
 = 2.8.3 =
 
 * fixed the clean from admin panel

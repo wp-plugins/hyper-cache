@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.8.3
+Version: 2.8.4
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -187,7 +187,7 @@ function hyper_cache_invalidate_post($post_id)
         $file = md5($link);
         hyper_log('File basename to invalidate ' . $file);
 
-        $path = dirname(__FILE__) . '/cache';
+        $path = WP_CONTENT_DIR . '/cache/hyper-cache';
         $handle = @opendir($path);
         if ($handle)
         {
