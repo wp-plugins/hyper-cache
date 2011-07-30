@@ -179,6 +179,8 @@ function hyper_cache_start($delete=true) {
 function hyper_cache_callback($buffer) {
     global $hyper_cache_notfound, $hyper_cache_stop, $hyper_cache_charset, $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hc_file, $hyper_cache_name, $hyper_cache_gzip;
 
+    if (!function_exists('is_home')) return $buffer;
+    
     if (function_exists('apply_filters')) $buffer = apply_filters('hyper_cache_buffer', $buffer);
 
     if ($hyper_cache_stop) return $buffer;

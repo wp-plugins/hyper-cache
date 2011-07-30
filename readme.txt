@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.5 =
+
+* fixed the "is_home" warning issue
+
 = 2.8.4 =
 
 * fixed the single page invalidation
