@@ -1,12 +1,12 @@
 === Hyper Cache ===
-Tags: cache,chaching,speed,performance,super cache,wp cache
+Tags: cache,chaching,speed,performance,super cache,wp cache,optimization,staticization
 Requires at least: 2.5
-Tested up to: 3.2.1
+Tested up to: 3.3.1
 Stable tag: trunk
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
 Contributors: satollo,momo360modena
 
-Hyper Cache is flexible and easy to configure cache system for WordPress. It's aim is to work on any installation.
+Hyper Cache is flexible and easy to configure cache system for WordPress.
 
 == Description ==
 
@@ -64,25 +64,22 @@ Before upgrade DEACTIVATE the plugin and then ACTIVATE and RECONFIGURE!
 
 == Frequently Asked Questions ==
 
-**How can I submit a bug?**
-
-Write me to info@satollo.com, please, it's the quicker way to have it fixed. You can write to the 
-WordPress forum, too, but I read it rarely.
-
-**Where can I find versions history?**
-
-On this page: [Post Layout versions](http://www.satollo.com/english/wordpress/post-layout/versions).
-
-**Other FAQs?**
-
-I'm collection tips and FAQ on [this page](http://www.satollo.com/english/wordpress/hyper-cache/configuration) 
-so I can update it more easly.
+See the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache) 
     
 == Screenshots ==
 
 No screenshots are available.
 
 == Changelog ==
+
+= 2.8.7 =
+
+* Admin panel fixes
+* Introduced the text domain (re-trnslation needed)
+
+= 2.8.6 =
+
+* Chinese translation by Ragnarok!
 
 = 2.8.5 =
 

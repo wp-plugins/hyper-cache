@@ -89,32 +89,29 @@ else
 
 <?php if (!defined('WP_CACHE') || !WP_CACHE) { ?>
 <div class="error">
-    To use this working mode, you must add to the file wp-config.php (at its beginning after the &lt;?php) the line of code:
-    <code>define('WP_CACHE', true);</code>.
+    <?php _e('You must add to the file wp-config.php (at its beginning after the &lt;?php) the line of code: <code>define(\'WP_CACHE\', true);</code>.', 'hyper-cache'); ?>
 </div>
 <?php } ?>
 
 <h2>Hyper Cache</h2>
 
-<iframe src="http://frames.satollo.net/hyper-cache.php" frameborder="0" width="100%" height="80" style="border: 0"></iframe>
+<?php include dirname(__FILE__) . '/header.php'; ?>
 
 <?php
     if ($error)
     {
-        echo '<p><strong>Options saved BUT not active because Hyper Cache was not able to update the file wp-content/advanced-cache.php (is it writable?).</strong></p>';
+        echo __('<p><strong>Options saved BUT not active because Hyper Cache was not able to update the file wp-content/advanced-cache.php (is it writable?).</strong></p>', 'hyper-cache');
     }
 ?>
 <?php
     if (!wp_mkdir_p(WP_CONTENT_DIR . '/cache/hyper-cache'))
     {
-        echo '<p><strong>Hyper Cache was not able to create the folder "cache/hyper-cache" under the wp-content folder. Make it writable (eg. chmod 777).</strong></p>';
+        echo __('<p><strong>Hyper Cache was not able to create the folder "wp-content/cache/hyper-cache". Make it manually setting permissions to 777.</strong></p>', 'hyper-cache');
     }
 ?>
 
 <p>
-    <?php printf(__('You can find more details about configurations and working mode
-    on <a href="%s">Hyper Cache official page</a>.', 'hyper-cache'),
-    'http://www.satollo.net/plugins/hyper-cache'); ?>
+    <?php printf(__('You can find more details about configurations and working mode on <a href="%s">Hyper Cache official page</a>.', 'hyper-cache'), 'http://www.satollo.net/plugins/hyper-cache'); ?>
 </p>
 
 
@@ -133,17 +130,16 @@ else
     <td><?php echo hyper_count(); ?></td>
 </tr>
 <tr valign="top">
-    <th>Cleaning process</th>
+    <th><?php _e('Cleaning process', 'hyper-cache'); ?></th>
     <td>
-        Next run on: 
+        <?php _e('Next run on: ', 'hyper-cache'); ?>
         <?php
         $next_scheduled = wp_next_scheduled('hyper_clean');
         if (empty($next_scheduled)) echo '? (read below)';
         else echo gmdate(get_option('date_format') . ' ' . get_option('time_format'), $next_scheduled + get_option('gmt_offset')*3600);
         ?>
         <div class="hints">
-            The cleaning process runs hourly and it's ok to run it hourly: that grant you an efficient cache. If above there is not
-            a valid next run time, wait 10 seconds and reenter this panel. If nothing change, try to deactivate and reactivate Hyper Cache.
+			<?php _e('The cleaning process runs hourly and it\'s ok to run it hourly: that grant you an efficient cache. If above there is not a valid next run time, wait 10 seconds and reenter this panel. If nothing change, try to deactivate and reactivate Hyper Cache.', 'hyper-cache'); ?>
         </div>
     </td>
 </tr>

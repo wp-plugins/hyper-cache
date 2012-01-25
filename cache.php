@@ -8,7 +8,7 @@ $hyper_cache_stop = false;
 if ($_SERVER["REQUEST_METHOD"] == 'POST') return false;
 
 // Try to avoid enabling the cache if sessions are managed with request parameters and a session is active
-if (defined(SID) && SID != '') return false;
+if (defined('SID') && SID != '') return false;
 
 $hyper_uri = $_SERVER['REQUEST_URI'];
 $hyper_qs = strpos($hyper_uri, '?');

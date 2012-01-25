@@ -2,8 +2,9 @@
 /*
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
-Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. Before update <a href="http://www.satollo.net/tag/hyper-cache" target="_blank">read the version changes</a>. To manually upgrade remeber the sequence: deactivate, update, activate.
-Version: 2.8.5
+Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. <a href="http://www.satollo.net/plugins/hyper-cache" target="_blank">Hyper Cache official page</a>. To manually upgrade remember the sequence: deactivate, update, reactivate.
+Version: 2.8.7
+Text Domain: hyper-cache
 Author: Satollo
 Author URI: http://www.satollo.net
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -41,7 +42,6 @@ function hyper_activate()
     wp_clear_scheduled_hook('hyper_clean');
 
     if (!is_array($options)) {
-
         $options = array();
         $options['comment'] = 1;
         $options['archive'] = 1;
