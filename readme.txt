@@ -72,6 +72,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.8 =
+
+* Internationalization fixes
+
 = 2.8.7 =
 
 * Admin panel fixes

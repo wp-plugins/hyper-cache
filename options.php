@@ -146,7 +146,7 @@ else
 </table>
 
 
-<h3><?php _e('Configuration'); ?></h3>
+<h3><?php _e('Configuration', 'hyper-cache'); ?></h3>
 
 <table class="form-table">
 
@@ -196,7 +196,7 @@ else
         <?php _e('When users leave comments, WordPress show pages with their comments even if in moderation
         (and not visible to others) and pre-fills the comment form.', 'hyper-cache'); ?>
         <?php _e('If you want to keep those features, enable this option.', 'hyper-cache'); ?>
-        <?php _e('The caching system will be less efficient but the blog more usable.'); ?>
+        <?php _e('The caching system will be less efficient but the blog more usable.', 'hyper-cache'); ?>
         </div>
 
     </td>
@@ -221,12 +221,12 @@ else
 <h3><?php _e('Configuration for mobile devices', 'hyper-cache'); ?></h3>
 <table class="form-table">
 <tr valign="top">
-    <th>WordPress Mobile Pack</th>
+    <th><?php _e('WordPress Mobile Pack', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[plugin_mobile_pack]" value="1" <?php echo $options['plugin_mobile_pack']?'checked':''; ?>/>
         <div class="hints">
-        Enbale integration with <a href="http://wordpress.org/extend/plugins/wordpress-mobile-pack/">WordPress Mobile Pack</a> plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
-        the different pages generated.
+           <?php _e('Enbale integration with <a href="http://wordpress.org/extend/plugins/wordpress-mobile-pack/">WordPress Mobile Pack</a> plugin. If you have that plugin, Hyper Cache use it to detect mobile devices and caches saparately
+    the different pages generated.', 'hyper-cache'); ?>
         </div>
     </td>
 </tr>
@@ -350,17 +350,17 @@ else
 </tr>
 
 <tr valign="top">
-    <th>Strip query string</th>
+    <th><?php _e('Strip query string', 'hyper-cache'); ?></th>
     <td>
         <input type="checkbox" name="options[strip_qs]" value="1" <?php echo $options['strip_qs']?'checked':''; ?>/>
         <div class="hints">
-        This is a really special case, usually you have to kept it disabled. When enabled, URL with query string will be
-        reduced removing the query string. So the URL http://www.domain.com/post-title and
-        http://www.domain.com/post-title?a=b&amp;c=d are cached as a single page.<br />
-        Setting this option disable the next one.
-        <br />
-        <strong>Many plugins can stop to work correctly with this option enabled
-        (eg. my <a href="http://www.satollo.net/plugins/newsletter">Newsletter plugin</a>)</strong>
+           <?php _e('This is a really special case, usually you have to kept it disabled. When enabled, URL with query string will be
+    reduced removing the query string. So the URL http://www.domain.com/post-title and
+    http://www.domain.com/post-title?a=b&amp;c=d are cached as a single page.<br />
+    Setting this option disable the next one.', 'hyper-cache'); ?>
+          <br />
+        <?php _e('<strong>Many plugins can stop to work correctly with this option enabled
+        (eg. my <a href="http://www.satollo.net/plugins/newsletter">Newsletter plugin</a>)</strong>', 'hyper-cache'); ?>
         </div>
     </td>
 </tr>
