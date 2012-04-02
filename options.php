@@ -382,11 +382,12 @@ else
 </table>
 
 
-<h3>Filters</h3>
+<h3><?php _e('Filters', 'hyper-cache'); ?></h3>
 <p>
-    Here you can: exclude pages and posts from the cache, specifying their address (URI); disable Hyper Cache for specific
-    User Agents (browsers, bot, mobile devices, ...); disable the cache for users that have specific cookies.
+    <?php _e('Here you can: exclude pages and posts from the cache, specifying their address (URI); disable Hyper Cache for specific
+    User Agents (browsers, bot, mobile devices, ...); disable the cache for users that have specific cookies.', 'hyper-cache'); ?>
 </p>
+
 <table class="form-table">
 <tr valign="top">
     <th><?php _e('URI to reject', 'hyper-cache'); ?></th>

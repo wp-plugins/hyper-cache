@@ -72,6 +72,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.8.9 =
+
+* TW and CN translations changed (by Ragnarok)
+
 = 2.8.8 =
 
 * Internationalization fixes
