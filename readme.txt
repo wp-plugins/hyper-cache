@@ -72,6 +72,19 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.0 =
+
+All patches listed below are by Florian Höch (as soon has his blog will be online I'll give a link to it)
+
+* compression on the fly option when browser accept compressed data but is set to not store it
+* added the Vary header
+* fixed the Cache-Control/Expires and Last-Modified headers
+* remove the trailing slash for permalink (even if WordPress should send a redirect and Hyper Cache should already intercept it)
+* added a few safety checks for gzencode/decode functions in cache.php
+* new configuration option: allow browser caching
+* allow browser to bypass the server-side cache
+* some options panel fixes and improvements
+
 = 2.8.9 =
 
 * TW and CN translations changed (by Ragnarok)

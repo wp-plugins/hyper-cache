@@ -95,6 +95,8 @@ else
 
 <h2>Hyper Cache</h2>
 
+<p>Thank you to Florian Höch (<a href="http://hoech.net" target="_blank">hoech.net</a>) for his great contribution to version 2.9.0.</p>
+
 <?php include dirname(__FILE__) . '/header.php'; ?>
 
 <?php
@@ -213,6 +215,16 @@ else
         </div>
     </td>    
 </tr>
+
+<tr valign="top">
+    <th><?php _e('Allow browser caching', 'hyper-cache'); ?></th>
+    <td>
+        <input type="checkbox" name="options[browsercache]" value="1" <?php echo $options['browsercache']?'checked':''; ?>/>
+        <div class="hints">
+        <?php _e('Allow browser caching.','hyper-cache'); ?>
+        </div>
+    </td>
+</tr>
 </table>
 <p class="submit">
     <input class="button" type="submit" name="save" value="<?php _e('Update'); ?>">
@@ -267,27 +279,43 @@ else
 
 <table class="form-table">
 <tr valign="top">
-    <th><?php _e('Enable compression', 'hyper-cache'); ?></th>
+    <th><?php _e('Store compressed pages', 'hyper-cache'); ?></th>
     <td>
-        <input type="checkbox" name="options[gzip]" value="1" <?php echo $options['gzip']?'checked':''; ?> />
+        <input type="checkbox" name="options[store_compressed]" value="1" <?php echo $options['store_compressed']?'checked':''; ?>
+            onchange="jQuery('input[name=&quot;options[gzip]&quot;]').attr('disabled', !this.checked)" />
         <div class="hints">
-        <?php _e('When possible the page will be sent compressed to save bandwidth.', 'hyper-cache'); ?>
-        <?php _e('Only the textual part of a page can be compressed, not images, so a photo
-        blog will consume a lot of bandwidth even with compression enabled.', 'hyper-cache'); ?>
+        <?php _e('Enable this option to minimize disk space usage and make sending of compressed pages possible with the option below.', 'hyper-cache'); ?>
+        <?php _e('The cache will be a little less performant.', 'hyper-cache'); ?>
         <?php _e('Leave the options disabled if you note malfunctions, like blank pages.', 'hyper-cache'); ?>
         <br />
-        <?php _e('If you enable this option, the option below will be enabled as well.', 'hyper-cache'); ?>
+        <?php _e('If you enable this option, the option below will be available as well.', 'hyper-cache'); ?>
         </div>
     </td>
 </tr>
 
 <tr valign="top">
-    <th><?php _e('Disk space usage', 'hyper-cache'); ?></th>
+    <th><?php _e('Send compressed pages', 'hyper-cache'); ?></th>
     <td>
-        <input type="checkbox" name="options[store_compressed]" value="1" <?php echo $options['store_compressed']?'checked':''; ?> />
+        <input type="checkbox" name="options[gzip]" value="1" <?php echo $options['gzip']?'checked':''; ?>
+            <?php echo $options['store_compressed']?'':'disabled'; ?> />
         <div class="hints">
-        <?php _e('Enable this option to minimize disk space usage.', 'hyper-cache'); ?>
-        <?php _e('The cache will be a little less performant.', 'hyper-cache'); ?>
+        <?php _e('When possible (i.e. if the browser accepts compression and the page was cached compressed) the page will be sent compressed to save bandwidth.', 'hyper-cache'); ?>
+        <?php _e('Only the textual part of a page can be compressed, not images, so a photo
+        blog will consume a lot of bandwidth even with compression enabled.', 'hyper-cache'); ?>
+        <?php _e('Leave the options disabled if you note malfunctions, like blank pages.', 'hyper-cache'); ?>
+        <br />
+        <?php _e('If you enable this option, the option below will be available as well.', 'hyper-cache'); ?>
+        </div>
+    </td>
+</tr>
+
+<tr valign="top">
+    <th><?php _e('On-the-fly compression', 'hyper-cache'); ?></th>
+    <td>
+        <input type="checkbox" name="options[gzip_on_the_fly]" value="1" <?php echo $options['gzip_on_the_fly']?'checked':''; ?> />
+        <div class="hints">
+        <?php _e('When possible (i.e. if the browser accepts compression) use on-the-fly compression to save bandwidth when sending pages which are not compressed.', 'hyper-cache'); ?>
+        <?php _e('Serving of such pages will be a little less performant.', 'hyper-cache'); ?>
         <?php _e('Leave the options disabled if you note malfunctions, like blank pages.', 'hyper-cache'); ?>
         </div>
     </td>
@@ -376,6 +404,16 @@ else
         URL parameter to perform specific action that cannot be cached', 'hyper-cache'); ?>
         <?php _e('For who is using search engines friendly permalink format is safe to
         leave this option disabled, no performances will be lost.', 'hyper-cache'); ?>
+        </div>
+    </td>
+</tr>
+
+<tr valign="top">
+    <th><?php _e('Allow browser to bypass cache', 'hyper-cache'); ?></th>
+    <td>
+        <input type="checkbox" name="options[nocache]" value="1" <?php echo $options['nocache']?'checked':''; ?>/>
+        <div class="hints">
+        <?php _e('Do not use cache if browser sends no-cache header (e.g. on explicit page reload).','hyper-cache'); ?>
         </div>
     </td>
 </tr>
