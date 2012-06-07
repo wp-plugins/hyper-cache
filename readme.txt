@@ -72,6 +72,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.0.1 =
+
+* small fix for trailing slashes
+
 = 2.9.0 =
 
 All patches listed below are by Florian Höch (as soon has his blog will be online I'll give a link to it)
