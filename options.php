@@ -95,7 +95,13 @@ else
 
 <h2>Hyper Cache</h2>
 
-<p>Thank you to Florian Höch (<a href="http://hoech.net" target="_blank">hoech.net</a>) for his great contribution to version 2.9.0.</p>
+<h3>Contributors</h3>
+
+<p>
+  <strong>Florian Höch</strong> (<a href="http://hoech.net" target="_blank">hoech.net</a>) for new features on version 2.9+. 
+  <strong>Quentin</strong> (<a href="http://www.tradpress.fr" target="_blank">TradPress</a>) for French translation. 
+  <strong>Mckryak</strong> for Russian translation. Tommy Tung alias Ragnarok for Chineese and Twaineese translations. And many others to be added.
+</p>
 
 <?php include dirname(__FILE__) . '/header.php'; ?>
 

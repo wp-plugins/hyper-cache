@@ -72,6 +72,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.0.2 =
+
+* added French translation
+
 = 2.9.0.1 =
 
 * small fix for trailing slashes
