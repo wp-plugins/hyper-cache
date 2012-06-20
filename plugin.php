@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. <a href="http://www.satollo.net/plugins/hyper-cache" target="_blank">Hyper Cache official page</a>. To manually upgrade remember the sequence: deactivate, update, reactivate.
-Version: 2.9.0.2
+Version: 2.9.0.3
 Text Domain: hyper-cache
 Author: Stefano Lissa
 Author URI: http://www.satollo.net
@@ -184,7 +184,7 @@ function hyper_cache_invalidate_post($post_id)
         hyper_log('Permalink to invalidate ' . $link);
         // Remove 'http://', and for wordpress 'pretty URLs' strip trailing slash (e.g. 'http://my-site.com/my-post/' -> 'my-site.com/my-post')
         // The latter ensures existing cache files are still used if a wordpress admin just adds/removes a trailing slash to/from the permalink format
-        $link = rtrim(substr($link, 7), '/');
+        $link = substr($link, 7);
         hyper_log('Corrected permalink to invalidate ' . $link);
         $file = md5($link);
         hyper_log('File basename to invalidate ' . $file);

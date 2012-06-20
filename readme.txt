@@ -72,6 +72,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.0.3 =
+
+* potential duplicated content fix
+
 = 2.9.0.2 =
 
 * added French translation

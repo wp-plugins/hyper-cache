@@ -72,7 +72,7 @@ if (strpos($hyper_uri, '/wp-') !== false) return hyper_cache_exit();
 if (function_exists('is_multisite') && is_multisite() && strpos($hyper_uri, '/files/') !== false) return hyper_cache_exit();
 
 // Prefix host, and for wordpress 'pretty URLs' strip trailing slash (e.g. '/my-post/' -> 'my-site.com/my-post')
-$hyper_uri = rtrim($_SERVER['HTTP_HOST'] . $hyper_uri, '/');
+$hyper_uri = $_SERVER['HTTP_HOST'] . $hyper_uri;
 
 // The name of the file with html and other data
 $hyper_cache_name = md5($hyper_uri);
