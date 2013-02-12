@@ -125,7 +125,7 @@ if ($hyper_data['type'] == 'home' || $hyper_data['type'] == 'archive') {
 
 // Valid cache file check ends here
 
-if ($hyper_data['location']) {
+if (!empty($hyper_data['location'])) {
     header('Location: ' . $hyper_data['location']);
     flush();
     die();
@@ -151,10 +151,10 @@ if (!$hyper_cache_lastmodified) {
 }
 
 header('Content-Type: ' . $hyper_data['mime']);
-if ($hyper_data['status'] == 404) header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found");
+if (isset($hyper_data['status']) && $hyper_data['status'] == 404) header($_SERVER['SERVER_PROTOCOL'] . " 404 Not Found");
 
 // Send the cached html
-if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false &&
+if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false &&
     (($hyper_cache_gzip && !empty($hyper_data['gz'])) || ($hyper_cache_gzip_on_the_fly && function_exists('gzencode')))) {
     header('Content-Encoding: gzip');
     header('Vary: Accept-Encoding');
@@ -168,7 +168,7 @@ if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false &&
 else {
 // No compression accepted, check if we have the plain html or
 // decompress the compressed one.
-    if ($hyper_data['html']) {
+    if (!empty($hyper_data['html'])) {
     //header('Content-Length: ' . strlen($hyper_data['html']));
         echo $hyper_data['html'];
     }

@@ -3,7 +3,7 @@
 Plugin Name: Hyper Cache
 Plugin URI: http://www.satollo.net/plugins/hyper-cache
 Description: Hyper Cache is a cache system for WordPress to improve it's perfomances and save resources. <a href="http://www.satollo.net/plugins/hyper-cache" target="_blank">Hyper Cache official page</a>. To manually upgrade remember the sequence: deactivate, update, reactivate.
-Version: 2.9.0.4
+Version: 2.9.1
 Text Domain: hyper-cache
 Author: Stefano Lissa
 Author URI: http://www.satollo.net
@@ -56,7 +56,7 @@ function hyper_activate()
     }
 
     $buffer = hyper_generate_config($options);
-    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'wb');
+    $file = @fopen(WP_CONTENT_DIR . 'advanced-cache.php', 'wb');
     @fwrite($file, $buffer);
     @fclose($file);
 
@@ -109,7 +109,7 @@ function hyper_deactivate()
     wp_clear_scheduled_hook('hyper_clean');
 
     // burn the file without delete it so one can rewrite it
-    $file = @fopen(ABSPATH . 'wp-content/advanced-cache.php', 'wb');
+    $file = @fopen(WP_CONTENT_DIR . 'advanced-cache.php', 'wb');
     if ($file)
     {
         @fwrite($file, '');
@@ -184,7 +184,8 @@ function hyper_cache_invalidate_post($post_id)
         hyper_log('Permalink to invalidate ' . $link);
         // Remove 'http://', and for wordpress 'pretty URLs' strip trailing slash (e.g. 'http://my-site.com/my-post/' -> 'my-site.com/my-post')
         // The latter ensures existing cache files are still used if a wordpress admin just adds/removes a trailing slash to/from the permalink format
-        $link = substr($link, 7);
+        //$link = substr($link, 7);
+        $link = preg_replace( '~^.*?://~', '', $link );
         hyper_log('Corrected permalink to invalidate ' . $link);
         $file = md5($link);
         hyper_log('File basename to invalidate ' . $file);
@@ -313,7 +314,7 @@ function hyper_generate_config(&$options)
     if ($timeout == 0) $timeout = 2000000000;
 
     $buffer = "<?php\n";
-    $buffer .= '$hyper_cache_path = "' . WP_CONTENT_DIR . '/cache/hyper-cache/"' . ";\n";
+    $buffer .= '$hyper_cache_path = \'' . WP_CONTENT_DIR . '/cache/hyper-cache/\'' . ";\n";
     $buffer .= '$hyper_cache_charset = "' . get_option('blog_charset') . '"' . ";\n";
     // Collect statistics
     //$buffer .= '$hyper_cache_stats = ' . (isset($options['stats'])?'true':'false') . ";\n";
@@ -447,7 +448,7 @@ function hyper_generate_config(&$options)
         }
     }
     
-    $buffer .= "include(ABSPATH . 'wp-content/plugins/hyper-cache/cache.php');\n";
+    $buffer .= "include(WP_CONTENT_DIR . 'plugins/hyper-cache/cache.php');\n";
     $buffer .= '?>';
 
     return $buffer;

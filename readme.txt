@@ -3,8 +3,7 @@ Tags: cache,chaching,speed,performance,super cache,wp cache,optimization,statici
 Requires at least: 2.5
 Tested up to: 3.5
 Stable tag: trunk
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2545483
-Contributors: satollo,momo360modena
+Donate link: http://www.satollo.net/donations
 
 Hyper Cache is flexible and easy to configure cache system for WordPress.
 
@@ -17,6 +16,10 @@ the configuration). It has three invalidation method: all the cache, single post
 based and nothing but with control on home and archive pages invalidation.
 
 It has not yet tested for multisite configuration (WordPress 3.0 feature).
+
+An alternative to Hyper Cache is Lite Cache which probably is simpler to configure but
+with the same performace level. Lite Cache is able to cache pages for commenters, too,
+which are usually excluded from other type of caches.
 
 Some features:
 
@@ -34,6 +37,10 @@ Some features:
 
 More can be read on the [official plugin page](http://www.satollo.net/plugins/hyper-cache) and write me
 if you have issues to info@satollo.net.
+
+New contributors policy: since in the pas I had problem with link to contributors sites, I removed
+them but I would like to add a reference to profile pages of contributors on WordPress, Twitter,
+Facebook, Google+. Those links should be safe.
 
 **Check out my other plugins**:
 
@@ -53,6 +60,11 @@ Thanks to:
 * Gene Steinberg to ask for an autoclean system
 * Marcis Gasun (fatcow.com) for Bielorussian translation
 * many others I don't remember
+* Florian Höch
+* Quentin
+* Mckryak
+* Tommy Tung alias Ragnarok
+
 
 == Installation ==
 
@@ -71,6 +83,13 @@ See the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache)
 No screenshots are available.
 
 == Changelog ==
+
+= 2.9.1.0 =
+
+* https fix by (http://foliovision.com)
+* fixed the WP_CONTENT_DIR usage
+* some "undefined index" notices because people and PHP pretend that an associative array should be checked for a key before asking for its content... (terrible and inefficient)
+* cache path save with single quote to avoid problem with windows paths
 
 = 2.9.0.3 =
 
