@@ -36,7 +36,7 @@ if (isset($_POST['save']))
 
     $buffer = hyper_generate_config($options);
     
-    $file = @fopen(WP_CONTENT_DIR . 'advanced-cache.php', 'w');
+    $file = @fopen(WP_CONTENT_DIR . '/advanced-cache.php', 'w');
     if ($file) {
     @fwrite($file, $buffer);
     @fclose($file);

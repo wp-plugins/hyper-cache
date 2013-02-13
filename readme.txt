@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.1.1 =
+
+* fixed the new WP_CONTENT_DIR usage
+
 = 2.9.1.0 =
 
 * https fix by (http://foliovision.com)
