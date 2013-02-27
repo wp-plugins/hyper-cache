@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.1.2 =
+
+* Fixed a file creation on activation
+
 = 2.9.1.1 =
 
 * fixed the new WP_CONTENT_DIR usage
