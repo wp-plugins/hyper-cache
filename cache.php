@@ -205,6 +205,7 @@ function hyper_cache_callback($buffer) {
     global $hyper_cache_notfound, $hyper_cache_stop, $hyper_cache_charset, $hyper_cache_home, $hyper_cache_redirects, $hyper_redirect, $hc_file, $hyper_cache_name, $hyper_cache_browsercache, $hyper_cache_timeout, $hyper_cache_lastmodified, $hyper_cache_gzip, $hyper_cache_gzip_on_the_fly;
 
     if (!function_exists('is_home')) return $buffer;
+    if (!function_exists('is_front_page')) return $buffer;
     
     if (function_exists('apply_filters')) $buffer = apply_filters('hyper_cache_buffer', $buffer);
 
@@ -225,7 +226,7 @@ function hyper_cache_callback($buffer) {
         return $buffer;
     }
 
-    if (is_home() && $hyper_cache_home) {
+    if ((is_home() || is_front_page()) && $hyper_cache_home) {
         return $buffer;
     }
 
@@ -233,7 +234,7 @@ function hyper_cache_callback($buffer) {
         return $buffer;
     }
 
-    if (is_home()) $data['type'] = 'home';
+    if (is_home() || is_front_page()) $data['type'] = 'home';
     else if (is_feed()) $data['type'] = 'feed';
         else if (is_archive()) $data['type'] = 'archive';
             else if (is_single()) $data['type'] = 'single';
@@ -316,13 +317,15 @@ function hyper_mobile_type() {
     if (!isset($hyper_cache_mobile) || $hyper_cache_mobile_agents === false) return '';
 
     $hyper_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-    foreach ($hyper_cache_mobile_agents as $hyper_a) {
-        if (strpos($hyper_agent, $hyper_a) !== false) {
-            if (strpos($hyper_agent, 'iphone') || strpos($hyper_agent, 'ipod')) {
-                return 'iphone';
-            }
-            else {
-                return 'pda';
+    if (!empty($hyper_cache_mobile_agents)) {
+        foreach ($hyper_cache_mobile_agents as $hyper_a) {
+            if (strpos($hyper_agent, $hyper_a) !== false) {
+                if (strpos($hyper_agent, 'iphone') || strpos($hyper_agent, 'ipod')) {
+                    return 'iphone';
+                }
+                else {
+                    return 'pda';
+                }
             }
         }
     }

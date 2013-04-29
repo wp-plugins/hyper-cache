@@ -84,6 +84,14 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.1.4 =
+
+* Added support for the static front page
+
+= 2.9.1.3 =
+
+* Added a check to remove a warning
+
 = 2.9.1.2 =
 
 * Fixed a file creation on activation
