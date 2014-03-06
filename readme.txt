@@ -1,7 +1,7 @@
 === Hyper Cache ===
 Tags: cache,chaching,speed,performance,super cache,wp cache,optimization,staticization
 Requires at least: 2.5
-Tested up to: 3.5
+Tested up to: 3.8.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -83,6 +83,10 @@ See the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache)
 No screenshots are available.
 
 == Changelog ==
+
+= 2.9.1.5 =
+
+* gzip path by Onno Molenkamp
 
 = 2.9.1.4 =
 
