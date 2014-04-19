@@ -84,6 +84,10 @@ No screenshots are available.
 
 == Changelog ==
 
+= 2.9.1.6 =
+
+* Fixed some debug noticies
+
 = 2.9.1.5 =
 
 * gzip path by Onno Molenkamp
