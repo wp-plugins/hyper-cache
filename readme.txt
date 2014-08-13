@@ -43,7 +43,7 @@ Thanks to:
 == Frequently Asked Questions ==
 
 See the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache) or
-the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache).
+the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache-plugin).
     
 == Screenshots ==
 
@@ -54,6 +54,12 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 3. Mobile devices configuration
 
 == Changelog ==
+
+= 3.0.1 =
+
+* Short description fix on plugin.php
+* Forum link fix on readme.txt
+* More help on comment authors option
 
 = 3.0.0 =
 

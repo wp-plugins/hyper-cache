@@ -3,8 +3,8 @@
 /*
   Plugin Name: Hyper Cache
   Plugin URI: http://www.satollo.net/plugins/hyper-cache
-  Description: A lite and efficient cache. More on <a href="http://www.satollo.net/plugins/lite-cache" target="_blank">Lite Cache</a> official page.
-  Version: 3.0.0
+  Description: A simple and efficient cache. More on <a href="http://www.satollo.net/plugins/hyper-cache" target="_blank">Hyper Cache</a> official page.
+  Version: 3.0.1
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.

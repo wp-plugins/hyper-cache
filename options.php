@@ -242,6 +242,9 @@ if (!wp_next_scheduled('hyper_cache_clean')) {
             Even <b>2$</b> helps! (<a href="http://www.satollo.net/donations" target="_blank">read more</a>)
         </p>
         <p>
+            Want a full mail marketing system in your blog? Try my free <a href="http://www.satollo.net/plugins/newsletter" target="_blank">Newsletter</a> plugin.
+        </p>
+        <p>
             <?php $controls->button('clean', __('Clean the whole cache', 'hyper-cache')); ?>
             <?php $controls->button('clean-home', __('Clean home and archives', 'hyper-cache')); ?>
             <?php $controls->button('size', __('Compute the cache size', 'hyper-cache')); ?>
@@ -420,7 +423,8 @@ if (!wp_next_scheduled('hyper_cache_clean')) {
 
                             <p class="description">
                                 Hyper Cache is able to work with users who left a comment and completes the comment form with
-                                user data even on cached page. But the "awaiting moderation" message cannot be shown. If you
+                                user data even on cached page (with a small JavaScript added at the end of the pages). 
+                                But the "awaiting moderation" message cannot be shown. If you
                                 have few commentators, you can disable this feature to get back the classical WordPress
                                 comment flow.
                             </p>
