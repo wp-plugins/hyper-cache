@@ -4,10 +4,11 @@
   Plugin Name: Hyper Cache
   Plugin URI: http://www.satollo.net/plugins/hyper-cache
   Description: A easy to configure and efficient cache to increase the speed of your blog.
-  Version: 3.0.5
+  Version: 3.0.6
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
+  Contributors: satollo
  */
 
 if (isset($_GET['cache'])) {
@@ -343,6 +344,11 @@ class HyperCache {
         if ($this->post_id == $post_id) {
             return;
         }
+        
+        if (get_post_status($post_id) != 'publish') {
+            error_log('Not a published post');
+            return;
+        }
 
         $this->post_id = $post_id;
         $folder = trailingslashit($this->get_folder());
@@ -411,6 +417,7 @@ class HyperCache {
     }
 
     function remove_dir($dir) {
+        error_log('Removing dir: ' . $dir);
         $dir = trailingslashit($dir);
         $files = glob($dir . '*', GLOB_MARK);
         if (!empty($files)) {

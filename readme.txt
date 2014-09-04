@@ -1,7 +1,7 @@
 === Hyper Cache ===
 Tags: cache,performance,staticizer,apache,htaccess,tuning,speed,bandwidth,optimization,tidy,gzip,compression,server load,boost
 Requires at least: 2.5
-Tested up to: 3.9.2
+Tested up to: 4.0
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 
@@ -54,6 +54,12 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 3. Mobile devices configuration
 
 == Changelog ==
+
+= 3.0.6 =
+
+* readme.txt fix
+* WP 4.0 compatibility check
+* Fixed invalidation on draft saving
 
 = 3.0.5 =
 
