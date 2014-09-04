@@ -346,7 +346,7 @@ class HyperCache {
         }
         
         if (get_post_status($post_id) != 'publish') {
-            error_log('Not a published post');
+            //error_log('Not a published post');
             return;
         }
 
@@ -417,7 +417,7 @@ class HyperCache {
     }
 
     function remove_dir($dir) {
-        error_log('Removing dir: ' . $dir);
+        //error_log('Removing dir: ' . $dir);
         $dir = trailingslashit($dir);
         $files = glob($dir . '*', GLOB_MARK);
         if (!empty($files)) {
