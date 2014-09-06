@@ -358,6 +358,18 @@ if (!wp_next_scheduled('hyper_cache_clean')) {
                         </td>
                     </tr>
                     <!--
+                    <tr>
+                        <th><?php _e('Remove HTTP/HTTPS', 'hyper-cache'); ?></th>
+                        <td>
+                            <?php $controls->checkbox('remove_protocol', 'Enable'); ?>
+                            <p class="description">
+                               If your site uses both HTTP and HTTPS it's better to have page links as 
+                               <code>://www.domain.com/...</code> without the protocol.
+                            </p>
+                        </td>
+                    </tr>
+                    -->
+                    <!--
                     <tr valign="top">
                         <th><?php _e('HTTPS separated cache', 'hyper-cache'); ?></th>
                         <td>

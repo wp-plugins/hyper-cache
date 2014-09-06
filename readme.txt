@@ -4,6 +4,7 @@ Requires at least: 2.5
 Tested up to: 4.0
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
+Contributors: satollo
 
 Hyper Cache is flexible and easy to configure cache system for WordPress.
 
@@ -54,6 +55,10 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 3. Mobile devices configuration
 
 == Changelog ==
+
+= 3.0.7 =
+
+* Fixed the cookie bypass
 
 = 3.0.6 =
 

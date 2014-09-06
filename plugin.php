@@ -4,7 +4,7 @@
   Plugin Name: Hyper Cache
   Plugin URI: http://www.satollo.net/plugins/hyper-cache
   Description: A easy to configure and efficient cache to increase the speed of your blog.
-  Version: 3.0.6
+  Version: 3.0.7
   Author: Stefano Lissa
   Author URI: http://www.satollo.net
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -138,7 +138,7 @@ class HyperCache {
         $advanced_cache = str_replace('HC_REJECT_AGENTS_ENABLED', empty($this->options['reject_agents_enabled']) ? 0 : 1, $advanced_cache);
         $advanced_cache = str_replace('HC_REJECT_AGENTS', implode('|', array_map('preg_quote', $this->options['reject_agents'])), $advanced_cache);
 
-        $advanced_cache = str_replace('HC_REJECT_COOKIES_ENABLED', empty($this->options['reject_agents_cookies']) ? 0 : 1, $advanced_cache);
+        $advanced_cache = str_replace('HC_REJECT_COOKIES_ENABLED', empty($this->options['reject_cookies_enabled']) ? 0 : 1, $advanced_cache);
         $advanced_cache = str_replace('HC_REJECT_COOKIES', implode('|', array_map('preg_quote', $this->options['reject_cookies'])), $advanced_cache);
 
 
@@ -208,6 +208,11 @@ class HyperCache {
 
     function hook_template_redirect() {
         global $cache_stop, $hyper_cache_stop, $hyper_cache_stop;
+        
+        // Special buffer to remove the protocol
+        if ($this->options['remove_protocol']) {
+            ob_start('hyper_cache_remove_protocol');
+        }
 
         if ($cache_stop || $hyper_cache_stop || $hyper_cache_stop)
             return;
@@ -219,18 +224,21 @@ class HyperCache {
             return;
         }
 
-        if (!function_exists('hyper_cache_sanitize_uri'))
+        if (!function_exists('hyper_cache_sanitize_uri')) {
             return;
+        }
 
-        if (is_user_logged_in())
+        if (is_user_logged_in()) {
             return;
+        }
 
         // Never cache pages generated for administrator (to be patched to see if the user is an administrator)
         //if (get_current_user_id() == 1) return;
 
         if (is_404()) {
-            if (isset($this->options['reject_404']))
+            if (isset($this->options['reject_404'])) {
                 return;
+            }
 
             $file = $this->get_folder() . '/' . substr(get_option('home'), strpos(get_option('home'), '://') + 3) . '/404.html';
 
@@ -484,6 +492,13 @@ class HyperCache {
         return $list;
     }
 
+}
+
+function hyper_cache_remove_protocol($buffer) {
+    $parts = parse_url(get_home_url());
+    $buffer = str_ireplace('http://' . $parts['host'], '://' . $parts['host'], $buffer);
+    $buffer = str_ireplace('https://' . $parts['host'], '://' . $parts['host'], $buffer);
+    return $buffer;
 }
 
 function hyper_cache_callback($buffer) {
