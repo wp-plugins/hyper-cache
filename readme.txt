@@ -56,9 +56,12 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 == Changelog ==
 
-= 3.0.7 =
+= 3.1.0 =
 
 * Fixed the cookie bypass
+* Removed a debug notice
+* Added HTTPS separated cache
+* Improved code performance
 
 = 3.0.6 =
 
