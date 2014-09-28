@@ -56,6 +56,10 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 == Changelog ==
 
+= 3.1.2 =
+
+* Fixed comment author cookie clean
+
 = 3.1.1 =
 
 * fixed a PHP warning on options panel when clearing an empty cache
