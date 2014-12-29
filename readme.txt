@@ -56,6 +56,10 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 == Changelog ==
 
+= 3.1.4 =
+
+* Fixed an error log always active
+
 = 3.1.3 =
 
 * Fixed the agents bypass

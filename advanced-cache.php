@@ -203,9 +203,6 @@ if (HC_READFILE) {
 die();
 
 function hyper_cache_sanitize_uri($uri) {
-    if (HYPER_CACHE_LOG) {
-        error_log('URI: ' . $uri);
-    }
     $uri = preg_replace('/[^a-zA-Z0-9\/\-_]+/', '_', $uri);
     $uri = preg_replace('/\/+/', '/', $uri);
     //$uri = rtrim($uri, '.-_/');
@@ -214,9 +211,6 @@ function hyper_cache_sanitize_uri($uri) {
     }
     if (strlen($uri) > 1 && substr($uri, -1, 1) == '/') {
         $uri = rtrim($uri, '/') . '_';
-    }
-    if (HYPER_CACHE_LOG) {
-        error_log('Sanitized URI: ' . $uri);
     }
     return $uri;
 }
