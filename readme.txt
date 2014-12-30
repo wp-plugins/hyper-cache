@@ -56,6 +56,10 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 == Changelog ==
 
+= 3.1.5 =
+
+* Tidy option removed
+
 = 3.1.4 =
 
 * Fixed an error log always active

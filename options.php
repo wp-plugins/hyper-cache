@@ -437,18 +437,6 @@ if (!wp_next_scheduled('hyper_cache_clean')) {
                             </p>
                         </td>
                     </tr>
-
-                    <tr>
-                        <th>Tidy</th>
-                        <td>
-                            <?php $controls->checkbox('serve_expired_to_bots', 'Enable'); ?>
-                            <p class="description">
-                                Serve a cache page even if expired when requested by bots.
-                            </p>
-                        </td>
-                    </tr>
-
-
                 </table>
 
             </div>
