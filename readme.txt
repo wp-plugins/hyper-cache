@@ -56,6 +56,10 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 == Changelog ==
 
+= 3.1.6 =
+
+* Fixed the post trashing detection
+
 = 3.1.5 =
 
 * Tidy option removed
