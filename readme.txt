@@ -31,6 +31,7 @@ blog with great readers paritipation)
 * Autoclean to controls the cache used disk space
 * CDN support (experimental)
 * Other special options
+* Response header signature to check the working status
 
 More can be read on the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache).
 
