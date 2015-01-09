@@ -35,6 +35,13 @@ blog with great readers paritipation)
 
 More can be read on the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache).
 
+Other plugins by Stefano Lissa:
+
+* [Newsletter](http://www.thenewsletterplugin.com)
+* [Header and Footer](http://www.satollo.net/plugins/header-footer)
+* [Include Me](http://www.satollo.net/plugins/include-me)
+
+
 == Installation ==
 
 1. Put the plugin folder into [wordpress_dir]/wp-content/plugins/
