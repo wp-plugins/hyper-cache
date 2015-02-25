@@ -601,7 +601,7 @@ function hyper_cache_callback($buffer) {
 
         $buffer = preg_replace_callback("#(<img.+src=[\"'])(" . $base . ".*)([\"'])#U", 'hyper_cache_cdn_callback', $buffer);
         $buffer = preg_replace_callback("#(<script.+src=[\"'])(" . $base . ".*)([\"'])#U", 'hyper_cache_cdn_callback', $buffer);
-        $buffer = preg_replace_callback("#(<link.+href=[\"'])(" . $base . ".*\.css)([\"'])#U", 'hyper_cache_cdn_callback', $buffer);
+        $buffer = preg_replace_callback("#(<link.+href=[\"'])(" . $base . ".*\.css.*)([\"'])#U", 'hyper_cache_cdn_callback', $buffer);
     }
 
     $buffer = apply_filters('cache_buffer', $buffer);
