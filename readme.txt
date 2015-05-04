@@ -1,7 +1,7 @@
 === Hyper Cache ===
 Tags: cache,performance,staticizer,apache,htaccess,tuning,speed,bandwidth,optimization,tidy,gzip,compression,server load,boost
 Requires at least: 2.5
-Tested up to: 4.1
+Tested up to: 4.2.1
 Stable tag: trunk
 Donate link: http://www.satollo.net/donations
 Contributors: satollo
