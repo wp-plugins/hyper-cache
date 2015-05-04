@@ -14,14 +14,15 @@ Hyper Cache is a cache plugin specifically written to get the maximum
 speed for your WordPress blog. It can be used in low resources hosting as well
 on high end servers.
 
-Hyper Cache is purely PHP and works on every blog: no complex configurations are need
-and when you deactivate it no stale setting are left floating around.
+Hyper Cache is **purely PHP** and works on **every blog**: no complex configurations are needed
+and when you deactivate it no stale settings are left around.
 
 Short list of features:
 
 * Mobile aware: double cache for desktop and mobile site versions
+* HTTPS ready
 * Mobile theme switch option: change the theme on mobile device detection
-* Able to serve expired pages to bots to increase the perceived speed by bots
+* Able to serve expired pages to bots to increase the perceived blog speed by bots
 * Manages compression even on the fly for non cached pages
 * Lots of configurable bypasses: matching cookies, matching urls, user agents, ...
 * Comments aware: is able to serve cached pages even to visitors who commented the blog (perfect for
@@ -29,11 +30,14 @@ blog with great readers paritipation)
 * Cache folder can be moved outside your blog space to exclude it from backups
 * Controls over cache cleaning on blog events (post edited, comments, ...)
 * Autoclean to controls the cache used disk space
-* CDN support (experimental)
+* CDN support
 * Other special options
 * Response header signature to check the working status
 
 More can be read on the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache).
+
+You can further optimize the blog page installing [Autoptimize](https://wordpress.org/plugins/autoptimize/)
+which cleans up the HTML, minifies and concatenates CSS and JavaScript.
 
 Other plugins by Stefano Lissa:
 
@@ -62,6 +66,11 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 3. Mobile devices configuration
 
 == Changelog ==
+
+= 3.2.2 =
+
+* Added check for gz file write error
+* Added the gzip on the fly option
 
 = 3.2.1 =
 
