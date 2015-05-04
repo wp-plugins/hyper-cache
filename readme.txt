@@ -36,7 +36,7 @@ blog with great readers paritipation)
 
 More can be read on the [Hyper Cache official page](http://www.satollo.net/plugins/hyper-cache).
 
-You can further optimize the blog page installing [Autoptimize](https://wordpress.org/plugins/autoptimize/)
+You can further optimize the blog installing [Autoptimize](https://wordpress.org/plugins/autoptimize/)
 which cleans up the HTML, minifies and concatenates CSS and JavaScript.
 
 Other plugins by Stefano Lissa:
@@ -44,7 +44,7 @@ Other plugins by Stefano Lissa:
 * [Newsletter](http://www.thenewsletterplugin.com)
 * [Header and Footer](http://www.satollo.net/plugins/header-footer)
 * [Include Me](http://www.satollo.net/plugins/include-me)
-
+* [Comment Plus](http://www.satollo.net/plugins/comment-plus)
 
 == Installation ==
 
@@ -78,13 +78,12 @@ the [Hyper Cache official forum](http://www.satollo.net/forums/forum/hyper-cache
 
 = 3.2.0 =
 
-* Links
 * Fixed the options delete function
 
 = 3.1.9 =
 
 * Fixed translations
-* Reviews CDN options (now available to all)
+* Reviewed CDN options (now available to all)
 
 = 3.1.8 =
 
